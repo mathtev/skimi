@@ -1,6 +1,6 @@
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 import React, { createContext, useState } from 'react';
-import createTheme from '../../theme/theme';
+import {createTheme, cssVariables} from '../../theme/theme';
 
 interface MyThemeContext {
   isDark: boolean;
@@ -31,7 +31,7 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={{...theme, ...cssVariables}}>
         <CssBaseline />
         {children}
       </MuiThemeProvider>

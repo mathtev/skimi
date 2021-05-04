@@ -14,6 +14,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import PeopleIcon from '@material-ui/icons/People';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import { cssVariables } from '../../theme/theme';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     background: theme.palette.info.dark,
+    height: cssVariables.headerHeight
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -61,29 +63,33 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       width: 0,
       '&:focus': {
         backgroundColor: fade(theme.palette.common.white, 0.15),
-        width:'20ch'
-      }
+        width: '20ch',
+      },
     },
   },
   sectionDesktop: {
     display: 'none',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       display: 'flex',
     },
   },
   sectionMobile: {
     display: 'flex',
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
   },
 }));
 
-function Header() {
+export interface HeaderProps {
+  toggleSidebar: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [
@@ -140,9 +146,7 @@ function Header() {
     >
       <MenuItem>
         <IconButton color="inherit">
-
-            <PeopleIcon />
-   
+          <PeopleIcon />
         </IconButton>
         <p>Messages</p>
       </MenuItem>
@@ -170,13 +174,14 @@ function Header() {
 
   return (
     <div className={classes.grow}>
-      <AppBar className={classes.root} position="static">
+      <AppBar className={classes.root}  position="fixed">
         <Toolbar>
           <IconButton
             edge="start"
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
+            onClick={toggleSidebar}
           >
             <MenuIcon />
           </IconButton>

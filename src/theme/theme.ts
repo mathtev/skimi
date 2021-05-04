@@ -1,6 +1,6 @@
 import { createMuiTheme, Theme } from '@material-ui/core/styles';
 
-const createTheme = (): Theme =>
+export const createTheme = (): Theme =>
   createMuiTheme({
     overrides: {
       MuiSvgIcon: {
@@ -16,5 +16,9 @@ const createTheme = (): Theme =>
       // }
     },
   });
-
-export default createTheme;
+  
+  export const cssVariables = {
+    sidebarOpenWidth: 240,
+    sidebarCloseWidth: 60,
+    headerHeight: 64
+  };

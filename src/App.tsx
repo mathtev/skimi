@@ -1,12 +1,11 @@
-import React from 'react';
-import Header from './components/Header/Header';
+import Layout from './components/Layout/Layout';
 import ThemeProvider from './components/Theme/ThemeProvider';
 
 function App() {
   const isDark = localStorage.getItem('theme') === 'true';
   return (
     <ThemeProvider defaultDark={isDark}>
-      <Header />
+      <Layout />
     </ThemeProvider>
   );
 }
