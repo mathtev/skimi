@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     background: theme.palette.info.dark,
-    height: cssVariables.headerHeight
+    height: cssVariables.headerHeight,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -89,13 +89,11 @@ export interface HeaderProps {
   toggleSidebar: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
+const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [
-    mobileMoreAnchorEl,
-    setMobileMoreAnchorEl,
-  ] = useState<null | HTMLElement>(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
+    useState<null | HTMLElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -159,12 +157,7 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
+        <IconButton color="inherit">
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
@@ -174,7 +167,7 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
 
   return (
     <div className={classes.grow}>
-      <AppBar className={classes.root}  position="fixed">
+      <AppBar className={classes.root} position="fixed">
         <Toolbar>
           <IconButton
             edge="start"
@@ -240,6 +233,6 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar}) => {
       {renderMenu}
     </div>
   );
-}
+};
 
 export default Header;

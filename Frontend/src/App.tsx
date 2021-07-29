@@ -1,5 +1,5 @@
 import Layout from './components/Layout/Layout';
-import ThemeProvider from './components/Theme/ThemeProvider';
+import ThemeProvider from './providers/ThemeProvider';
 
 function App() {
   const isDark = localStorage.getItem('theme') === 'true';

@@ -18,7 +18,6 @@ export const createTheme = (): Theme =>
   });
   
   export const cssVariables = {
-    sidebarOpenWidth: 240,
-    sidebarCloseWidth: 60,
+    sidebarWidth: 250,
     headerHeight: 64
   };

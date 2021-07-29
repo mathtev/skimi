@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     }),
     overflowX: 'hidden',
     width: cssVariables.sidebarCloseWidth,
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       width: 0,
     },
   },
