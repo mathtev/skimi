@@ -28,7 +28,6 @@ const connectionOptions: ConnectionOptions =
       };
 
 const createDatabaseConnection = (): Promise<Connection> => {
-  console.log('qqqqqqq', commonConfig)
   return createConnection(connectionOptions);
 };
 

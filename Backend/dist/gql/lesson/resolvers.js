@@ -25,23 +25,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
+const typeorm_1 = require("../../utils/typeorm");
 const Lesson_1 = __importDefault(require("../../models/Lesson"));
 let LessonResolver = class LessonResolver {
-    getLesson(ctx) {
+    getLesson(ctx, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const lesson = yield Lesson_1.default.find();
-            console.log('bbbbb', lesson);
+            const lesson = yield typeorm_1.findEntityById(Lesson_1.default, id);
             return lesson;
+        });
+    }
+    getAllLessons(ctx) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const lessons = yield typeorm_1.findAllEntities(Lesson_1.default);
+            return lessons;
         });
     }
 };
 __decorate([
     type_graphql_1.Query(() => Lesson_1.default),
     __param(0, type_graphql_1.Ctx()),
+    __param(1, type_graphql_1.Arg('id', () => type_graphql_1.Int)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", Promise)
+], LessonResolver.prototype, "getLesson", null);
+__decorate([
+    type_graphql_1.Query(() => [Lesson_1.default]),
+    __param(0, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], LessonResolver.prototype, "getLesson", null);
+], LessonResolver.prototype, "getAllLessons", null);
 LessonResolver = __decorate([
     type_graphql_1.Resolver()
 ], LessonResolver);

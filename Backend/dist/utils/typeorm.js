@@ -12,19 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteEntity = exports.updateEntity = exports.createEntity = exports.validateAndSaveEntity = exports.findEntityOrThrow = void 0;
+exports.deleteEntity = exports.updateEntity = exports.createEntity = exports.validateAndSaveEntity = exports.findAllEntities = exports.findEntityById = void 0;
 const Lesson_1 = __importDefault(require("../models/Lesson"));
 const entities = {
     Lesson: Lesson_1.default
 };
-const findEntityOrThrow = (Entity, id, options) => __awaiter(void 0, void 0, void 0, function* () {
+const findEntityById = (Entity, id, options) => __awaiter(void 0, void 0, void 0, function* () {
     const instance = yield Entity.findOne(id, options);
     if (!instance) {
-        throw new Error(`=== ${Entity} entity not found`);
+        throw new Error(`${Entity} entity not found`);
     }
     return instance;
 });
-exports.findEntityOrThrow = findEntityOrThrow;
+exports.findEntityById = findEntityById;
+const findAllEntities = (Entity, options) => __awaiter(void 0, void 0, void 0, function* () {
+    const instances = yield Entity.find(options);
+    if (!instances) {
+        throw new Error(`${Entity} entity not found`);
+    }
+    return instances;
+});
+exports.findAllEntities = findAllEntities;
 const validateAndSaveEntity = (instance) => __awaiter(void 0, void 0, void 0, function* () {
     const Entity = entities[instance.constructor.name];
     if ("validations" in Entity) {
@@ -38,13 +46,13 @@ const createEntity = (Constructor, input) => __awaiter(void 0, void 0, void 0, f
 });
 exports.createEntity = createEntity;
 const updateEntity = (Entity, id, input) => __awaiter(void 0, void 0, void 0, function* () {
-    const instance = yield exports.findEntityOrThrow(Entity, id);
+    const instance = yield exports.findEntityById(Entity, id);
     Object.assign(instance, input);
     return exports.validateAndSaveEntity(instance);
 });
 exports.updateEntity = updateEntity;
 const deleteEntity = (Entity, id) => __awaiter(void 0, void 0, void 0, function* () {
-    const instance = yield exports.findEntityOrThrow(Entity, id);
+    const instance = yield exports.findEntityById(Entity, id);
     yield instance.remove();
     return instance;
 });

@@ -72,11 +72,8 @@ const initExpressGraphql = () => __awaiter(void 0, void 0, void 0, function* () 
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 });
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('wtf');
     yield establishDatabaseConnection();
-    console.log('is');
     initExpressGraphql();
-    console.log('going on');
 });
 startServer();
 //# sourceMappingURL=index.js.map

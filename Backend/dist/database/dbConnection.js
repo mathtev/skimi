@@ -32,7 +32,7 @@ const connectionOptions = process.env.NODE_ENV === 'production'
             max: 5,
         } }) : Object.assign({ host: process.env.DB_HOST, port: Number(process.env.DB_PORT), username: process.env.DB_USERNAME, password: String(process.env.DB_PASSWORD), database: process.env.DB_DATABASE }, commonConfig);
 const createDatabaseConnection = () => {
-    console.log('qqqqqqq', commonConfig);
+    console.log('qqqqqqq', process.env.NODE_ENV);
     return typeorm_1.createConnection(connectionOptions);
 };
 exports.default = createDatabaseConnection;

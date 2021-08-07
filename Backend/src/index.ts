@@ -51,7 +51,6 @@ const initExpressGraphql = async () => {
 const startServer = async (): Promise<void> => {
   await establishDatabaseConnection();
   initExpressGraphql();
-
 }
 
 startServer();
