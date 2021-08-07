@@ -1,3 +1,4 @@
+import { EntityNotFoundError } from "../utils/customErrors";
 import { FindOneOptions } from "typeorm/find-options/FindOneOptions";
 import Lesson from "../models/Lesson";
 
@@ -15,7 +16,7 @@ export const findEntityById = async <T extends EntityTypes>(
 ): Promise<InstanceType<T>> => {
   const instance = await Entity.findOne(id, options);
   if (!instance) {
-    throw new Error(`${Entity} entity not found`);
+    throw new EntityNotFoundError(Entity.name);
   }
   return instance;
 };

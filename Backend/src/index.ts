@@ -1,5 +1,3 @@
-import * as Sentry from "@sentry/node";
-import { RewriteFrames } from "@sentry/integrations";
 import express from "express";
 import cors from "cors";
 import {graphqlHTTP} from 'express-graphql';
@@ -8,16 +6,6 @@ import { RESOLVERS } from "./gql";
 import createDatabaseConnection from "./database/dbConnection";
 require('dotenv').config()
 
-Sentry.init({
-  environment: process.env.APP_ENV,
-  release: 'jira-clone-api',
-  dsn: process.env.SENTRY_DSN,
-  integrations: [
-    new RewriteFrames({
-      root: process.cwd(),
-    }) as any,
-  ],
-});
 
 const establishDatabaseConnection = async (): Promise<void> => {
   try {
