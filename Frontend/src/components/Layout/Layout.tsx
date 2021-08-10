@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import { cssVariables } from '../../theme/theme';
-import Header from '../Header/Header';
+import Header from '../Header';
 import Sidebar from '../Sidebar/Sidebar';
 import SubjectList from '../SubjectList';
 
