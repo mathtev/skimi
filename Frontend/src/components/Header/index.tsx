@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { alpha, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -6,17 +6,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import PeopleIcon from '@material-ui/icons/People';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
 import { cssVariables } from '../../theme/theme';
 import DesktopMenu from './DesktopMenu';
 import MobileMenu from './MobileMenu';
+import MobileToolbarBar from './MobileToolBar';
+import DesktopToolBar from './DesktopToolBar';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -73,18 +69,6 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: alpha(theme.palette.common.white, 0.15),
         width: '20ch',
       },
-    },
-  },
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'flex',
-    },
-  },
-  sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
     },
   },
 }));
@@ -146,37 +130,14 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
-          <div className={classes.sectionDesktop}>
-            <IconButton color="inherit">
-              <PeopleIcon />
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge variant="dot" color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
+          <DesktopToolBar
+            menuId={menuId}
+            handleProfileMenuOpen={handleProfileMenuOpen}
+          />
+          <MobileToolbarBar
+            mobileMenuId={mobileMenuId}
+            handleMobileMenuOpen={handleMobileMenuOpen}
+          />
         </Toolbar>
       </AppBar>
       <DesktopMenu
