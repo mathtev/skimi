@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '50%',
       height: '300px',
+      margin: 'auto'
     },
     subjectImage: {
       width: '30px',
@@ -29,28 +30,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const mockedData = [
-  {
-    id: 'panel1',
-    title: 'basics',
-    description: 'this is a basic set',
-    image: donutImg,
-  },
-  {
-    id: 'panel2',
-    title: 'intermediate basics',
-    description: 'this is a basic set',
-    image: subjectRacoon,
-  },
-  {
-    id: 'panel3',
-    title: 'more basics',
-    description: 'this is a basic set',
-    image: subjectHand,
-  },
-];
 
-function SubjectList() {
+interface CustomAccordionProps {
+  data: 
+}
+
+function CustomAccordion({data}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState<string | false>(false);
 
@@ -61,7 +46,7 @@ function SubjectList() {
 
   return (
     <div className={classes.root}>
-      {mockedData.map((panel) => (
+      {data.map((panel) => (
         <Accordion
           expanded={expanded === panel.id}
           onChange={handleChange(panel.id)}
@@ -86,4 +71,4 @@ function SubjectList() {
   );
 }
 
-export default SubjectList;
+export default CustomAccordion;

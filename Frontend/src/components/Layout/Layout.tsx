@@ -3,7 +3,13 @@ import React from 'react';
 import { cssVariables } from '../../theme/theme';
 import Header from '../Header';
 import Sidebar from '../Sidebar/Sidebar';
-import SubjectList from '../SubjectList';
+import {
+  Redirect,
+  Route,
+  Switch,
+  BrowserRouter as Router,
+} from 'react-router-dom';
+import HomePage from '../../pages/homePage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,7 +35,12 @@ const Layout = () => {
       <Header toggleSidebar={toggleSidebar} />
       <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
       <main className={classes.content}>
-        <SubjectList />
+        <Router>
+          <Switch>
+            <Route path="/" exact render={() => <Redirect to="/home" />} />
+            <Route path="/home" exact component={HomePage} />
+          </Switch>
+        </Router>
       </main>
     </div>
   );

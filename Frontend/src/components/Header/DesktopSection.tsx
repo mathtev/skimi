@@ -15,10 +15,15 @@ const useStyles = makeStyles((theme) => ({
 
 interface DesktopToolBarProps {
   menuId: string;
+  navLinks: string[];
   handleProfileMenuOpen: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-const DesktopToolBar: React.FC<DesktopToolBarProps> = ({menuId, handleProfileMenuOpen}) => {
+const DesktopToolBar: React.FC<DesktopToolBarProps> = ({
+  menuId,
+  handleProfileMenuOpen,
+  navLinks,
+}) => {
   const classes = useStyles();
   return (
     <div className={classes.sectionDesktop}>

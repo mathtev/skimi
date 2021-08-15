@@ -13,10 +13,11 @@ const useStyles = makeStyles((theme) => ({
 
 interface MobileToolbarBarProps {
   mobileMenuId: string;
+  navLinks: string[];
   handleMobileMenuOpen: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-const MobileToolbarBar: React.FC<MobileToolbarBarProps> = ({mobileMenuId, handleMobileMenuOpen}) => {
+const MobileToolbarBar: React.FC<MobileToolbarBarProps> = ({mobileMenuId, handleMobileMenuOpen, navLinks}) => {
   const classes = useStyles();
   return (
     <div className={classes.sectionMobile}>

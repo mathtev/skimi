@@ -11,8 +11,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import { cssVariables } from '../../theme/theme';
 import DesktopMenu from './DesktopMenu';
 import MobileMenu from './MobileMenu';
-import MobileToolbarBar from './MobileToolBar';
-import DesktopToolBar from './DesktopToolBar';
+import MobileSection from './MobileSection';
+import DesktopSection from './DesktopSection';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
   },
   title: {
     display: 'none',
@@ -99,6 +102,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const menuId = 'primary-search-account-menu';
 
+  const navLinks = ['home', 'learn', 'word sets']
+
   return (
     <div className={classes.grow}>
       <AppBar className={classes.root} position="fixed">
@@ -130,11 +135,13 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
-          <DesktopToolBar
+          <DesktopSection
+            navLinks={navLinks}
             menuId={menuId}
             handleProfileMenuOpen={handleProfileMenuOpen}
           />
-          <MobileToolbarBar
+          <MobileSection
+            navLinks={navLinks}
             mobileMenuId={mobileMenuId}
             handleMobileMenuOpen={handleMobileMenuOpen}
           />
