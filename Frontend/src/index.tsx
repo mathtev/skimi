@@ -37,7 +37,6 @@ function App() {
     <ApolloProvider client={apolloClient}>
       <ThemeProvider defaultDark={isDark}>
         <Layout />
-        <Learn />
       </ThemeProvider>
     </ApolloProvider>
   );

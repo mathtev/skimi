@@ -10,6 +10,7 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import HomePage from '../../pages/homePage';
+import Learn from '../../pages/learn';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,16 +33,16 @@ const Layout = () => {
 
   return (
     <div className={classes.root}>
-      <Header toggleSidebar={toggleSidebar} />
-      <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-      <main className={classes.content}>
-        <Router>
+      <Router>
+        <Header toggleSidebar={toggleSidebar} />
+        <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+        <main className={classes.content}>
           <Switch>
             <Route path="/" exact render={() => <Redirect to="/home" />} />
-            <Route path="/home" exact component={HomePage} />
+            <Route path="/home" exact component={Learn} />
           </Switch>
-        </Router>
-      </main>
+        </main>
+      </Router>
     </div>
   );
 };
