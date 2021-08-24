@@ -16,6 +16,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import React from 'react';
 import { cssVariables } from '../../theme/theme';
 import HeaderSearch from './HeaderSearch';
+import { navLinksType } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface MobileHeaderProps {
-  navLinks: string[];
+  navLinks: navLinksType;
   toggleSidebar: () => void;
 }
 
@@ -64,7 +65,6 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           <MenuIcon />
         </IconButton>
         <HeaderSearch />
-        <div className={classes.grow} />
         <IconButton
           aria-label="show more"
           aria-controls={mobileMenuId}

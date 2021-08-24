@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
 
   return (
     <div className={classes.grow}>
-      <DesktopHeader navLinks={navLinks} toggleSidebar={toggleSidebar} />
+      <DesktopHeader navLinks={navLinks} />
       <MobileHeader navLinks={navLinks} toggleSidebar={toggleSidebar} />
     </div>
   );

@@ -19,5 +19,5 @@ export const createTheme = (): Theme =>
   
   export const cssVariables = {
     sidebarWidth: 250,
-    headerHeight: 64
+    headerHeight: 64,
   };

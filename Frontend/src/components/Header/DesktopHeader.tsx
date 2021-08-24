@@ -3,6 +3,7 @@ import {
   alpha,
   AppBar,
   Badge,
+  Button,
   IconButton,
   makeStyles,
   Menu,
@@ -17,6 +18,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { cssVariables } from '../../theme/theme';
 import HeaderSearch from './HeaderSearch';
 import { NavLink } from 'react-router-dom';
+import { navLinksType } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,31 +33,53 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
+  titleButton: {
+    color: 'inherit',
+    textDecoration: 'none',
   },
   title: {
-    display: 'none',
+    display: 'block',
     letterSpacing: '3px',
     fontWeight: 600,
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
+    fontFamily: 'cursive',
+    color: '#ffe5b4',
+    padding: 0,
+  },
+  linksContainer: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingLeft: '38px',
+  },
+  link: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    color: '#fff',
+    opacity: 0.8,
+    textDecoration: 'none',
+    textTransform: 'capitalize',
+    fontSize: 16,
+    padding: '0 20px',
+    whiteSpace: 'nowrap',
+    '&:hover': {
+      backgroundColor: alpha(theme.palette.common.white, 0.07),
     },
+  },
+  linkActive: {
+    fontWeight: 'bold',
+    opacity: 1,
   },
 }));
 
 interface DesktopToolBarProps {
-  navLinks: string[];
-  toggleSidebar: () => void;
+  navLinks: navLinksType;
 }
 
-const DesktopHeader: React.FC<DesktopToolBarProps> = ({
-  toggleSidebar,
-  navLinks,
-}) => {
+const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -70,26 +94,24 @@ const DesktopHeader: React.FC<DesktopToolBarProps> = ({
   return (
     <AppBar className={classes.root} position="fixed">
       <Toolbar>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="open drawer"
-          onClick={toggleSidebar}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography className={classes.title} variant="h6" noWrap>
-          SKIMI
-        </Typography>
-        {navLinks.map((link) => (
-          <NavLink to={link}>{link}</NavLink>
-        ))}
+        <NavLink to="" className={classes.titleButton}>
+          <Typography className={classes.title} variant="h6">
+            SKIMI
+          </Typography>
+        </NavLink>
+        <div className={classes.linksContainer}>
+          {navLinks.map((link) => (
+            <NavLink
+              to={link.path}
+              className={classes.link}
+              activeClassName={classes.linkActive}
+            >
+              {link.title}
+            </NavLink>
+          ))}
+        </div>
         <div className={classes.grow} />
         <HeaderSearch />
-        <IconButton color="inherit">
-          <PeopleIcon />
-        </IconButton>
         <IconButton aria-label="show 17 new notifications" color="inherit">
           <Badge variant="dot" color="secondary">
             <NotificationsIcon />
