@@ -9,7 +9,7 @@ import {
   Switch,
   BrowserRouter as Router,
 } from 'react-router-dom';
-import HomePage from '../../pages/homePage';
+import Home from '../../pages/home';
 import Learn from '../../pages/learn';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +39,7 @@ const Layout = () => {
         <main className={classes.content}>
           <Switch>
             <Route path="/" exact render={() => <Redirect to="/home" />} />
-            <Route path="/home" exact component={Learn} />
+            <Route path="/home" exact component={Home} />
           </Switch>
         </main>
       </Router>

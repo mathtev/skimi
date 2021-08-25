@@ -9,7 +9,7 @@ import {
   Toolbar,
 } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import PeopleIcon from '@material-ui/icons/People';
+import SettingsIcon from '@material-ui/icons/Settings';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
@@ -83,13 +83,13 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           open={isMobileMenuOpen}
           onClose={handleMobileMenuClose}
         >
-          <MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
             <IconButton color="inherit">
-              <PeopleIcon />
+              <AccountCircle />
             </IconButton>
-            <p>Messages</p>
+            <p>Profile</p>
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
             <IconButton color="inherit">
               <Badge variant="dot" color="secondary">
                 <NotificationsIcon />
@@ -97,11 +97,11 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             </IconButton>
             <p>Notifications</p>
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
             <IconButton color="inherit">
-              <AccountCircle />
+              <SettingsIcon />
             </IconButton>
-            <p>Profile</p>
+            <p>Settings</p>
           </MenuItem>
         </Menu>
       </Toolbar>
