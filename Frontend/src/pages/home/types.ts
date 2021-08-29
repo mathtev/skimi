@@ -1,4 +1,5 @@
 export interface TableData {
+  id: number;
   languageFrom: string;
   languageTo: string;
 }

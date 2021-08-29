@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import clsx from 'clsx';
 import {
   createStyles,
@@ -30,7 +30,8 @@ interface EnhancedTableProps {
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const { classes, onSelectAllClick, numSelected, rowCount, tableHeaders } = props;
+  const { classes, onSelectAllClick, numSelected, rowCount, tableHeaders } =
+    props;
   const isChecked = rowCount > 0 && numSelected === rowCount;
   return (
     <TableHead>
@@ -150,15 +151,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface SelectionTableProps {
-  tableData: Record<string, any>[];
-  tableHeaders: Record<string, any>[];
+interface SelectionTableProps<T, K> {
+  tableData: T[];
+  tableHeaders: K[];
+  handleSetSelectedData: (data: T[]) => void;
 }
 
-const CheckboxTable: React.FC<SelectionTableProps> = ({
+const CheckboxTable = <T extends { id: number }, K>({
   tableData,
   tableHeaders,
-}) => {
+  handleSetSelectedData,
+}: PropsWithChildren<SelectionTableProps<T,K>>) => {
   const classes = useStyles();
   const dataLength = tableData.length;
   const defaultState = new Array(dataLength).fill(false);
@@ -205,7 +208,7 @@ const CheckboxTable: React.FC<SelectionTableProps> = ({
               rowCount={tableData.length}
             />
             <TableBody>
-              {tableData.map((row: any, index: number) => {
+              {tableData.map((row: T, index: number) => {
                 const isItemSelected = isSelected(index);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -216,7 +219,7 @@ const CheckboxTable: React.FC<SelectionTableProps> = ({
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.word}
+                    key={row.id}
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
