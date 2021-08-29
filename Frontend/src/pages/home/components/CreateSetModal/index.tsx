@@ -35,12 +35,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface NewSetModalProps {
+interface CreateSetModalProps {
   modalOpen: boolean;
   handleModalClose: () => void;
 }
 
-const NewSetModal: React.FC<NewSetModalProps> = ({
+const CreateSetModal: React.FC<CreateSetModalProps> = ({
   modalOpen,
   handleModalClose,
 }) => {
@@ -72,4 +72,4 @@ const NewSetModal: React.FC<NewSetModalProps> = ({
   );
 };
 
-export default NewSetModal;
+export default CreateSetModal;

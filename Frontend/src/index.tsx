@@ -7,7 +7,7 @@ import {
   ApolloProvider,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import Layout from './components/Layout/Layout';
+import Layout from './components/Layout';
 import Learn from './pages/learn';
 import ThemeProvider from './providers/ThemeProvider';
 

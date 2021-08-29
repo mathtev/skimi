@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import { cssVariables } from '../../theme/theme';
 import Header from '../Header';
-import Sidebar from '../Sidebar/Sidebar';
+import Sidebar from '../Sidebar';
 import {
   Redirect,
   Route,
@@ -10,7 +10,6 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import Home from '../../pages/home';
-import Learn from '../../pages/learn';
 
 const useStyles = makeStyles((theme) => ({
   root: {

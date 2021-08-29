@@ -1,6 +1,6 @@
 import { Button, makeStyles } from '@material-ui/core';
 import React from 'react';
-import NewSetModal from './components/NewSetModal';
+import CreateSetModal from './components/CreateSetModal';
 
 const useStyles = makeStyles((theme) => ({
   newSetButton: {},
@@ -27,7 +27,7 @@ const Home = () => {
       >
         Create new set
       </Button>
-      <NewSetModal modalOpen={modalOpen} handleModalClose={handleModalClose} />
+      <CreateSetModal modalOpen={modalOpen} handleModalClose={handleModalClose} />
     </div>
   );
 };
