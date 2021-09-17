@@ -19,3 +19,9 @@ export class EntityNotFoundError extends CustomError {
     super(`Entity ${entityName} not found.`, "ENTITY_NOT_FOUND", 404);
   }
 }
+
+export class EntityCreateError extends CustomError {
+  constructor(entityName: string) {
+    super(`Error while creating ${entityName} entity.`, "ENTITY_CREATE_ERROR", 404);
+  }
+}

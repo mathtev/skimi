@@ -6,9 +6,9 @@ export class WordInput implements Partial<Word> {
   @Field()
   name: string;
 
-  @Field()
-  language_code: string;
-
-  @Field()
-  level_code: string;
+  @Field(() => ID)
+  language_id: number;
+  
+  @Field(() => ID)
+  level_id: number;
 }

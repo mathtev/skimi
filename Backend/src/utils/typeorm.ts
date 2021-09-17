@@ -45,15 +45,17 @@ export const validateAndSaveEntity = async <T extends EntityInstance>(
   if ('validations' in Entity) {
     //...
   }
-  console.log('saving: ', Entity)
   return instance.save() as Promise<T>;
 };
 
 export const createEntity = async <T extends EntityTypes>(
-  Constructor: T,
+  Entity: T,
   input: Partial<InstanceType<T>>
 ): Promise<InstanceType<T>> => {
-  const instance = Constructor.create(input);
+  const instance = Entity.create(input);
+  if (!instance) {
+    throw new EntityNotFoundError(Entity.name);
+  }
   return validateAndSaveEntity(instance as InstanceType<T>);
 };
 
