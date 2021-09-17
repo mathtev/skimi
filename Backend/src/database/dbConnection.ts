@@ -9,6 +9,7 @@ const commonConfig: ConnectionOptions = {
   synchronize: true,
 };
 
+
 const connectionOptions: ConnectionOptions =
   process.env.NODE_ENV === 'production'
     ? {

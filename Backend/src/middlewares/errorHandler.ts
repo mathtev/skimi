@@ -1,5 +1,5 @@
 import { MiddlewareFn } from 'type-graphql';
-import { GQLContext } from 'types/gqlContext';
+import { GQLContext } from '../types/gqlContext';
 import { CustomError } from '../utils/customErrors';
 
 export const ErrorHandler: MiddlewareFn<GQLContext> = async (_, next) => {

@@ -1,0 +1,5 @@
+mutation {
+  createWord(word: {name: "qwe", language_id: 1, level_id: 1}){
+    id
+  }
+}

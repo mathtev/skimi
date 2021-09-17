@@ -154,40 +154,40 @@ const useStyles = makeStyles((theme: Theme) =>
 interface SelectionTableProps<T, K> {
   tableData: T[];
   tableHeaders: K[];
-  handleSetSelectedData: (data: T[]) => void;
+  selectedData: T[];
+  setSelectedData: (data: T[]) => void;
 }
 
 const CheckboxTable = <T extends { id: number }, K>({
   tableData,
   tableHeaders,
-  handleSetSelectedData,
+  selectedData,
+  setSelectedData
 }: PropsWithChildren<SelectionTableProps<T,K>>) => {
   const classes = useStyles();
-  const dataLength = tableData.length;
-  const defaultState = new Array(dataLength).fill(false);
-  const [selected, setSelected] = React.useState<boolean[]>(defaultState);
+
+  const isSelected = (row: T) => selectedData.indexOf(row) !== -1;
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      setSelected((prevArray) =>
-        prevArray.map((x: boolean) => (x === false ? true : x))
-      );
+      setSelectedData([...tableData]);
       return;
     }
-    setSelected(defaultState);
+    setSelectedData([]);
+  };
+  
+  const handleClick = (event: React.MouseEvent<unknown>, row: T) => {
+    if(isSelected(row)){
+      const newSelecteds = selectedData.filter((x) => x.id !== row.id);
+      setSelectedData(newSelecteds);
+      return;
+    }
+    const newSelecteds = [...selectedData, row];
+    setSelectedData(newSelecteds);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, index: number) => {
-    setSelected((prevArray) => {
-      const tempArray = [...prevArray];
-      tempArray[index] = !tempArray[index];
-      return tempArray;
-    });
-  };
-
-  const isSelected = (index: number) => selected[index];
-  const numSelected = selected.filter(Boolean).length;
-  const columnNames = Object.keys(tableData[0]);
+  const numSelected = selectedData.length;
+  const columnNames = Object.keys(tableData[0]).filter(name => name !== 'id');
 
   return (
     <div className={classes.root}>
@@ -209,13 +209,13 @@ const CheckboxTable = <T extends { id: number }, K>({
             />
             <TableBody>
               {tableData.map((row: T, index: number) => {
-                const isItemSelected = isSelected(index);
+                const isItemSelected = isSelected(row);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, index)}
+                    onClick={(event) => handleClick(event, row)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -229,7 +229,7 @@ const CheckboxTable = <T extends { id: number }, K>({
                       />
                     </TableCell>
                     {columnNames.map((name: string) => (
-                      <TableCell scope="row" padding="none">
+                      <TableCell key={name} scope="row" padding="none">
                         {(row as Record<string, any>)[name]}
                       </TableCell>
                     ))}

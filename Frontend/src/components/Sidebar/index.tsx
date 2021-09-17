@@ -59,6 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar, sidebarOpen }) => {
       <List>
         {navLinks.map((link) => (
           <NavLink
+            key={link.title}
             className={classes.item}
             onClick={() => toggleSidebar()}
             to={link.path}

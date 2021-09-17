@@ -4,12 +4,13 @@ import {graphqlHTTP} from 'express-graphql';
 import { buildSchema } from "type-graphql";
 import { RESOLVERS } from "./gql";
 import createDatabaseConnection from "./database/dbConnection";
+import { Connection } from "typeorm";
 require('dotenv').config()
 
-
+let conn: Connection;
 const establishDatabaseConnection = async (): Promise<void> => {
   try {
-    await createDatabaseConnection();
+    conn = await createDatabaseConnection();
   } catch (error) {
     console.log(error);
   }
@@ -42,5 +43,7 @@ const startServer = async (): Promise<void> => {
 }
 
 startServer();
+
+export {conn};
 
 

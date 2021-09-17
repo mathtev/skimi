@@ -1,6 +1,5 @@
-import { Resolver, Query, Ctx, Arg, Int, UseMiddleware } from 'type-graphql';
+import { Resolver, Query, Arg, Int, UseMiddleware } from 'type-graphql';
 import { findAllEntities, findEntityById, updateEntity } from '../../utils/typeorm';
-import { GQLContext } from 'types/gqlContext';
 import Lesson from '../../models/Lesson';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 
@@ -9,7 +8,6 @@ class LessonResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => Lesson)
   async getLesson(
-    @Ctx() ctx: GQLContext,
     @Arg('id', () => Int) id: number
   ): Promise<Lesson> {
     const lesson = await findEntityById(Lesson, id);
@@ -18,7 +16,7 @@ class LessonResolver {
   
   @UseMiddleware([ErrorHandler])
   @Query(() => [Lesson])
-  async getAllLessons(@Ctx() ctx: GQLContext): Promise<Lesson[]> {
+  async getAllLessons(): Promise<Lesson[]> {
     const lessons = await findAllEntities(Lesson);
     return lessons;
   }

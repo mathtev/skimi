@@ -1,12 +1,17 @@
-import { EntityNotFoundError } from "../utils/customErrors";
-import { FindOneOptions } from "typeorm/find-options/FindOneOptions";
-import Lesson from "../models/Lesson";
+import { EntityNotFoundError } from '../utils/customErrors';
+import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
+import Lesson from '../models/Lesson';
+import Word from '../models/Word';
 
-type EntityTypes = typeof Lesson;
-type EntityInstance = Lesson;
+type EntityTypes = 
+| typeof Lesson 
+| typeof Word;
+
+type EntityInstance = Lesson | Word;
 
 const entities: { [key: string]: EntityTypes } = {
-  Lesson
+  Lesson,
+  Word
 };
 
 export const findEntityById = async <T extends EntityTypes>(
@@ -37,9 +42,10 @@ export const validateAndSaveEntity = async <T extends EntityInstance>(
 ): Promise<T> => {
   const Entity = entities[instance.constructor.name];
 
-  if ("validations" in Entity) {
+  if ('validations' in Entity) {
     //...
   }
+  console.log('saving: ', Entity)
   return instance.save() as Promise<T>;
 };
 

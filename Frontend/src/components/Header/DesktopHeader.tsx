@@ -102,6 +102,7 @@ const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks }) => {
         <div className={classes.linksContainer}>
           {navLinks.map((link) => (
             <NavLink
+              key={link.title}
               to={link.path}
               className={classes.link}
               activeClassName={classes.linkActive}
