@@ -4,9 +4,12 @@ import {
   Arg,
   UseMiddleware,
   Mutation,
+  Int,
 } from 'type-graphql';
 import {
-  createEntity, findAllEntities,
+  createEntity,
+  findAllEntities,
+  findEntityById,
 } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Word from '../../models/Word';
@@ -15,34 +18,41 @@ import { WordInput } from '../types/word';
 
 @Resolver()
 class WordResolver {
+  // @UseMiddleware([ErrorHandler])
+  // @Query(() => Word)
+  // async Word(
+  //   @Arg('name')
+  //   name: string
+  // ): Promise<Word> {
+  //   const word = await Word.createQueryBuilder('word')
+  //     .select()
+  //     .where('word.name = :name', { name })
+  //     .getOne();
+  //   if (!word) {
+  //     throw new EntityNotFoundError(typeof Word.name);
+  //   }
+  //   return word;
+  // }
+
   @UseMiddleware([ErrorHandler])
   @Query(() => Word)
-  async getWord(
-    @Arg('name')
-    name: string
-  ): Promise<Word> {
-    const word = await Word.createQueryBuilder('word')
-      .select()
-      .where('word.name = :name', { name })
-      .getOne();
-    if (!word) {
-      throw new EntityNotFoundError(typeof Word.name);
-    }
-    return word;
+  async word(@Arg('id', () => Int) id: number): Promise<Word> {
+    const result = await findEntityById(Word, id);
+    return result;
   }
 
   @UseMiddleware([ErrorHandler])
   @Query(() => [Word])
-  async getAllWords(): Promise<Word[]> {
-    const Words = await findAllEntities(Word);
-    return Words;
+  async words(): Promise<Word[]> {
+    const result = await findAllEntities(Word);
+    return result;
   }
 
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Word)
   async createWord(@Arg('word') wordInput: WordInput): Promise<Word> {
-    const word = await createEntity(Word, wordInput);
-    return word;
+    const result = await createEntity(Word, wordInput);
+    return result;
   }
 }
 

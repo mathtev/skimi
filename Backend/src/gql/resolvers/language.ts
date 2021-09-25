@@ -7,9 +7,9 @@ import { ErrorHandler } from '../../middlewares/errorHandler';
 class LanguageResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Language])
-  async getAllLanguages(): Promise<Language[]> {
-    const Languages = await findAllEntities(Language);
-    return Languages;
+  async languages(): Promise<Language[]> {
+    const result = await findAllEntities(Language);
+    return result;
   }
 }
 

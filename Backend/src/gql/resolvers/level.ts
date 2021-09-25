@@ -8,9 +8,9 @@ import Level from '../../models/Level';
 class LevelResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Level])
-  async getAllLevels(): Promise<Level[]> {
-    const levels = await findAllEntities(Level);
-    return levels;
+  async levels(): Promise<Level[]> {
+    const result = await findAllEntities(Level);
+    return result;
   }
 }
 

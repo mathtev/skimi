@@ -1,21 +1,14 @@
 import { useQuery } from '@apollo/client';
-import { useEffect } from 'react';
 import { GET_ALL_WORDS } from './queries';
-
-interface Word {
-  id: number;
-  name: string;
-  languageId: number;
-  levelId: number;
-}
+import { Word, Words } from './types';
 
 const EditWords = () => {
-  const { data, loading } = useQuery<Word[] | null>(GET_ALL_WORDS);
-  let lol = [...data]
-  data && console.log(data)
+  const { data, loading } = useQuery<Words>(GET_ALL_WORDS);
   return (
     <div>
-
+      {data?.words.map((word: Word) => (
+        <p>{word.name}</p>
+      ))}
     </div>
   );
 };
