@@ -1,5 +1,5 @@
 import { Route, Switch, useRouteMatch } from 'react-router';
-import EditWords from './editWords';
+import EditWords from './EditWords';
 
 const Admin = () => {
   let { path } = useRouteMatch();

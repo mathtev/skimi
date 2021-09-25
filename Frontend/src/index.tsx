@@ -8,7 +8,7 @@ import {
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import Layout from './components/Layout';
-import Learn from './pages/learn';
+import Learn from './pages/Learn';
 import ThemeProvider from './providers/ThemeProvider';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
