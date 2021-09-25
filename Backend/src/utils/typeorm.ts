@@ -2,16 +2,22 @@ import { EntityNotFoundError } from '../utils/customErrors';
 import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
 import Lesson from '../models/Lesson';
 import Word from '../models/Word';
+import Level from '../models/Level';
+import Language from '../models/Language';
 
 type EntityTypes = 
 | typeof Lesson 
+| typeof Level 
+| typeof Language 
 | typeof Word;
 
-type EntityInstance = Lesson | Word;
+type EntityInstance = Lesson | Word | Level | Language;
 
 const entities: { [key: string]: EntityTypes } = {
   Lesson,
-  Word
+  Word,
+  Level,
+  Language
 };
 
 export const findEntityById = async <T extends EntityTypes>(

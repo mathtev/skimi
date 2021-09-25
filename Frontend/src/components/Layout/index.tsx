@@ -10,6 +10,7 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import Home from '../../pages/home';
+import Admin from '../../pages/admin';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +40,7 @@ const Layout = () => {
           <Switch>
             <Route path="/" exact render={() => <Redirect to="/home" />} />
             <Route path="/home" exact component={Home} />
+            <Route path="/admin" component={Admin} />
           </Switch>
         </main>
       </Router>

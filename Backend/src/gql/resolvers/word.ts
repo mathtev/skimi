@@ -6,7 +6,7 @@ import {
   Mutation,
 } from 'type-graphql';
 import {
-  createEntity,
+  createEntity, findAllEntities,
 } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Word from '../../models/Word';
@@ -29,6 +29,13 @@ class WordResolver {
       throw new EntityNotFoundError(typeof Word.name);
     }
     return word;
+  }
+
+  @UseMiddleware([ErrorHandler])
+  @Query(() => [Word])
+  async getAllWords(): Promise<Word[]> {
+    const Words = await findAllEntities(Word);
+    return Words;
   }
 
   @UseMiddleware([ErrorHandler])
