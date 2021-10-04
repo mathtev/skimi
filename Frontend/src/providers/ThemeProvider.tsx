@@ -2,7 +2,7 @@ import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 import React, { createContext, useState } from 'react';
 import {createTheme, cssVariables} from '../theme/theme';
 
-interface MyThemeContext {
+interface IThemeContext {
   isDark: boolean;
   toggleTheme: () => void;
 }
@@ -11,7 +11,7 @@ interface ThemeProviderProps {
   defaultDark: boolean;
 }
 
-export const ThemeContext = createContext<MyThemeContext>({
+export const ThemeContext = createContext<IThemeContext>({
   isDark: false,
   toggleTheme: () => undefined,
 });

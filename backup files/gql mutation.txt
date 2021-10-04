@@ -3,3 +3,12 @@ mutation {
     id
   }
 }
+
+
+mutation {
+  createTranslation(translation: {word1_id: 1, word2_id: 23}) {
+    id
+    word1_id
+    word2_id
+  }
+}

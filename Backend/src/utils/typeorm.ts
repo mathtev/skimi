@@ -4,20 +4,24 @@ import Lesson from '../models/Lesson';
 import Word from '../models/Word';
 import Level from '../models/Level';
 import Language from '../models/Language';
+import Translation from '../models/Translation';
+import { FindManyOptions } from 'typeorm';
 
 type EntityTypes = 
 | typeof Lesson 
 | typeof Level 
 | typeof Language 
+| typeof Translation 
 | typeof Word;
 
-type EntityInstance = Lesson | Word | Level | Language;
+type EntityInstance = Lesson | Word | Level | Language | Translation;
 
 const entities: { [key: string]: EntityTypes } = {
   Lesson,
   Word,
   Level,
-  Language
+  Language,
+  Translation
 };
 
 export const findEntityById = async <T extends EntityTypes>(
@@ -34,7 +38,7 @@ export const findEntityById = async <T extends EntityTypes>(
 
 export const findAllEntities = async <T extends EntityTypes>(
   Entity: T,
-  options?: FindOneOptions
+  options?: FindManyOptions
 ): Promise<InstanceType<T>[]> => {
   const instances = await Entity.find(options);
   if (!instances) {
