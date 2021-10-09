@@ -10,7 +10,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { cssVariables } from '../../theme/theme';
+import { cssVariables } from '../../context/theme/theme';
 import { navLinks } from '../../configuration';
 import { NavLink } from 'react-router-dom';
 

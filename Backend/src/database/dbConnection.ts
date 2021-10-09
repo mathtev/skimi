@@ -6,7 +6,7 @@ require('dotenv').config()
 const commonConfig: ConnectionOptions = {
   type: 'postgres',
   entities: Object.values(models),
-  synchronize: true,
+  logging: true
 };
 
 

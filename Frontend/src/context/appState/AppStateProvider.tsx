@@ -16,7 +16,7 @@ export const AppStateContext = React.createContext<AppStateContextType>([
   () => undefined,
 ]);
 
-const AppState: React.FC = ({ children }) => {
+const AppStateProvider: React.FC = ({ children }) => {
   const stateAndDispatch = React.useReducer(appStateReducer, initialAppState);
 
   return (
@@ -26,4 +26,4 @@ const AppState: React.FC = ({ children }) => {
   );
 };
 
-export default AppState;
+export default AppStateProvider;

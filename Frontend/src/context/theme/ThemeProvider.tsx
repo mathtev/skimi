@@ -1,6 +1,6 @@
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 import React, { createContext, useState } from 'react';
-import {createTheme, cssVariables} from '../theme/theme';
+import {createTheme, cssVariables} from './theme';
 
 interface IThemeContext {
   isDark: boolean;

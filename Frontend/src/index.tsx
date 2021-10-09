@@ -9,7 +9,9 @@ import {
 import { onError } from '@apollo/client/link/error';
 import Layout from './components/Layout';
 import Learn from './pages/Learn';
-import ThemeProvider from './providers/ThemeProvider';
+import ThemeProvider from './context/theme/ThemeProvider';
+import SettingsProvider from './context/settings/SettingsProvider';
+import AppStateProvider from './context/appState/AppStateProvider';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -33,16 +35,23 @@ const apolloClient = new ApolloClient({
 
 function App() {
   const isDark = localStorage.getItem('theme') === 'true';
+  const defaultSettings = {
+    learningLanguage: 'german',
+    nativeLanguage: 'english',
+  };
   return (
     <ApolloProvider client={apolloClient}>
       <ThemeProvider defaultDark={isDark}>
-        <Layout />
+        <AppStateProvider>
+          <SettingsProvider defaultSettings={defaultSettings}>
+            <Layout />
+          </SettingsProvider>
+        </AppStateProvider>
       </ThemeProvider>
     </ApolloProvider>
   );
 }
 
 export default App;
-
 
 ReactDOM.render(<App />, document.getElementById('root'));

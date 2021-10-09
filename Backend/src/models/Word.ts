@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Translation } from '.';
 
 @ObjectType()
 @Entity()
@@ -19,6 +20,10 @@ class Word extends BaseEntity {
   @Field()
   @Column("integer")
   level_id: number;
+
+  @Field(type => [Translation], { defaultValue: [] })
+  @OneToMany(type => Translation, translation => translation.word)
+  translations: Translation[];
 }
 
 export default Word;

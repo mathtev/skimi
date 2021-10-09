@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 import React from 'react';
-import { cssVariables } from '../../theme/theme';
+import { cssVariables } from '../../context/theme/theme';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 import {

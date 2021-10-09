@@ -14,7 +14,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import React from 'react';
-import { cssVariables } from '../../theme/theme';
+import { cssVariables } from '../../context/theme/theme';
 import HeaderSearch from './HeaderSearch';
 import { navLinksType } from '../../types';
 

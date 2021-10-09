@@ -4,16 +4,11 @@ interface AppError {
 }
 
 export interface IAppState {
-  nativeLanguage: string;
-  learningLanguage: string;
   loading: boolean;
   error: AppError | null;
 }
 
-export type AppStateReducerActionType =
-  | 'setLearningLanguage'
-  | 'displayLoader'
-  | 'displayError';
+export type AppStateReducerActionType = 'displayLoader' | 'displayError';
 
 export interface AppStateReducerAction {
   payload: any;
@@ -21,8 +16,6 @@ export interface AppStateReducerAction {
 }
 
 export const initialAppState: IAppState = {
-  nativeLanguage: 'english',
-  learningLanguage: 'german',
   loading: false,
   error: null,
 };
@@ -32,15 +25,15 @@ export function appStateReducer(
   action: AppStateReducerAction
 ): IAppState {
   switch (action.type) {
-    case 'setLearningLanguage':
-      return {
-        ...prevState,
-        learningLanguage: action.payload,
-      };
     case 'displayLoader':
       return {
         ...prevState,
-        learningLanguage: action.payload,
+        loading: action.payload,
+      };
+    case 'displayError':
+      return {
+        ...prevState,
+        error: action.payload,
       };
 
     default:

@@ -43,8 +43,14 @@ class WordResolver {
 
   @UseMiddleware([ErrorHandler])
   @Query(() => [Word])
-  async words(): Promise<Word[]> {
-    const result = await findAllEntities(Word);
+  async words(
+    @Arg('language_id', () => Int) language_id: number
+  ): Promise<Word[]> {
+    const result = await findAllEntities(Word, {
+      where: [{ language_id }],
+      relations: ['translations']
+    });
+    console.log(result[0].translations)
     return result;
   }
 
