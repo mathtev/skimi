@@ -8,12 +8,11 @@ import { TranslationInput } from '../types/translation';
 class TranslationResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Translation])
-  async translationsForWord(@Arg('id', () => Int) id: number): Promise<Translation[]> {
+  async translations(@Arg('wordId', () => Int) wordId: number): Promise<Translation[]> {
     const result = await findAllEntities(Translation, { 
       where: [ 
-        { word1_id: id },
-        { word2_id: id }
-      ] 
+        { de_word_id: wordId }
+      ]
     });
     return result;
   }

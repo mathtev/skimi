@@ -5,8 +5,8 @@ import { Translation, Word } from "../../models";
 export class TranslationInput implements Partial<Translation> {
 
   @Field(() => ID)
-  word1_id: number;
+  en_word_id: number;
   
   @Field(() => ID)
-  word2_id: number;
+  de_word_id: number;
 }

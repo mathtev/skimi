@@ -18,16 +18,16 @@ class Translation extends BaseEntity {
   id: number;
 
   @ManyToOne(() => Word)
-  @JoinColumn({ name: "word1_id", referencedColumnName: "id"})
+  @JoinColumn({ name: "de_word_id", referencedColumnName: "id"})
   word: Word;
 
   @Field(() => ID)
   @RelationId((translation: Translation) => translation.word)
-  word1_id: number;
+  en_word_id: number;
 
   @Field(() => ID)
   @Column('integer')
-  word2_id: number;
+  de_word_id: number;
 }
 
 export default Translation;

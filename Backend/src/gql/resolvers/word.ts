@@ -50,7 +50,7 @@ class WordResolver {
       where: [{ language_id }],
       relations: ['translations']
     });
-    console.log(result[0].translations)
+    console.log(result[0].translations[0].word)
     return result;
   }
 
