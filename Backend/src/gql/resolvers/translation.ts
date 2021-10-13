@@ -3,6 +3,7 @@ import { createEntity, findAllEntities } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Translation from '../../models/Translation';
 import { TranslationInput } from '../types/translation';
+import { Connection } from 'typeorm';
 
 @Resolver()
 class TranslationResolver {
@@ -11,7 +12,7 @@ class TranslationResolver {
   async translations(@Arg('wordId', () => Int) wordId: number): Promise<Translation[]> {
     const result = await findAllEntities(Translation, { 
       where: [ 
-        { de_word_id: wordId }
+        { en_word_id: wordId },
       ]
     });
     return result;

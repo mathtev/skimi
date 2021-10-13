@@ -17,8 +17,9 @@ class Translation extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Field(() => Word, { defaultValue: [] })
   @ManyToOne(() => Word)
-  @JoinColumn({ name: "de_word_id", referencedColumnName: "id"})
+  @JoinColumn({ name: "en_word_id", referencedColumnName: "id"})
   word: Word;
 
   @Field(() => ID)
