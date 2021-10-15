@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_WORD } from '../../../graphql/word/mutations';
 import { Word, Words } from '../../../graphql/word/types';
-import { Levels } from '../../../graphql/level/types';
-import { Languages } from '../../../graphql/language/types';
+import { Level, Levels } from '../../../graphql/level/types';
+import { Language, Languages } from '../../../graphql/language/types';
 import { GET_ALL_WORDS } from '../../../graphql/word/queries';
 import { GET_ALL_LEVELS } from '../../../graphql/level/queries';
 import { GET_ALL_LANGUAGES } from '../../../graphql/language/queries';
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       margin: theme.spacing(0, 'auto'),
-      width: '60%',
+      width: '50%',
     },
     wordListTitle: {
       marginTop: 40
@@ -76,22 +76,25 @@ const EditWords = () => {
 
   return (
     <div className={classes.root}>
+      {console.log(levels)}
       <Typography variant="h5">Add new word</Typography>
       <EditWordForm
-        word=""
-        translation=""
+        word={undefined}
+        translation={undefined}
         languageFrom={languageFrom?.name}
         languageTo={languageTo?.name}
+        levels={levels.data?.levels}
       />
       <Typography variant="h5" className={classes.wordListTitle}>Word list</Typography>
       {words.data?.words.map((word: Word) =>
         word?.translations.map((translation: Translation) => (
           <div key={word.id}>
             <EditWordForm
-              word={word.name}
-              translation={translation.word.name}
+              word={word}
+              translation={translation}
               languageFrom={languageFrom?.name}
               languageTo={languageTo?.name}
+              levels={levels.data?.levels}
             />
           </div>
         ))

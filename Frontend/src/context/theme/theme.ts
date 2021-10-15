@@ -30,9 +30,12 @@ export const createTheme = (): Theme =>
       },
     },
     palette: {
-      // info: {
-      //   main: "#caabaa"
-      // }
+      primary: {
+        main: '#222222',
+      },
+      secondary: {
+        main: '#222222',
+      },
     },
   });
   

@@ -3,8 +3,8 @@ import { Translation, Translations } from "../translation/types";
 export interface Word {
   id: number;
   name: string;
-  languageId: number;
-  levelId: number;
+  language_id: number;
+  level_id: number;
   translations: Translation[];
 }
 

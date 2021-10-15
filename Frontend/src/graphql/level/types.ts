@@ -1,7 +1,7 @@
 
 export interface Level {
   id: number;
-  difficulty: string;
+  difficulty: number;
   code: string;
 }
 

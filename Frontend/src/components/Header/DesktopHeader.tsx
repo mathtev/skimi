@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'flex',
       justifyContent: 'center',
-      background: theme.palette.info.dark,
+      background: theme.palette.primary.main,
       height: cssVariables.headerHeight,
     },
   },
@@ -40,9 +40,8 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: 'block',
     letterSpacing: '3px',
-    fontWeight: 600,
-    fontFamily: 'cursive',
-    color: '#ffe5b4',
+    fontWeight: 'bold',
+    color: '#fffc5c',
     padding: 0,
   },
   linksContainer: {
@@ -70,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   linkActive: {
-    fontWeight: 'bold',
+    backgroundColor: alpha(theme.palette.common.white, 0.07),
     opacity: 1,
   },
 }));

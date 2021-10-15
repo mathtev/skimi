@@ -14,7 +14,7 @@ import { Word } from '.';
 @ObjectType()
 @Entity()
 class Translation extends BaseEntity {
-  @Field(() => ID)
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,12 +23,12 @@ class Translation extends BaseEntity {
   @JoinColumn({ name: "de_word_id", referencedColumnName: "id"})
   word: Word;
 
-  @Field(() => ID)
+  @Field()
   @Column('integer')
   @RelationId((translation: Translation) => translation.word)
   en_word_id: number;
 
-  @Field(() => ID)
+  @Field()
   @Column('integer')
   de_word_id: number;
 }

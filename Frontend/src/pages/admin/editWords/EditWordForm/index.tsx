@@ -1,8 +1,19 @@
-import { makeStyles, TextField, Theme, createStyles, Button, IconButton } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  Button,
+  MenuItem,
+  IconButton,
+} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { Field, FieldAttributes, Form, Formik, FormikState, useField } from 'formik';
+import { Field, Form, Formik, FormikState } from 'formik';
 import React from 'react';
-
+import { Level } from '../../../../graphql/level/types';
+import { Translation } from '../../../../graphql/translation/types';
+import { Word } from '../../../../graphql/word/types';
+import CustomField from './CustomField';
+import CustomSelect from './CustomSelect';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,21 +34,22 @@ const useStyles = makeStyles((theme: Theme) =>
     editIcon: {
       width: '20px',
       height: '20px',
-    }
+    },
   })
 );
 
 interface EditWordFormProps {
-  word: string;
-  translation: string;
+  word?: Word;
+  translation?: Translation;
   languageFrom?: string;
   languageTo?: string;
+  levels?: Level[];
 }
 
 interface formValues {
-  languageFrom: string;
-  languageTo: string;
-  level: string;
+  languageFrom?: string;
+  languageTo?: string;
+  levelId?: string;
 }
 
 const EditWordForm: React.FC<EditWordFormProps> = ({
@@ -45,34 +57,18 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
   translation,
   languageFrom,
   languageTo,
+  levels,
 }) => {
   const classes = useStyles();
-
-  const CustomField: React.FC<FieldAttributes<{}> & { label: string }> = ({
-    label,
-    ...props
-  }) => {
-    const [field, meta] = useField<{}>(props);
-    const errorText = meta.error && meta.touched ? meta.error : '';
-    return (
-      <TextField
-        placeholder={props.placeholder}
-        {...field}
-        helperText={errorText}
-        error={!!errorText}
-        label={label}
-      />
-    );
-  };
 
   return (
     <>
       <Formik
         validateOnChange={true}
         initialValues={{
-          languageFrom: word,
-          languageTo: translation,
-          level: '',
+          languageFrom: word?.name,
+          languageTo: translation?.word.name,
+          levelId: `${word?.level_id}`,
         }}
         //validationSchema={validationSchema}
         onSubmit={(data, { setSubmitting }) => {
@@ -96,9 +92,21 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
               type="input"
               as={CustomField}
             />
-            <Button className={classes.editButton} disabled={isSubmitting} type="submit">
+            <Field name="levelId" type="select" label="level" as={CustomSelect}>
+              {levels?.map((level: Level) => (
+                <MenuItem key={level.id} value={`${level.id}` || ''}>
+                  {level.code}
+                </MenuItem>
+              ))}
+            </Field>
+
+            <IconButton
+              className={classes.editButton}
+              disabled={isSubmitting}
+              type="submit"
+            >
               <EditIcon className={classes.editIcon} />
-            </Button>
+            </IconButton>
           </Form>
         )}
       </Formik>

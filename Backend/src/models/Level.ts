@@ -4,7 +4,7 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @ObjectType()
 @Entity()
 class Level extends BaseEntity {
-  @Field(() => ID)
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 

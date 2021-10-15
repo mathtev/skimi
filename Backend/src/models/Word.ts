@@ -5,7 +5,7 @@ import { Translation } from '.';
 @ObjectType()
 @Entity()
 class Word extends BaseEntity {
-  @Field(() => ID)
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
