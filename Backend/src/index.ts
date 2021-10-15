@@ -31,7 +31,7 @@ const initExpressGraphql = async () => {
   app.use(
     '/graphql',
     graphqlHTTP({
-      schema: schema,
+      schema,
       graphiql: true,
     }),
   );

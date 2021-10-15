@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from 'type-graphql';
+import { TypeormLoader } from 'type-graphql-dataloader';
 import {
   BaseEntity,
   Column,
@@ -19,10 +20,11 @@ class Translation extends BaseEntity {
 
   @Field(() => Word, { defaultValue: [] })
   @ManyToOne(() => Word)
-  @JoinColumn({ name: "en_word_id", referencedColumnName: "id"})
+  @JoinColumn({ name: "de_word_id", referencedColumnName: "id"})
   word: Word;
 
   @Field(() => ID)
+  @Column('integer')
   @RelationId((translation: Translation) => translation.word)
   en_word_id: number;
 

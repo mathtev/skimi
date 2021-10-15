@@ -3,7 +3,9 @@ import { findAllEntities, findEntityById, updateEntity } from '../../utils/typeo
 import Lesson from '../../models/Lesson';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Level from '../../models/Level';
+import { Service } from 'typedi';
 
+@Service()
 @Resolver()
 class LevelResolver {
   @UseMiddleware([ErrorHandler])

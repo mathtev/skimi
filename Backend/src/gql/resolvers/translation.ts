@@ -4,7 +4,9 @@ import { ErrorHandler } from '../../middlewares/errorHandler';
 import Translation from '../../models/Translation';
 import { TranslationInput } from '../types/translation';
 import { Connection } from 'typeorm';
+import { Service } from 'typedi';
 
+@Service()
 @Resolver()
 class TranslationResolver {
   @UseMiddleware([ErrorHandler])

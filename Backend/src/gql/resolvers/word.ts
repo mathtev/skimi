@@ -60,7 +60,6 @@ class WordResolver {
     const result = await findAllEntities(Word, {
       where: [{ language_id }],
     });
-  
     return result;
   }
 
@@ -72,13 +71,12 @@ class WordResolver {
   }
 
   @FieldResolver()
-  async translations(@Root() translation: Translation) {
+  async translations(@Root() word: Word) {
     const result = await findAllEntities(Translation, {
-      where: { word: { translations: {word: {id: 1}} } },
+      where: [{ en_word_id: word.id }],
       relations: ['word']
     });
     return result;
-    
   }
 
 }

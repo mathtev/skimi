@@ -1,6 +1,6 @@
 import { Button, makeStyles } from '@material-ui/core';
 import React from 'react';
-import CreateSetModal from './components/CreateSetModal';
+import CreateSetModal from './CreateSetModal';
 
 const useStyles = makeStyles((theme) => ({
   newSetButton: {},
