@@ -1,14 +1,17 @@
-import { Field, ID, InputType } from "type-graphql";
-import { Word } from "../../models";
+import { Field, ID, InputType, Int } from 'type-graphql';
+import { Word } from '../../models';
 
 @InputType()
 export class WordInput implements Partial<Word> {
+  @Field(() => Int, {nullable: true})
+  id: number;
+
   @Field()
   name: string;
 
-  @Field(() => ID)
+  @Field(() => Int)
   language_id: number;
-  
-  @Field(() => ID)
+
+  @Field(() => Int)
   level_id: number;
 }

@@ -5,6 +5,8 @@ import {
   UseMiddleware,
   Mutation,
   Int,
+  FieldResolver,
+  Root,
 } from 'type-graphql';
 import {
   createEntity,
@@ -15,9 +17,18 @@ import { ErrorHandler } from '../../middlewares/errorHandler';
 import Word from '../../models/Word';
 import { EntityNotFoundError } from '../../utils/customErrors';
 import { WordInput } from '../types/word';
+import { Translation } from '../../models';
+import { InjectRepository } from 'typeorm-typedi-extensions';
+import { Repository } from 'typeorm';
+import { Service } from 'typedi';
 
-@Resolver()
+@Service()
+@Resolver(of => Word)
 class WordResolver {
+  constructor(
+    @InjectRepository(Translation) private readonly translationRepository: Repository<Translation>,
+  ) {}
+
   // @UseMiddleware([ErrorHandler])
   // @Query(() => Word)
   // async Word(
@@ -48,18 +59,26 @@ class WordResolver {
   ): Promise<Word[]> {
     const result = await findAllEntities(Word, {
       where: [{ language_id }],
-      relations: ['translations']
     });
-    console.log(result[0].translations)
     return result;
   }
 
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Word)
-  async createWord(@Arg('word') wordInput: WordInput): Promise<Word> {
+  async addWord(@Arg('word') wordInput: WordInput): Promise<Word> {
     const result = await createEntity(Word, wordInput);
     return result;
   }
+
+  @FieldResolver()
+  async translations(@Root() word: Word) {
+    const result = await findAllEntities(Translation, {
+      where: [{ en_word_id: word.id }],
+      relations: ['word']
+    });
+    return result;
+  }
+
 }
 
 export default WordResolver;

@@ -1,11 +1,11 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Translation } from '.';
 
 @ObjectType()
 @Entity()
 class Word extends BaseEntity {
-  @Field(() => ID)
+  @Field(() => Int, {nullable: true})
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,11 +13,11 @@ class Word extends BaseEntity {
   @Column('text')
   name: string;
 
-  @Field()
+  @Field(() => Int)
   @Column("integer")
   language_id: number;
 
-  @Field()
+  @Field(() => Int)
   @Column("integer")
   level_id: number;
 

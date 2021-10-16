@@ -3,7 +3,6 @@ import {
   alpha,
   AppBar,
   Badge,
-  Button,
   IconButton,
   makeStyles,
   Menu,
@@ -11,9 +10,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import PeopleIcon from '@material-ui/icons/People';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { cssVariables } from '../../context/theme/theme';
 import HeaderSearch from './HeaderSearch';
@@ -26,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'flex',
       justifyContent: 'center',
-      background: theme.palette.info.dark,
+      background: theme.palette.primary.main,
       height: cssVariables.headerHeight,
     },
   },
@@ -40,9 +37,8 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: 'block',
     letterSpacing: '3px',
-    fontWeight: 600,
-    fontFamily: 'cursive',
-    color: '#ffe5b4',
+    fontWeight: 'bold',
+    color: '#fffc5c',
     padding: 0,
   },
   linksContainer: {
@@ -70,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   linkActive: {
-    fontWeight: 'bold',
+    backgroundColor: alpha(theme.palette.common.white, 0.07),
     opacity: 1,
   },
 }));

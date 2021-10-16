@@ -30,7 +30,7 @@ interface EnhancedTableProps {
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const { classes, onSelectAllClick, numSelected, rowCount, tableHeaders } =
+  const { onSelectAllClick, numSelected, rowCount, tableHeaders } =
     props;
   const isChecked = rowCount > 0 && numSelected === rowCount;
   return (

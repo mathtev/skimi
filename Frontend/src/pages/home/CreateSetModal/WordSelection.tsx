@@ -1,7 +1,7 @@
 import { Button } from '@material-ui/core';
 import React from 'react';
-import CheckboxTable from '../../../../components/CheckboxTable';
-import { TableData, TableHeader } from '../../types';
+import CheckboxTable from '../../../components/CheckboxTable';
+import { TableData, TableHeader } from '../types';
 
 const tableData: TableData[] = [
   { id: 1, languageFrom: 'be', languageTo: 'sein' },
@@ -20,6 +20,7 @@ const tableHeaders: TableHeader[] = [
 
 const WordSelection = () => {
   const [selectedData, setSelectedData] = React.useState<TableData[]>([]);
+  // eslint-disable-next-line
   const [selectedWords, setSelectedWords] = React.useState<TableData[]>([]);
   const loadNewData = () => {
     if (selectedData.length) {

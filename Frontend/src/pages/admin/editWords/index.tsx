@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { useAppState } from '../../../hooks/useAppState';
-import { CREATE_WORD } from '../../../graphql/word/mutations';
-import { Word, Words } from '../../../graphql/word/types';
+import { ADD_WORD } from '../../../graphql/word/mutations';
+import { AddWordRequest, Word, Words } from '../../../graphql/word/types';
 import { Levels } from '../../../graphql/level/types';
 import { Languages } from '../../../graphql/language/types';
 import { GET_ALL_WORDS } from '../../../graphql/word/queries';
@@ -9,135 +8,131 @@ import { GET_ALL_LEVELS } from '../../../graphql/level/queries';
 import { GET_ALL_LANGUAGES } from '../../../graphql/language/queries';
 import { CREATE_TRANSLATION } from '../../../graphql/translation/mutations';
 import { useSettings } from '../../../hooks/useSettings';
-import { Button, TextField } from '@material-ui/core';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import {
-  Formik,
-  Field,
-  Form,
-  useField,
-  FormikState,
-  FieldAttributes,
-} from 'formik';
+import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 
-interface formValues {
-  languageFrom: string;
-  languageTo: string;
-  level: string;
-}
+import { Translation } from '../../../graphql/translation/types';
+import EditWordForm, { FormValues } from './EditWordForm';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    formRoot: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      width: 500,
+    root: {
       margin: theme.spacing(0, 'auto'),
-
-      '& > *': {
-        margin: theme.spacing('10px', '20px'),
-      },
+      width: '50%',
+    },
+    wordListTitle: {
+      marginTop: 40,
     },
   })
 );
 
-const CustomField: React.FC<FieldAttributes<{}> & {label: string}> = ({
-  label,
-  ...props
-}) => {
-  const [field, meta] = useField<{}>(props);
-  const errorText = meta.error && meta.touched ? meta.error : "";
-  return (
-    <TextField
-      placeholder={props.placeholder}
-      {...field}
-      helperText={errorText}
-      error={!!errorText}
-      label={label}
-    />
-  );
-};
-
 const EditWords = () => {
   const classes = useStyles();
-  const words = useQuery<Words>(GET_ALL_WORDS);
+
+  const words = useQuery<Words>(GET_ALL_WORDS, {
+    variables: { language_id: 1 },
+  });
   const levels = useQuery<Levels>(GET_ALL_LEVELS);
   const languages = useQuery<Languages>(GET_ALL_LANGUAGES);
 
   const appSettings = useSettings();
 
-  const [createWordMutation] = useMutation(CREATE_WORD, {
+  const [addWordMutation] = useMutation(ADD_WORD, {
     onCompleted(data) {
-      words.refetch();
+      console.log('add word completed');
     },
   });
   const [createTranslationMutation] = useMutation(CREATE_TRANSLATION, {
     onCompleted(data) {
-      console.log(data);
+      words.refetch();
     },
   });
 
   const languageFrom = languages.data?.languages.find(
     (language) =>
       language.name.toLowerCase() ===
-      appSettings.settings?.learningLanguage.toLowerCase()
+      appSettings.settings?.nativeLanguage.toLowerCase()
   );
   const languageTo = languages.data?.languages.find(
     (language) =>
       language.name.toLowerCase() ===
-      appSettings.settings?.nativeLanguage.toLowerCase()
+      appSettings.settings?.learningLanguage.toLowerCase()
   );
 
-  const addWord = () => {
-    if (!languageTo) {
+  console.log(languageTo);
+
+  const addWord = (word: AddWordRequest) => {
+    return addWordMutation({
+      variables: { word },
+    }).then((resp) => resp.data.addWord);
+  };
+
+  const createTranslation = (enWordId: number, deWordId: number) => {
+    return createTranslationMutation({
+      variables: {
+        translation: { en_word_id: enWordId, de_word_id: deWordId },
+      },
+    }).then((resp) => resp.data.createTranslation);
+  };
+
+  const handleSubmit = async (
+    formData: FormValues,
+    word1?: Word,
+    word2?: Word
+  ) => {
+    if (!languageTo || !languageFrom) {
+      console.error('language undefined');
       return;
     }
-
-    const word = {
-      name: 'solid',
-      language_id: languageTo.id,
-      level_id: 3,
+    const newWord1: AddWordRequest = {
+      id: word1?.id,
+      name: formData.word1,
+      level_id: parseInt(formData.levelId),
+      language_id: languageFrom.id,
     };
-
-    createWordMutation({
-      variables: { word },
+    const newWord2: AddWordRequest = {
+      id: word2?.id,
+      name: formData.word2,
+      level_id: parseInt(formData.levelId),
+      language_id: languageTo.id,
+    };
+    // creates or updates words
+    Promise.all([addWord(newWord1), addWord(newWord2)]).then((resp) => {
+      if (!word1 || !word2) {
+        createTranslation(resp[0].id, resp[1].id);
+      }
     });
   };
 
   return (
-    <div>
-      {words.data?.words.map((word: Word) => (
-        
-        <Formik
-        key={word.id}
-          validateOnChange={true}
-          initialValues={{
-            languageFrom: word.name,
-            languageTo: '',
-            level: '',
-          }}
-          //validationSchema={validationSchema}
-          onSubmit={(data, { setSubmitting }) => {
-            setSubmitting(true);
-            // make async call
-            console.log('submit: ', data);
-            setSubmitting(false);
-          }}
-        >
-          {({ values, errors, isSubmitting }: FormikState<formValues>) => (
-            <Form className={classes.formRoot}>
-              <Field label={languageFrom?.name} name="languageFrom" type="input" as={CustomField} />
-              <Field label={languageTo?.name} name="languageTo" type="input" as={CustomField} />
-              <Button disabled={isSubmitting} type="submit">
-                submit
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      ))}
-
-      <button onClick={() => addWord()}>aaa</button>
+    <div className={classes.root}>
+      <Typography variant="h5">Add new word</Typography>
+      <EditWordForm
+        word={undefined}
+        translation={undefined}
+        languageFrom={languageFrom?.name}
+        languageTo={languageTo?.name}
+        levels={levels.data?.levels}
+        handleSubmit={handleSubmit}
+      />
+      <Typography variant="h5" className={classes.wordListTitle}>
+        Word list
+      </Typography>
+      {words.data?.words.map(
+        (word: Word) =>
+          word?.translations &&
+          word.translations.map((translation: Translation) => (
+            <div key={word.id}>
+              <EditWordForm
+                word={word}
+                translation={translation}
+                languageFrom={languageFrom?.name}
+                languageTo={languageTo?.name}
+                levels={levels.data?.levels}
+                handleSubmit={handleSubmit}
+              />
+            </div>
+          ))
+      )}
     </div>
   );
 };

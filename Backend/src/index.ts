@@ -4,13 +4,15 @@ import {graphqlHTTP} from 'express-graphql';
 import { buildSchema } from "type-graphql";
 import { RESOLVERS } from "./gql";
 import createDatabaseConnection from "./database/dbConnection";
-import { Connection } from "typeorm";
+import { Connection, useContainer } from "typeorm";
+import { Container } from 'typedi';
 require('dotenv').config()
 
-let conn: Connection;
+useContainer(Container);
+
 const establishDatabaseConnection = async (): Promise<void> => {
   try {
-    conn = await createDatabaseConnection();
+    await createDatabaseConnection();
   } catch (error) {
     console.log(error);
   }
@@ -23,12 +25,13 @@ const initExpressGraphql = async () => {
 
   const schema = await buildSchema({
     resolvers: RESOLVERS,
+    container: Container,
   });
 
   app.use(
     '/graphql',
     graphqlHTTP({
-      schema: schema,
+      schema,
       graphiql: true,
     }),
   );
@@ -43,7 +46,4 @@ const startServer = async (): Promise<void> => {
 }
 
 startServer();
-
-export {conn};
-
 

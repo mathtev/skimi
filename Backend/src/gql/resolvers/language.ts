@@ -2,7 +2,9 @@ import { Resolver, Query, UseMiddleware } from 'type-graphql';
 import { findAllEntities } from '../../utils/typeorm';
 import Language from '../../models/Language';
 import { ErrorHandler } from '../../middlewares/errorHandler';
+import { Service } from 'typedi';
 
+@Service()
 @Resolver()
 class LanguageResolver {
   @UseMiddleware([ErrorHandler])
