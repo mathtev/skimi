@@ -3,7 +3,6 @@ import {
   alpha,
   AppBar,
   Badge,
-  Button,
   IconButton,
   makeStyles,
   Menu,
@@ -11,9 +10,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import PeopleIcon from '@material-ui/icons/People';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { cssVariables } from '../../context/theme/theme';
 import HeaderSearch from './HeaderSearch';

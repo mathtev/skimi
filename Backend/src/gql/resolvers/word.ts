@@ -65,7 +65,7 @@ class WordResolver {
 
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Word)
-  async createWord(@Arg('word') wordInput: WordInput): Promise<Word> {
+  async addWord(@Arg('word') wordInput: WordInput): Promise<Word> {
     const result = await createEntity(Word, wordInput);
     return result;
   }

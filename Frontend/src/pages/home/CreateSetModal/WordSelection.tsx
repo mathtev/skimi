@@ -20,6 +20,7 @@ const tableHeaders: TableHeader[] = [
 
 const WordSelection = () => {
   const [selectedData, setSelectedData] = React.useState<TableData[]>([]);
+  // eslint-disable-next-line
   const [selectedWords, setSelectedWords] = React.useState<TableData[]>([]);
   const loadNewData = () => {
     if (selectedData.length) {

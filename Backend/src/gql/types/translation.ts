@@ -1,12 +1,12 @@
-import { Field, ID, InputType } from "type-graphql";
+import { Field, ID, InputType, Int } from "type-graphql";
 import { Translation, Word } from "../../models";
 
 @InputType()
 export class TranslationInput implements Partial<Translation> {
 
-  @Field()
+  @Field(() => Int)
   en_word_id: number;
   
-  @Field()
+  @Field(() => Int)
   de_word_id: number;
 }

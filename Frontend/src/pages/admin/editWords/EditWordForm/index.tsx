@@ -2,7 +2,6 @@ import {
   makeStyles,
   Theme,
   createStyles,
-  Button,
   MenuItem,
   IconButton,
 } from '@material-ui/core';
@@ -44,12 +43,17 @@ interface EditWordFormProps {
   languageFrom?: string;
   languageTo?: string;
   levels?: Level[];
+  handleSubmit: (
+    formData: FormValues,
+    word1?: Word,
+    word2?: Word
+  ) => Promise<void>;
 }
 
-interface formValues {
-  languageFrom?: string;
-  languageTo?: string;
-  levelId?: string;
+export interface FormValues {
+  word1: string;
+  word2: string;
+  levelId: string;
 }
 
 const EditWordForm: React.FC<EditWordFormProps> = ({
@@ -58,6 +62,7 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
   languageFrom,
   languageTo,
   levels,
+  handleSubmit,
 }) => {
   const classes = useStyles();
 
@@ -66,35 +71,34 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
       <Formik
         validateOnChange={true}
         initialValues={{
-          languageFrom: word?.name,
-          languageTo: translation?.word.name,
-          levelId: `${word?.level_id}`,
+          word1: word?.name || '',
+          word2: translation?.word.name || '',
+          levelId: word?.level_id ? `${word?.level_id}` : '',
         }}
-        //validationSchema={validationSchema}
-        onSubmit={(data, { setSubmitting }) => {
+        onSubmit={async (formData: FormValues, { setSubmitting, resetForm }) => {
           setSubmitting(true);
-          // make async call
-          console.log('submit: ', data);
+          await handleSubmit(formData, word, translation?.word);
           setSubmitting(false);
+          resetForm();
         }}
       >
-        {({ values, errors, isSubmitting }: FormikState<formValues>) => (
+        {({ values, errors, isSubmitting }: FormikState<FormValues>) => (
           <Form className={classes.formRoot}>
             <Field
-              label={languageTo}
-              name="languageFrom"
+              label={languageFrom}
+              name="word1"
               type="input"
               as={CustomField}
             />
             <Field
-              label={languageFrom}
-              name="languageTo"
+              label={languageTo}
+              name="word2"
               type="input"
               as={CustomField}
             />
-            <Field name="levelId" type="select" label="level" as={CustomSelect}>
+            <Field name="levelId" label="level" as={CustomSelect}>
               {levels?.map((level: Level) => (
-                <MenuItem key={level.id} value={`${level.id}` || ''}>
+                <MenuItem key={level.id} value={`${level.id}`}>
                   {level.code}
                 </MenuItem>
               ))}

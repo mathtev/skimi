@@ -8,7 +8,6 @@ import {
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import Layout from './components/Layout';
-import Learn from './pages/Learn';
 import ThemeProvider from './context/theme/ThemeProvider';
 import SettingsProvider from './context/settings/SettingsProvider';
 import AppStateProvider from './context/appState/AppStateProvider';

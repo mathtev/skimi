@@ -63,15 +63,16 @@ const HeaderSearch = () => {
 
     return [htmlElRef, setFocus];
   };
-  React.useEffect(() => {
-    if (searchFocus === true && typeof setInputFocus === 'function') {
-      setInputFocus();
-    }
-  }, [searchFocus]);
   const [inputRef, setInputFocus] = useFocus();
   const setFocus = (isFocus: boolean) => {
     setSearchFocus(isFocus);
   };
+  React.useEffect(() => {
+    if (searchFocus === true && typeof setInputFocus === 'function') {
+      setInputFocus();
+    }
+  }, [searchFocus, setInputFocus]);
+
   return (
     <IconButton
       disableRipple
