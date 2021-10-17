@@ -9,3 +9,13 @@ export const CREATE_TRANSLATION = gql`
     }
   }
 `;
+
+export const DELETE_TRANSLATION = gql`
+  mutation deleteTranslation($id: Int!) {
+    deleteTranslation(id: $id){
+      id
+      en_word_id
+      de_word_id
+    }
+  }
+`;

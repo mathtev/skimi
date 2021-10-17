@@ -23,10 +23,11 @@ import { Repository } from 'typeorm';
 import { Service } from 'typedi';
 
 @Service()
-@Resolver(of => Word)
+@Resolver((of) => Word)
 class WordResolver {
   constructor(
-    @InjectRepository(Translation) private readonly translationRepository: Repository<Translation>,
+    @InjectRepository(Translation)
+    private readonly translationRepository: Repository<Translation>
   ) {}
 
   // @UseMiddleware([ErrorHandler])
@@ -55,8 +56,9 @@ class WordResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Word])
   async words(
-    @Arg('language_id', () => Int) language_id: number
+    @Arg('language_id', () => Int, { nullable: true }) language_id: number
   ): Promise<Word[]> {
+    if (!language_id) language_id = 1;
     const result = await findAllEntities(Word, {
       where: [{ language_id }],
     });
@@ -66,7 +68,16 @@ class WordResolver {
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Word)
   async addWord(@Arg('word') wordInput: WordInput): Promise<Word> {
-    const result = await createEntity(Word, wordInput);
+    const name = wordInput.name;
+    let word = wordInput;
+    const queryData = await Word.createQueryBuilder('word')
+      .select('word.id')
+      .where('word.name = :name', { name })
+      .getOne();
+    if(queryData) {
+      word.id = queryData.id;
+    }
+    const result = await createEntity(Word, word);
     return result;
   }
 
@@ -74,11 +85,10 @@ class WordResolver {
   async translations(@Root() word: Word) {
     const result = await findAllEntities(Translation, {
       where: [{ en_word_id: word.id }],
-      relations: ['word']
+      relations: ['word'],
     });
     return result;
   }
-
 }
 
 export default WordResolver;

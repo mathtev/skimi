@@ -10,7 +10,7 @@ const CustomSelect: React.FC<FieldAttributes<{}> & { label: string }> = ({
   const [field, meta] = useField<{}>(props);
   const errorText = meta.error && meta.touched ? meta.error : '';
   return (
-    <TextField {...field} error={!!errorText} select label={label} style={{ minWidth: '50px' }}>
+    <TextField {...field} error={!!errorText} select label={label} style={{ minWidth: '60px' }}>
       {children}
       {/* prevent error which is showing for no reason */}
       <span></span>
