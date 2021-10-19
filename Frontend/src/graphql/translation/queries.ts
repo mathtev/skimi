@@ -6,6 +6,7 @@ export const GET_TRANSLATIONS = gql`
       id
       word1_id
       word2_id
+      level_id
     }
   }
 `;

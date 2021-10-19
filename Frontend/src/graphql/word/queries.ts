@@ -6,14 +6,15 @@ export const GET_ALL_WORDS = gql`
       id
       name
       language_id
-      level_id
       translations {
         id
+        level_id
+        en_word_id
+        de_word_id
         word {
           id
           name
           language_id
-          level_id
         }
       }
     }

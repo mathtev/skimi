@@ -17,10 +17,6 @@ class Word extends BaseEntity {
   @Column("integer")
   language_id: number;
 
-  @Field(() => Int)
-  @Column("integer")
-  level_id: number;
-
   @Field(type => [Translation], { defaultValue: [] })
   @OneToMany(type => Translation, translation => translation.word)
   translations: Translation[];

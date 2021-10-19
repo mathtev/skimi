@@ -11,16 +11,8 @@ import {
   DELETE_TRANSLATION,
 } from '../../../graphql/translation/mutations';
 import { useSettings } from '../../../hooks/useSettings';
-import DeleteIcon from '@material-ui/icons/Delete';
 
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  Typography,
-  Button,
-  IconButton,
-} from '@material-ui/core';
+import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 
 import { Translation } from '../../../graphql/translation/types';
 import EditWordForm, { FormValues } from './EditWordForm';
@@ -43,15 +35,15 @@ const useStyles = makeStyles((theme: Theme) =>
 const EditWords = () => {
   const classes = useStyles();
 
-  const words = useQuery<Words>(GET_ALL_WORDS);
-  const levels = useQuery<Levels>(GET_ALL_LEVELS);
-  const languages = useQuery<Languages>(GET_ALL_LANGUAGES);
+  const wordsQuery = useQuery<Words>(GET_ALL_WORDS);
+  const levelsQuery = useQuery<Levels>(GET_ALL_LEVELS);
+  const languagesQuery = useQuery<Languages>(GET_ALL_LANGUAGES);
 
   const [addWordMutation] = useMutation(ADD_WORD);
   const [createTranslationMutation] = useMutation(CREATE_TRANSLATION);
   const [deleteTranslationMutation] = useMutation(DELETE_TRANSLATION);
 
-  const wordsCopy = words.data && [...words.data.words];
+  const wordsCopy = wordsQuery.data && [...wordsQuery.data.words];
   const sortedWords = wordsCopy?.sort((a, b) =>
     a.name > b.name ? 1 : b.name > a.name ? -1 : 0
   );
@@ -65,10 +57,10 @@ const EditWords = () => {
     return s1.toLowerCase() === s2.toLowerCase();
   };
 
-  const languageFrom = languages.data?.languages.find((language) =>
+  const languageFrom = languagesQuery.data?.languages.find((language) =>
     compareStrings(language.name, appSettings.settings?.nativeLanguage)
   );
-  const languageTo = languages.data?.languages.find((language) =>
+  const languageTo = languagesQuery.data?.languages.find((language) =>
     compareStrings(language.name, appSettings.settings?.learningLanguage)
   );
 
@@ -81,13 +73,21 @@ const EditWords = () => {
   const deleteTranslation = (id: number) => {
     return deleteTranslationMutation({
       variables: { id },
-    }).then(() => words.refetch());
+    }).then(() => wordsQuery.refetch());
   };
 
-  const createTranslation = (enWordId: number, deWordId: number) => {
+  const createTranslation = (
+    enWordId: number,
+    deWordId: number,
+    levelId: number
+  ) => {
     return createTranslationMutation({
       variables: {
-        translation: { en_word_id: enWordId, de_word_id: deWordId },
+        translation: {
+          en_word_id: enWordId,
+          de_word_id: deWordId,
+          level_id: levelId,
+        },
       },
     }).then((resp) => resp.data.createTranslation);
   };
@@ -104,23 +104,23 @@ const EditWords = () => {
     const newWord1: AddWordRequest = {
       id: word1?.id,
       name: formData.word1,
-      level_id: parseInt(formData.levelId),
       language_id: languageFrom.id,
     };
     const newWord2: AddWordRequest = {
       id: word2?.id,
       name: formData.word2,
-      level_id: parseInt(formData.levelId),
       language_id: languageTo.id,
     };
-    // creates or updates words
+    // this is not good and causes 5 rerenders, should make one request
     Promise.all([addWord(newWord1), addWord(newWord2)])
       .then((resp) => {
-        if (!word1 || !word2) {
-          createTranslation(resp[0].id, resp[1].id);
-        }
+        createTranslation(resp[0].id, resp[1].id, parseInt(formData.levelId));
       })
-      .then(() => words.refetch());
+      .then(() => {
+        levelsQuery.refetch();
+        wordsQuery.refetch();
+      })
+      .catch((e: Error) => console.error('server error:', e.message));
   };
 
   return (
@@ -131,7 +131,7 @@ const EditWords = () => {
         translation={undefined}
         languageFrom={languageFrom?.name}
         languageTo={languageTo?.name}
-        levels={levels.data?.levels}
+        levels={levelsQuery.data?.levels}
         handleSubmit={handleSubmit}
         deleteTranslation={deleteTranslation}
       />
@@ -149,7 +149,7 @@ const EditWords = () => {
                   translation={translation}
                   languageFrom={languageFrom?.name}
                   languageTo={languageTo?.name}
-                  levels={levels.data?.levels}
+                  levels={levelsQuery.data?.levels}
                   handleSubmit={handleSubmit}
                   deleteTranslation={deleteTranslation}
                 />

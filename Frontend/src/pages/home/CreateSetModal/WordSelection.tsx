@@ -22,11 +22,14 @@ const WordSelection = () => {
   const [selectedData, setSelectedData] = React.useState<TableData[]>([]);
   // eslint-disable-next-line
   const [selectedWords, setSelectedWords] = React.useState<TableData[]>([]);
+
+  // const wordsQuery = useQuery<Words>(GET_ALL_WORDS);
+  // const tableData: TableData[] = wordsQuery && wordsQuery.data?.words.map(word => ())
+
   const loadNewData = () => {
     if (selectedData.length) {
       setSelectedWords((prevState) => [...prevState, ...selectedData]);
     }
-    
   };
   return (
     <div>

@@ -75,10 +75,11 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
     <>
       <Formik
         validateOnChange={true}
+        enableReinitialize={true}
         initialValues={{
           word1: word?.name || '',
           word2: translation?.word?.name || '',
-          levelId: translation?.word?.level_id ? `${translation.word.level_id}` : '',
+          levelId: translation?.level_id ? `${translation.level_id}` : '',
         }}
         onSubmit={async (
           formData: FormValues,

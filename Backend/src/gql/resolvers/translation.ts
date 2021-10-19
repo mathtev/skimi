@@ -40,14 +40,14 @@ class TranslationResolver {
     const deWordId = translationInput.de_word_id;
 
     const queryData = await Translation.createQueryBuilder('translation')
-      .select()
+      .select('translation.id')
       .where(
         'translation.en_word_id = :enWordId and translation.de_word_id = :deWordId',
         { enWordId, deWordId }
       )
       .getOne();
     if (queryData) {
-      return queryData;
+      translationInput.id = queryData.id;
     }
     const result = await createEntity(Translation, translationInput);
     return result;

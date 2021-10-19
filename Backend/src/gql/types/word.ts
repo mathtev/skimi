@@ -3,7 +3,7 @@ import { Word } from '../../models';
 
 @InputType()
 export class WordInput implements Partial<Word> {
-  @Field(() => Int, {nullable: true})
+  @Field(() => Int, { nullable: true })
   id: number;
 
   @Field()
@@ -11,7 +11,4 @@ export class WordInput implements Partial<Word> {
 
   @Field(() => Int)
   language_id: number;
-
-  @Field(() => Int)
-  level_id: number;
 }

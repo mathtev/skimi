@@ -30,6 +30,10 @@ class Translation extends BaseEntity {
   @Field(() => Int)
   @Column('integer')
   de_word_id: number;
+
+  @Field(() => Int)
+  @Column("integer")
+  level_id: number;
 }
 
 export default Translation;

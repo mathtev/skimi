@@ -4,6 +4,7 @@ export interface Translation {
   id: number;
   word1_id: number;
   word2_id: number;
+  level_id: number;
   word: Word;
 }
 
