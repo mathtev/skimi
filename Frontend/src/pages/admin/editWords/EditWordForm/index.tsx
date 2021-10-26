@@ -6,13 +6,15 @@ import {
   IconButton,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { Field, Form, Formik, FormikState } from 'formik';
 import React from 'react';
 import { Level } from '../../../../graphql/level/types';
-import { Translation } from '../../../../graphql/translation/types';
-import { Word } from '../../../../graphql/word/types';
+import { Translation, Translations } from '../../../../graphql/translation/types';
+import { Word, Words } from '../../../../graphql/word/types';
 import CustomField from './CustomField';
 import CustomSelect from './CustomSelect';
+import { ApolloQueryResult } from '@apollo/client';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,11 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
         margin: theme.spacing('10px', '20px', '10px', '0'),
       },
     },
-    editButton: {
+    formButton: {
       marginBottom: 0,
+      marginRight: 0,
     },
 
-    editIcon: {
+    formIcon: {
       width: '20px',
       height: '20px',
     },
@@ -48,6 +51,7 @@ interface EditWordFormProps {
     word1?: Word,
     word2?: Word
   ) => Promise<void>;
+  deleteTranslation: (id: number) => Promise<ApolloQueryResult<Translations>>;
 }
 
 export interface FormValues {
@@ -63,6 +67,7 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
   languageTo,
   levels,
   handleSubmit,
+  deleteTranslation,
 }) => {
   const classes = useStyles();
 
@@ -70,14 +75,18 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
     <>
       <Formik
         validateOnChange={true}
+        enableReinitialize={true}
         initialValues={{
           word1: word?.name || '',
-          word2: translation?.word.name || '',
-          levelId: word?.level_id ? `${word?.level_id}` : '',
+          word2: translation?.word_to?.name || '',
+          levelId: translation?.level_id ? `${translation.level_id}` : '',
         }}
-        onSubmit={async (formData: FormValues, { setSubmitting, resetForm }) => {
+        onSubmit={async (
+          formData: FormValues,
+          { setSubmitting, resetForm }
+        ) => {
           setSubmitting(true);
-          await handleSubmit(formData, word, translation?.word);
+          await handleSubmit(formData, word, translation?.word_to);
           setSubmitting(false);
           resetForm();
         }}
@@ -105,12 +114,20 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
             </Field>
 
             <IconButton
-              className={classes.editButton}
+              className={classes.formButton}
               disabled={isSubmitting}
               type="submit"
             >
-              <EditIcon className={classes.editIcon} />
+              <EditIcon className={classes.formIcon} />
             </IconButton>
+            {translation && (
+              <IconButton
+                onClick={() => deleteTranslation(translation.id)}
+                className={classes.formButton}
+              >
+                <DeleteIcon className={classes.formIcon} />
+              </IconButton>
+            )}
           </Form>
         )}
       </Formik>

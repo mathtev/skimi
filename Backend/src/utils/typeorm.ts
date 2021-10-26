@@ -1,28 +1,8 @@
-import { EntityNotFoundError } from '../utils/customErrors';
-import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
-import Lesson from '../models/Lesson';
-import Word from '../models/Word';
-import Level from '../models/Level';
-import Language from '../models/Language';
-import Translation from '../models/Translation';
 import { FindManyOptions } from 'typeorm';
+import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
+import { entities, EntityInstance, EntityTypes } from '../types/entityTypes';
+import { EntityNotFoundError } from '../utils/customErrors';
 
-type EntityTypes = 
-| typeof Lesson 
-| typeof Level 
-| typeof Language 
-| typeof Translation 
-| typeof Word;
-
-type EntityInstance = Lesson | Word | Level | Language | Translation;
-
-const entities: { [key: string]: EntityTypes } = {
-  Lesson,
-  Word,
-  Level,
-  Language,
-  Translation
-};
 
 export const findEntityById = async <T extends EntityTypes>(
   Entity: T,

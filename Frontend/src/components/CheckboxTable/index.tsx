@@ -30,8 +30,7 @@ interface EnhancedTableProps {
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const { onSelectAllClick, numSelected, rowCount, tableHeaders } =
-    props;
+  const { onSelectAllClick, numSelected, rowCount, tableHeaders } = props;
   const isChecked = rowCount > 0 && numSelected === rowCount;
   return (
     <TableHead>
@@ -45,7 +44,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         </TableCell>
         {tableHeaders.map((headCell: any) => (
           <TableCell key={headCell.id} align="left" padding="none">
-            {headCell.label}
+            <b>{headCell.label}</b>
           </TableCell>
         ))}
       </TableRow>
@@ -154,40 +153,42 @@ const useStyles = makeStyles((theme: Theme) =>
 interface SelectionTableProps<T, K> {
   tableData: T[];
   tableHeaders: K[];
-  selectedData: T[];
-  setSelectedData: (data: T[]) => void;
+  selectedData: number[];
+  setSelectedData: (ids: number[]) => void;
 }
 
 const CheckboxTable = <T extends { id: number }, K>({
   tableData,
   tableHeaders,
   selectedData,
-  setSelectedData
-}: PropsWithChildren<SelectionTableProps<T,K>>) => {
+  setSelectedData,
+}: PropsWithChildren<SelectionTableProps<T, K>>) => {
   const classes = useStyles();
 
-  const isSelected = (row: T) => selectedData.indexOf(row) !== -1;
+  const isSelected = (row: T) =>
+    selectedData.filter((x) => x === row.id).length > 0;
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      setSelectedData([...tableData]);
+      setSelectedData(tableData.map((x) => x.id));
       return;
     }
     setSelectedData([]);
   };
-  
+
   const handleClick = (event: React.MouseEvent<unknown>, row: T) => {
-    if(isSelected(row)){
-      const newSelecteds = selectedData.filter((x) => x.id !== row.id);
+    if (isSelected(row)) {
+      const newSelecteds = selectedData.filter((x) => x !== row.id);
       setSelectedData(newSelecteds);
       return;
     }
-    const newSelecteds = [...selectedData, row];
+    const newSelecteds = [...selectedData, row.id];
     setSelectedData(newSelecteds);
   };
 
   const numSelected = selectedData.length;
-  const columnNames = Object.keys(tableData[0]).filter(name => name !== 'id');
+  const columnNames =
+    tableData[0] && Object.keys(tableData[0]).filter((name) => name !== 'id');
 
   return (
     <div className={classes.root}>

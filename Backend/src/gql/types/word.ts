@@ -1,9 +1,9 @@
 import { Field, ID, InputType, Int } from 'type-graphql';
-import { Word } from '../../models';
+import Word from '../../models/Word';
 
 @InputType()
 export class WordInput implements Partial<Word> {
-  @Field(() => Int, {nullable: true})
+  @Field(() => Int, { nullable: true })
   id: number;
 
   @Field()
@@ -11,7 +11,4 @@ export class WordInput implements Partial<Word> {
 
   @Field(() => Int)
   language_id: number;
-
-  @Field(() => Int)
-  level_id: number;
 }

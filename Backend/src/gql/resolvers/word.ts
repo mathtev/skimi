@@ -15,18 +15,18 @@ import {
 } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Word from '../../models/Word';
-import { EntityNotFoundError } from '../../utils/customErrors';
 import { WordInput } from '../types/word';
-import { Translation } from '../../models';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { Service } from 'typedi';
+import Translation from '../../models/Translation';
 
 @Service()
-@Resolver(of => Word)
+@Resolver((of) => Word)
 class WordResolver {
   constructor(
-    @InjectRepository(Translation) private readonly translationRepository: Repository<Translation>,
+    @InjectRepository(Translation)
+    private readonly translationRepository: Repository<Translation>
   ) {}
 
   // @UseMiddleware([ErrorHandler])
@@ -55,8 +55,9 @@ class WordResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Word])
   async words(
-    @Arg('language_id', () => Int) language_id: number
+    @Arg('language_id', () => Int, { nullable: true }) language_id: number
   ): Promise<Word[]> {
+    if (!language_id) language_id = 1;
     const result = await findAllEntities(Word, {
       where: [{ language_id }],
     });
@@ -66,7 +67,17 @@ class WordResolver {
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Word)
   async addWord(@Arg('word') wordInput: WordInput): Promise<Word> {
-    const result = await createEntity(Word, wordInput);
+    const name = wordInput.name;
+    const language_id = wordInput.language_id;
+    let word = wordInput;
+    const queryData = await Word.createQueryBuilder('word')
+      .select('word.id')
+      .where('word.name = :name and word.language_id = :language_id', { name, language_id })
+      .getOne();
+    if(queryData) {
+      word.id = queryData.id;
+    }
+    const result = await createEntity(Word, word);
     return result;
   }
 
@@ -74,11 +85,10 @@ class WordResolver {
   async translations(@Root() word: Word) {
     const result = await findAllEntities(Translation, {
       where: [{ en_word_id: word.id }],
-      relations: ['word']
+      relations: ['word_to'],
     });
     return result;
   }
-
 }
 
 export default WordResolver;

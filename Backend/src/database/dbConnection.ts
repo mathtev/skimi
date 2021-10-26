@@ -1,11 +1,11 @@
 import { createConnection, Connection, ConnectionOptions } from 'typeorm';
-import * as models from '../models';
+import { entities } from '../types/entityTypes';
 
 require('dotenv').config()
 
 const commonConfig: ConnectionOptions = {
   type: 'postgres',
-  entities: Object.values(models),
+  entities: Object.values(entities),
 };
 
 
