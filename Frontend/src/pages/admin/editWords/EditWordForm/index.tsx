@@ -10,7 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Field, Form, Formik, FormikState } from 'formik';
 import React from 'react';
 import { Level } from '../../../../graphql/level/types';
-import { Translation } from '../../../../graphql/translation/types';
+import { Translation, Translations } from '../../../../graphql/translation/types';
 import { Word, Words } from '../../../../graphql/word/types';
 import CustomField from './CustomField';
 import CustomSelect from './CustomSelect';
@@ -51,7 +51,7 @@ interface EditWordFormProps {
     word1?: Word,
     word2?: Word
   ) => Promise<void>;
-  deleteTranslation: (id: number) => Promise<ApolloQueryResult<Words>>;
+  deleteTranslation: (id: number) => Promise<ApolloQueryResult<Translations>>;
 }
 
 export interface FormValues {
@@ -78,7 +78,7 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
         enableReinitialize={true}
         initialValues={{
           word1: word?.name || '',
-          word2: translation?.word?.name || '',
+          word2: translation?.word_to?.name || '',
           levelId: translation?.level_id ? `${translation.level_id}` : '',
         }}
         onSubmit={async (
@@ -86,7 +86,7 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
           { setSubmitting, resetForm }
         ) => {
           setSubmitting(true);
-          await handleSubmit(formData, word, translation?.word);
+          await handleSubmit(formData, word, translation?.word_to);
           setSubmitting(false);
           resetForm();
         }}

@@ -1,15 +1,16 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { TypeormLoader } from 'type-graphql-dataloader';
+import { Field, Int, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
-  RelationId,
 } from 'typeorm';
-import { Word } from '.';
+import Level from './Level';
+import Word from './Word';
+
 
 @ObjectType()
 @Entity()
@@ -20,8 +21,18 @@ class Translation extends BaseEntity {
 
   @Field(() => Word, { defaultValue: [] })
   @ManyToOne(() => Word)
+  @JoinColumn({ name: "en_word_id", referencedColumnName: "id"})
+  word_from: Word;
+
+  @Field(() => Word, { defaultValue: [] })
+  @ManyToOne(() => Word)
   @JoinColumn({ name: "de_word_id", referencedColumnName: "id"})
-  word: Word;
+  word_to: Word;
+
+  @Field(() => Level)
+  @OneToOne(() => Level)
+  @JoinColumn({ name: "level_id", referencedColumnName: "id"})
+  level: Level;
 
   @Field(() => Int)
   @Column('integer')

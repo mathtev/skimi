@@ -14,8 +14,9 @@ import { useSettings } from '../../../hooks/useSettings';
 
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 
-import { Translation } from '../../../graphql/translation/types';
+import { Translation, Translations } from '../../../graphql/translation/types';
 import EditWordForm, { FormValues } from './EditWordForm';
+import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const EditWords = () => {
   const classes = useStyles();
 
-  const wordsQuery = useQuery<Words>(GET_ALL_WORDS);
+  const translationsQuery = useQuery<Translations>(GET_ALL_TRANSLATIONS);
   const levelsQuery = useQuery<Levels>(GET_ALL_LEVELS);
   const languagesQuery = useQuery<Languages>(GET_ALL_LANGUAGES);
 
@@ -43,9 +44,9 @@ const EditWords = () => {
   const [createTranslationMutation] = useMutation(CREATE_TRANSLATION);
   const [deleteTranslationMutation] = useMutation(DELETE_TRANSLATION);
 
-  const wordsCopy = wordsQuery.data && [...wordsQuery.data.words];
-  const sortedWords = wordsCopy?.sort((a, b) =>
-    a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+  const translationsCopy = translationsQuery.data && [...translationsQuery.data.translations];
+  const sortedTranslations = translationsCopy?.sort((a, b) =>
+    a.word_from.name > b.word_from.name ? 1 : b.word_from.name > a.word_from.name ? -1 : 0
   );
 
   const appSettings = useSettings();
@@ -73,7 +74,7 @@ const EditWords = () => {
   const deleteTranslation = (id: number) => {
     return deleteTranslationMutation({
       variables: { id },
-    }).then(() => wordsQuery.refetch());
+    }).then(() => translationsQuery.refetch());
   };
 
   const createTranslation = (
@@ -118,7 +119,7 @@ const EditWords = () => {
       })
       .then(() => {
         levelsQuery.refetch();
-        wordsQuery.refetch();
+        translationsQuery.refetch();
       })
       .catch((e: Error) => console.error('server error:', e.message));
   };
@@ -138,24 +139,19 @@ const EditWords = () => {
       <Typography variant="h5" className={classes.wordListTitle}>
         Word list
       </Typography>
-      {sortedWords &&
-        sortedWords.map(
-          (word: Word) =>
-            word?.translations &&
-            word.translations.map((translation: Translation) => (
-              <div key={translation.id} className={classes.wordList}>
-                <EditWordForm
-                  word={word}
-                  translation={translation}
-                  languageFrom={languageFrom?.name}
-                  languageTo={languageTo?.name}
-                  levels={levelsQuery.data?.levels}
-                  handleSubmit={handleSubmit}
-                  deleteTranslation={deleteTranslation}
-                />
-              </div>
-            ))
-        )}
+      {sortedTranslations?.map((translation: Translation) => (
+        <div key={translation.id} className={classes.wordList}>
+          <EditWordForm
+            word={translation.word_from}
+            translation={translation}
+            languageFrom={languageFrom?.name}
+            languageTo={languageTo?.name}
+            levels={levelsQuery.data?.levels}
+            handleSubmit={handleSubmit}
+            deleteTranslation={deleteTranslation}
+          />
+        </div>
+      ))}
     </div>
   );
 };

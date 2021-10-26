@@ -15,12 +15,11 @@ import {
 } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Word from '../../models/Word';
-import { EntityNotFoundError } from '../../utils/customErrors';
 import { WordInput } from '../types/word';
-import { Translation } from '../../models';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { Service } from 'typedi';
+import Translation from '../../models/Translation';
 
 @Service()
 @Resolver((of) => Word)
@@ -69,10 +68,11 @@ class WordResolver {
   @Mutation(() => Word)
   async addWord(@Arg('word') wordInput: WordInput): Promise<Word> {
     const name = wordInput.name;
+    const language_id = wordInput.language_id;
     let word = wordInput;
     const queryData = await Word.createQueryBuilder('word')
       .select('word.id')
-      .where('word.name = :name', { name })
+      .where('word.name = :name and word.language_id = :language_id', { name, language_id })
       .getOne();
     if(queryData) {
       word.id = queryData.id;
@@ -85,7 +85,7 @@ class WordResolver {
   async translations(@Root() word: Word) {
     const result = await findAllEntities(Translation, {
       where: [{ en_word_id: word.id }],
-      relations: ['word'],
+      relations: ['word_to'],
     });
     return result;
   }

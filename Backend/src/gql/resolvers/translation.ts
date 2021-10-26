@@ -14,7 +14,6 @@ import {
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Translation from '../../models/Translation';
 import { TranslationInput } from '../types/translation';
-import { Connection } from 'typeorm';
 import { Service } from 'typedi';
 
 @Service()
@@ -22,11 +21,9 @@ import { Service } from 'typedi';
 class TranslationResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Translation])
-  async translations(
-    @Arg('wordId', () => Int) wordId: number
-  ): Promise<Translation[]> {
+  async translations(): Promise<Translation[]> {
     const result = await findAllEntities(Translation, {
-      where: [{ en_word_id: wordId }],
+      relations: ['word_from', 'word_to', 'level'],
     });
     return result;
   }

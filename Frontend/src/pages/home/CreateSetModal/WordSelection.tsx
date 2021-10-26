@@ -1,36 +1,74 @@
+import { useQuery } from '@apollo/client';
 import { Button } from '@material-ui/core';
 import React from 'react';
 import CheckboxTable from '../../../components/CheckboxTable';
+import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
+import { Translation, Translations } from '../../../graphql/translation/types';
+import { useSettings } from '../../../hooks/useSettings';
+import { shuffleArray } from '../../../utils/helperFunctions';
 import { TableData, TableHeader } from '../types';
 
-const tableData: TableData[] = [
-  { id: 1, languageFrom: 'be', languageTo: 'sein' },
-  { id: 2, languageFrom: 'learn', languageTo: 'lernen' },
-  { id: 3, languageFrom: 'sleep', languageTo: 'schlafen' },
-  { id: 4, languageFrom: 'cat', languageTo: 'katze' },
-  { id: 5, languageFrom: 'paint', languageTo: 'malen' },
-  { id: 6, languageFrom: 'mum', languageTo: 'mutter' },
-  { id: 7, languageFrom: 'dad', languageTo: 'vater' },
-];
-
-const tableHeaders: TableHeader[] = [
-  { id: 'languageFrom', label: 'English' },
-  { id: 'languageTo', label: 'German' },
-];
+// zaladuj translacje z serwera
+// ustaw translationsPool
+// ustaw w tabelce translacje na losowe setTableTranslations(liczba_wierszy, level)
+//// zmień kolejność elementów w translationsPool na losową, shuffle
+//// newData = slice(0, liczba_wierszy)
+//// usuń newData z translationsPool
 
 const WordSelection = () => {
-  const [selectedData, setSelectedData] = React.useState<TableData[]>([]);
+  const [selectedData, setSelectedData] = React.useState<number[]>([]);
   // eslint-disable-next-line
-  const [selectedWords, setSelectedWords] = React.useState<TableData[]>([]);
+  const [selectedWords, setSelectedWords] = React.useState<number[]>([]);
+  const [tableData, setTableData] = React.useState<TableData[]>([]);
+  const [translationsPool, setTranslationsPool] = React.useState<Translation[]>(
+    []
+  );
 
-  // const wordsQuery = useQuery<Words>(GET_ALL_WORDS);
-  // const tableData: TableData[] = wordsQuery && wordsQuery.data?.words.map(word => ())
+  const { settings } = useSettings();
 
-  const loadNewData = () => {
+  const tableHeaders: TableHeader[] = [
+    { id: 'wordFrom', label: settings?.nativeLanguage },
+    { id: 'wordTo', label: settings?.learningLanguage },
+  ];
+
+  const mapTranslations = (translations?: Translation[]): TableData[] => {
+    return (
+      translations?.map((translation: Translation) => ({
+        id: translation.id,
+        wordFrom: translation.word_from.name,
+        wordTo: translation.word_to.name,
+      })) || []
+    );
+  };
+
+  const handleSetTableData = (
+    translations: Translation[],
+    rows: number,
+    difficulty: number
+  ) => {
+    const data =
+      shuffleArray(translations)
+        .filter((translation) => translation.level.difficulty === difficulty)
+        .slice(0, rows) || [];
+    const newTranslations =
+      translations.filter((el) => !data.includes(el)) || [];
+    setTableData(mapTranslations(data));
+    setTranslationsPool(newTranslations);
+  };
+
+  const loadNewData = (translations: Translation[]) => {
     if (selectedData.length) {
       setSelectedWords((prevState) => [...prevState, ...selectedData]);
     }
+    handleSetTableData(translations, 6, 1);
   };
+
+  const translationsQuery = useQuery<Translations>(GET_ALL_TRANSLATIONS, {
+    onCompleted: (data) => {
+      loadNewData(data.translations);
+    },
+  });
+
   return (
     <div>
       <CheckboxTable
@@ -39,7 +77,7 @@ const WordSelection = () => {
         selectedData={selectedData}
         setSelectedData={setSelectedData}
       />
-      <Button onClick={loadNewData}>Next</Button>
+      <Button onClick={() => loadNewData(translationsPool)}>Next</Button>
     </div>
   );
 };
