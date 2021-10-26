@@ -26,7 +26,17 @@ class Set extends BaseEntity {
   created_at: Date;
 
   @ManyToMany(() => Translation)
-  @JoinTable()
+  @JoinTable({
+    name: "translation_set",
+    joinColumn: {
+        name: "set_id",
+        referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+        name: "translation_id",
+        referencedColumnName: "id"
+    }
+})
   translations: Translation[];
 }
 

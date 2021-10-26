@@ -16,6 +16,7 @@ import { ErrorHandler } from '../../middlewares/errorHandler';
 import { Service } from 'typedi';
 import Set from '../../models/Set';
 import { SetInput } from '../types/set';
+import Translation from '../../models/Translation';
 
 @Service()
 @Resolver()
@@ -40,8 +41,13 @@ class SetResolver {
 
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Set)
-  async createSet(@Arg('word') setInput: SetInput): Promise<Set> {
-    const result = await createEntity(Set, setInput);
+  async createSet(@Arg('set') setInput: SetInput) {
+    const translations = await Translation.findByIds(setInput.translation_ids);
+    const result = await createEntity(Set, {
+      name: setInput.name,
+      created_at: setInput.created_at,
+      translations,
+    });
     return result;
   }
 }
