@@ -7,6 +7,7 @@ import {
   Int,
   FieldResolver,
   Root,
+  Ctx,
 } from 'type-graphql';
 import {
   createEntity,
@@ -20,6 +21,7 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { Service } from 'typedi';
 import Translation from '../../models/Translation';
+import { GQLContext } from '../../types/gqlContext';
 
 @Service()
 @Resolver((of) => Word)
@@ -55,12 +57,14 @@ class WordResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Word])
   async words(
-    @Arg('language_id', () => Int, { nullable: true }) language_id: number
+    @Arg('language_id', () => Int, { nullable: true }) language_id: number,
+    @Ctx() ctx: GQLContext
   ): Promise<Word[]> {
     if (!language_id) language_id = 1;
     const result = await findAllEntities(Word, {
       where: [{ language_id }],
     });
+    console.log(ctx.req.session.userId);
     return result;
   }
 
@@ -72,9 +76,12 @@ class WordResolver {
     let word = wordInput;
     const queryData = await Word.createQueryBuilder('word')
       .select('word.id')
-      .where('word.name = :name and word.language_id = :language_id', { name, language_id })
+      .where('word.name = :name and word.language_id = :language_id', {
+        name,
+        language_id,
+      })
       .getOne();
-    if(queryData) {
+    if (queryData) {
       word.id = queryData.id;
     }
     const result = await createEntity(Word, word);

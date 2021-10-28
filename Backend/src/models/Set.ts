@@ -4,10 +4,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import Profile from './Profile';
 import Translation from './Translation';
 
 @ObjectType()
@@ -24,6 +27,15 @@ class Set extends BaseEntity {
   @Field()
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
+
+  @Field(() => Int)
+  @Column('integer')
+  profile_id: number;
+
+  @Field(() => Profile, { defaultValue: [] })
+  @ManyToOne(() => Profile)
+  @JoinColumn({ name: "set_id", referencedColumnName: "id"})
+  profile: Profile;
 
   @ManyToMany(() => Translation)
   @JoinTable({
