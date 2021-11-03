@@ -1,4 +1,5 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { TypeormLoader } from 'type-graphql-dataloader';
 import { BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import Level from './Level';
 import Set from './Set';
@@ -17,24 +18,25 @@ class Profile extends BaseEntity {
 
   @Field(() => Int)
   @Column("integer")
-  user_id: number;
+  userId: number;
 
   @Field(() => Int)
   @Column("integer")
-  level_id: number;
+  levelId: number;
 
   @Field(() => Level)
   @OneToOne(() => Level)
-  @JoinColumn({ name: "level_id", referencedColumnName: "id"})
+  @JoinColumn({ name: "levelId", referencedColumnName: "id"})
   level: Level;  
 
   @Field(() => User)
   @OneToOne(() => User)
-  @JoinColumn({ name: "user_id", referencedColumnName: "id"})
+  @JoinColumn({ name: "userId", referencedColumnName: "id"})
   user: User;
   
   @Field(type => [Set], { defaultValue: [] })
   @OneToMany(type => Set, set => set.profile)
+  @TypeormLoader((set: Set) => set.profileId, { selfKey: true })
   sets: Set[];
 }
 

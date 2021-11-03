@@ -5,21 +5,21 @@ export const GET_ALL_SETS = gql`
     sets {
       id
       name
-      created_at
+      createdAt
       translations {
         id
-        level_id
-        en_word_id
-        de_word_id
-        word_to {
+        levelId
+        enWordId
+        deWordId
+        wordTo {
           id
           name
-          language_id
+          languageId
         }
-        word_from {
+        wordFrom {
           id
           name
-          language_id
+          languageId
         }
       }
     }

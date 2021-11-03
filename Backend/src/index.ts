@@ -3,13 +3,15 @@ import cors from 'cors';
 import { buildSchema } from 'type-graphql';
 import { RESOLVERS } from './gql';
 import createDatabaseConnection from './database/dbConnection';
-import { useContainer } from 'typeorm';
+import { getConnection, useContainer } from 'typeorm';
 import { Container } from 'typedi';
 import { GraphQLSchema } from 'graphql';
 import { ApolloServer } from 'apollo-server-express';
 import Redis from 'ioredis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
+import { ApolloServerLoaderPlugin } from "type-graphql-dataloader";
+
 
 require('dotenv').config();
 
@@ -39,6 +41,11 @@ const initExpressGraphql = async () => {
     schema: schema as GraphQLSchema,
     context: ({ req, res }: any) => ({ req, res }),
     introspection: true,
+    plugins: [
+      ApolloServerLoaderPlugin({
+        typeormGetConnection: getConnection,  // for use with TypeORM
+      }),
+    ],
   });
 
   app.use(
@@ -54,6 +61,7 @@ const initExpressGraphql = async () => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
+        sameSite: 'lax'
       },
     })
   );

@@ -3,14 +3,14 @@ import { Translation, Translations } from "../translation/types";
 export interface Word {
   id: number;
   name: string;
-  language_id: number;
+  languageId: number;
   translations?: Translation[];
 }
 
 export interface AddWordRequest {
   id?: number;
   name: string;
-  language_id: number;
+  languageId: number;
 }
 
 export interface Words {

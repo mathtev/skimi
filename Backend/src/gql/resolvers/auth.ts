@@ -22,7 +22,8 @@ export class AuthResolver {
       return null;
     }
     ctx.req.session.userId = user.id.toString();
-    console.log(ctx.req.session.userId);
+    ctx.req.session.save()
+    console.log(ctx.req.session);
     return user;
   }
 }

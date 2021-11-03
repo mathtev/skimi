@@ -6,6 +6,7 @@ import { CREATE_SET } from '../../../graphql/set/mutations';
 import { CreateSetRequest } from '../../../graphql/set/types';
 import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
 import { Translation, Translations } from '../../../graphql/translation/types';
+import { useAuth } from '../../../hooks/useAuth';
 import { useSettings } from '../../../hooks/useSettings';
 import { shuffleArray } from '../../../utils/helperFunctions';
 import { TableData, TableHeader } from '../types';
@@ -18,6 +19,7 @@ const WordSelection = () => {
   const selectedWords = React.useRef<number[]>([]);
 
   const { settings } = useSettings();
+  const { currentUser } = useAuth();
 
   const [createSetMutation] = useMutation(CREATE_SET);
   const translationsQuery = useQuery<Translations>(GET_ALL_TRANSLATIONS, {
@@ -36,8 +38,8 @@ const WordSelection = () => {
       variables: {
         set: {
           name: 'new set 1',
-          created_at: '2021-01-02',
-          translation_ids: selectedWords.current,
+          createdAt: new Date(),
+          translationIds: selectedWords.current,
         },
       },
     }).then((resp) => resp.data.createSet);
@@ -47,8 +49,8 @@ const WordSelection = () => {
     return (
       translations?.map((translation: Translation) => ({
         id: translation.id,
-        wordFrom: translation.word_from.name,
-        wordTo: translation.word_to.name,
+        wordFrom: translation.wordFrom.name,
+        wordTo: translation.wordTo.name,
       })) || []
     );
   };

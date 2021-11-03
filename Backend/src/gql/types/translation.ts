@@ -8,11 +8,11 @@ export class TranslationInput implements Partial<Translation> {
   id: number;
 
   @Field(() => Int)
-  en_word_id: number;
+  enWordId: number;
   
   @Field(() => Int)
-  de_word_id: number;
+  deWordId: number;
 
   @Field(() => Int)
-  level_id: number;
+  levelId: number;
 }

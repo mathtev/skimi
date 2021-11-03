@@ -5,7 +5,7 @@ export const CREATE_SET = gql`
     createSet(set: $set){
       id
       name
-      created_at
+      createdAt
     }
   }
 `;

@@ -10,8 +10,8 @@ export class SetInput implements Partial<Set> {
   name: string;
 
   @Field()
-  created_at: Date;
+  createdAt: Date;
 
   @Field(() => [Int])
-  translation_ids: number[];
+  translationIds: number[];
 }
