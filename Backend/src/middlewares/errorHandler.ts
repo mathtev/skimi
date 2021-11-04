@@ -10,7 +10,7 @@ export const ErrorHandler: MiddlewareFn<GQLContext> = async (_, next) => {
     const handledError = error instanceof CustomError;
 
     if (handledError) {
-      const { message, code, status } = error;
+      const { message, code, status } = error as CustomError;
       throw new CustomError(message, code, status);
     }
 

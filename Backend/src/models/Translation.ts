@@ -21,30 +21,30 @@ class Translation extends BaseEntity {
 
   @Field(() => Word, { defaultValue: [] })
   @ManyToOne(() => Word)
-  @JoinColumn({ name: "en_word_id", referencedColumnName: "id"})
-  word_from: Word;
+  @JoinColumn({ name: "enWordId", referencedColumnName: "id"})
+  wordFrom: Word;
 
   @Field(() => Word, { defaultValue: [] })
   @ManyToOne(() => Word)
-  @JoinColumn({ name: "de_word_id", referencedColumnName: "id"})
-  word_to: Word;
+  @JoinColumn({ name: "deWordId", referencedColumnName: "id"})
+  wordTo: Word;
 
   @Field(() => Level)
   @OneToOne(() => Level)
-  @JoinColumn({ name: "level_id", referencedColumnName: "id"})
+  @JoinColumn({ name: "levelId", referencedColumnName: "id"})
   level: Level;
 
   @Field(() => Int)
   @Column('integer')
-  en_word_id: number;
+  enWordId: number;
 
   @Field(() => Int)
   @Column('integer')
-  de_word_id: number;
+  deWordId: number;
 
   @Field(() => Int)
   @Column("integer")
-  level_id: number;
+  levelId: number;
 }
 
 export default Translation;

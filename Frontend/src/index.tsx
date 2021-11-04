@@ -11,6 +11,7 @@ import Layout from './components/Layout';
 import ThemeProvider from './context/theme/ThemeProvider';
 import SettingsProvider from './context/settings/SettingsProvider';
 import AppStateProvider from './context/appState/AppStateProvider';
+import AuthProvider from './context/auth/AuthProvider';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -41,11 +42,13 @@ function App() {
   return (
     <ApolloProvider client={apolloClient}>
       <ThemeProvider defaultDark={isDark}>
+      <AuthProvider>
         <AppStateProvider>
           <SettingsProvider defaultSettings={defaultSettings}>
             <Layout />
           </SettingsProvider>
         </AppStateProvider>
+        </AuthProvider>
       </ThemeProvider>
     </ApolloProvider>
   );

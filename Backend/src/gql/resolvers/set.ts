@@ -42,10 +42,10 @@ class SetResolver {
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Set)
   async createSet(@Arg('set') setInput: SetInput) {
-    const translations = await Translation.findByIds(setInput.translation_ids);
+    const translations = await Translation.findByIds(setInput.translationIds);
     const result = await createEntity(Set, {
       name: setInput.name,
-      created_at: setInput.created_at,
+      createdAt: setInput.createdAt,
       translations,
     });
     return result;

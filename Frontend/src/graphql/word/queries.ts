@@ -1,20 +1,20 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_WORDS = gql`
-  query words($language_id: Int) {
-    words(language_id: $language_id) {
+  query words($languageId: Int) {
+    words(languageId: $languageId) {
       id
       name
-      language_id
+      languageId
       translations {
         id
-        level_id
-        en_word_id
-        de_word_id
-        word_to {
+        levelId
+        enWordId
+        deWordId
+        wordTo {
           id
           name
-          language_id
+          languageId
         }
       }
     }

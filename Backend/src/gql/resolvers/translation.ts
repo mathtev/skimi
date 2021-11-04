@@ -23,7 +23,7 @@ class TranslationResolver {
   @Query(() => [Translation])
   async translations(): Promise<Translation[]> {
     const result = await findAllEntities(Translation, {
-      relations: ['word_from', 'word_to', 'level'],
+      relations: ['wordFrom', 'wordTo', 'level'],
     });
     return result;
   }
@@ -33,13 +33,13 @@ class TranslationResolver {
   async createTranslation(
     @Arg('translation') translationInput: TranslationInput
   ): Promise<Translation> {
-    const enWordId = translationInput.en_word_id;
-    const deWordId = translationInput.de_word_id;
+    const enWordId = translationInput.enWordId;
+    const deWordId = translationInput.deWordId;
 
     const queryData = await Translation.createQueryBuilder('translation')
       .select('translation.id')
       .where(
-        'translation.en_word_id = :enWordId and translation.de_word_id = :deWordId',
+        'translation.enWordId = :enWordId and translation.deWordId = :deWordId',
         { enWordId, deWordId }
       )
       .getOne();

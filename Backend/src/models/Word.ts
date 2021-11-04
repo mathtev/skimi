@@ -15,10 +15,10 @@ class Word extends BaseEntity {
 
   @Field(() => Int)
   @Column("integer")
-  language_id: number;
+  languageId: number;
 
   @Field(type => [Translation], { defaultValue: [] })
-  @OneToMany(type => Translation, translation => translation.word_to)
+  @OneToMany(type => Translation, translation => translation.wordTo)
   translations: Translation[];
 }
  

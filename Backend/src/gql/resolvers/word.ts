@@ -7,6 +7,7 @@ import {
   Int,
   FieldResolver,
   Root,
+  Ctx,
 } from 'type-graphql';
 import {
   createEntity,
@@ -20,6 +21,7 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Repository } from 'typeorm';
 import { Service } from 'typedi';
 import Translation from '../../models/Translation';
+import { GQLContext } from '../../types/gqlContext';
 
 @Service()
 @Resolver((of) => Word)
@@ -55,12 +57,14 @@ class WordResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Word])
   async words(
-    @Arg('language_id', () => Int, { nullable: true }) language_id: number
+    @Arg('languageId', () => Int, { nullable: true }) languageId: number,
+    @Ctx() ctx: GQLContext
   ): Promise<Word[]> {
-    if (!language_id) language_id = 1;
+    if (!languageId) languageId = 1;
     const result = await findAllEntities(Word, {
-      where: [{ language_id }],
+      where: [{ languageId }],
     });
+    console.log(ctx.req.session);
     return result;
   }
 
@@ -68,13 +72,16 @@ class WordResolver {
   @Mutation(() => Word)
   async addWord(@Arg('word') wordInput: WordInput): Promise<Word> {
     const name = wordInput.name;
-    const language_id = wordInput.language_id;
+    const languageId = wordInput.languageId;
     let word = wordInput;
     const queryData = await Word.createQueryBuilder('word')
       .select('word.id')
-      .where('word.name = :name and word.language_id = :language_id', { name, language_id })
+      .where('word.name = :name and word.languageId = :languageId', {
+        name,
+        languageId,
+      })
       .getOne();
-    if(queryData) {
+    if (queryData) {
       word.id = queryData.id;
     }
     const result = await createEntity(Word, word);
@@ -84,8 +91,8 @@ class WordResolver {
   @FieldResolver()
   async translations(@Root() word: Word) {
     const result = await findAllEntities(Translation, {
-      where: [{ en_word_id: word.id }],
-      relations: ['word_to'],
+      where: [{ enWordId: word.id }],
+      relations: ['wordTo'],
     });
     return result;
   }

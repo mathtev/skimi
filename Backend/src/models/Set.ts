@@ -1,13 +1,18 @@
 import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { TypeormLoader } from 'type-graphql-dataloader';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
 } from 'typeorm';
+import Profile from './Profile';
 import Translation from './Translation';
 
 @ObjectType()
@@ -23,17 +28,25 @@ class Set extends BaseEntity {
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  createdAt: Date;
+
+  @Field(() => Int)
+  @Column('integer')
+  profileId: number;
+
+  @Field(() => Profile, { defaultValue: [] })
+  @ManyToOne(() => Profile)
+  profile: Profile;
 
   @ManyToMany(() => Translation)
   @JoinTable({
     name: "translation_set",
     joinColumn: {
-        name: "set_id",
+        name: "setId",
         referencedColumnName: "id"
     },
     inverseJoinColumn: {
-        name: "translation_id",
+        name: "translationId",
         referencedColumnName: "id"
     }
 })

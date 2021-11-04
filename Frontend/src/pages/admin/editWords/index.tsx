@@ -17,6 +17,7 @@ import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import { Translation, Translations } from '../../../graphql/translation/types';
 import EditWordForm, { FormValues } from './EditWordForm';
 import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
+import { useEditWordMutation, useEditWordQuery } from './graphql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,17 +37,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const EditWords = () => {
   const classes = useStyles();
 
-  const translationsQuery = useQuery<Translations>(GET_ALL_TRANSLATIONS);
-  const levelsQuery = useQuery<Levels>(GET_ALL_LEVELS);
-  const languagesQuery = useQuery<Languages>(GET_ALL_LANGUAGES);
 
-  const [addWordMutation] = useMutation(ADD_WORD);
-  const [createTranslationMutation] = useMutation(CREATE_TRANSLATION);
-  const [deleteTranslationMutation] = useMutation(DELETE_TRANSLATION);
+  const {translationsQuery, levelsQuery, languagesQuery} = useEditWordQuery()
+  const {addWordMutation, createTranslationMutation, deleteTranslationMutation} = useEditWordMutation()
 
   const translationsCopy = translationsQuery.data && [...translationsQuery.data.translations];
   const sortedTranslations = translationsCopy?.sort((a, b) =>
-    a.word_from.name > b.word_from.name ? 1 : b.word_from.name > a.word_from.name ? -1 : 0
+    a.wordFrom.name > b.wordFrom.name ? 1 : b.wordFrom.name > a.wordFrom.name ? -1 : 0
   );
 
   const appSettings = useSettings();
@@ -85,9 +82,9 @@ const EditWords = () => {
     return createTranslationMutation({
       variables: {
         translation: {
-          en_word_id: enWordId,
-          de_word_id: deWordId,
-          level_id: levelId,
+          enWordId: enWordId,
+          deWordId: deWordId,
+          levelId: levelId,
         },
       },
     }).then((resp) => resp.data.createTranslation);
@@ -105,12 +102,12 @@ const EditWords = () => {
     const newWord1: AddWordRequest = {
       id: word1?.id,
       name: formData.word1,
-      language_id: languageFrom.id,
+      languageId: languageFrom.id,
     };
     const newWord2: AddWordRequest = {
       id: word2?.id,
       name: formData.word2,
-      language_id: languageTo.id,
+      languageId: languageTo.id,
     };
     // this is not good and causes 5 rerenders, should make one request
     Promise.all([addWord(newWord1), addWord(newWord2)])
@@ -142,7 +139,7 @@ const EditWords = () => {
       {sortedTranslations?.map((translation: Translation) => (
         <div key={translation.id} className={classes.wordList}>
           <EditWordForm
-            word={translation.word_from}
+            word={translation.wordFrom}
             translation={translation}
             languageFrom={languageFrom?.name}
             languageTo={languageTo?.name}

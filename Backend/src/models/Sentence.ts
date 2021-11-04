@@ -11,11 +11,11 @@ class Sentence extends BaseEntity {
 
   @Field()
   @Column('text')
-  word_text: string;
+  wordText: string;
 
   @Field(() => Int)
   @Column("integer")
-  word_id: number;
+  wordId: number;
 }
 
 export default Sentence;

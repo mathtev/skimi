@@ -4,21 +4,21 @@ export const GET_ALL_TRANSLATIONS = gql`
   query getTranslations {
     translations {
       id
-      level_id
+      levelId
       level {
         id
         difficulty
         code
       }
-      word_from {
+      wordFrom {
         id
         name
-        language_id
+        languageId
       }
-      word_to {
+      wordTo {
         id
         name
-        language_id
+        languageId
       }
     }
   }

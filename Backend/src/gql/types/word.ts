@@ -10,5 +10,5 @@ export class WordInput implements Partial<Word> {
   name: string;
 
   @Field(() => Int)
-  language_id: number;
+  languageId: number;
 }

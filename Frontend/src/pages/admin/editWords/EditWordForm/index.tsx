@@ -78,15 +78,15 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
         enableReinitialize={true}
         initialValues={{
           word1: word?.name || '',
-          word2: translation?.word_to?.name || '',
-          levelId: translation?.level_id ? `${translation.level_id}` : '',
+          word2: translation?.wordTo?.name || '',
+          levelId: translation?.levelId ? `${translation.levelId}` : '',
         }}
         onSubmit={async (
           formData: FormValues,
           { setSubmitting, resetForm }
         ) => {
           setSubmitting(true);
-          await handleSubmit(formData, word, translation?.word_to);
+          await handleSubmit(formData, word, translation?.wordTo);
           setSubmitting(false);
           resetForm();
         }}
