@@ -12,9 +12,11 @@ export const AuthContext = React.createContext<IAuthContext>({
 });
 
 const AuthProvider: React.FC = ({ children }) => {
-  const currentUser = useQuery(GET_CURRENT_USER);
+  const currentUserQuery = useQuery(GET_CURRENT_USER);
   return (
-    <AuthContext.Provider value={{ currentUser: currentUser.data }}>
+    <AuthContext.Provider
+      value={{ currentUser: currentUserQuery?.data?.currentUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -154,14 +154,14 @@ interface SelectionTableProps<T, K> {
   tableData: T[];
   tableHeaders: K[];
   selectedData: number[];
-  setSelectedData: (ids: number[]) => void;
+  handleCheckboxChange: (ids: number[]) => void;
 }
 
 const CheckboxTable = <T extends { id: number }, K>({
   tableData,
   tableHeaders,
   selectedData,
-  setSelectedData,
+  handleCheckboxChange,
 }: PropsWithChildren<SelectionTableProps<T, K>>) => {
   const classes = useStyles();
 
@@ -169,21 +169,26 @@ const CheckboxTable = <T extends { id: number }, K>({
     selectedData.filter((x) => x === row.id).length > 0;
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let newSelecteds;
+    const ids = tableData.map((x) => x.id)
     if (event.target.checked) {
-      setSelectedData(tableData.map((x) => x.id));
+      newSelecteds = selectedData.concat(ids);
+      newSelecteds = Array.from(new Set(newSelecteds))
+      handleCheckboxChange(newSelecteds);
       return;
     }
-    setSelectedData([]);
+    newSelecteds = selectedData.filter( ( id ) => !ids.includes( id ) );
+    handleCheckboxChange(newSelecteds);
   };
 
   const handleClick = (event: React.MouseEvent<unknown>, row: T) => {
     if (isSelected(row)) {
       const newSelecteds = selectedData.filter((x) => x !== row.id);
-      setSelectedData(newSelecteds);
+      handleCheckboxChange(newSelecteds);
       return;
     }
     const newSelecteds = [...selectedData, row.id];
-    setSelectedData(newSelecteds);
+    handleCheckboxChange(newSelecteds);
   };
 
   const numSelected = selectedData.length;

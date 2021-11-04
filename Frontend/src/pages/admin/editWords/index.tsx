@@ -17,6 +17,7 @@ import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import { Translation, Translations } from '../../../graphql/translation/types';
 import EditWordForm, { FormValues } from './EditWordForm';
 import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
+import { useEditWordMutation, useEditWordQuery } from './graphql';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,13 +37,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const EditWords = () => {
   const classes = useStyles();
 
-  const translationsQuery = useQuery<Translations>(GET_ALL_TRANSLATIONS);
-  const levelsQuery = useQuery<Levels>(GET_ALL_LEVELS);
-  const languagesQuery = useQuery<Languages>(GET_ALL_LANGUAGES);
 
-  const [addWordMutation] = useMutation(ADD_WORD);
-  const [createTranslationMutation] = useMutation(CREATE_TRANSLATION);
-  const [deleteTranslationMutation] = useMutation(DELETE_TRANSLATION);
+  const {translationsQuery, levelsQuery, languagesQuery} = useEditWordQuery()
+  const {addWordMutation, createTranslationMutation, deleteTranslationMutation} = useEditWordMutation()
 
   const translationsCopy = translationsQuery.data && [...translationsQuery.data.translations];
   const sortedTranslations = translationsCopy?.sort((a, b) =>

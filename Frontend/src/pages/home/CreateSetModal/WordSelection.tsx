@@ -3,7 +3,6 @@ import { Button } from '@material-ui/core';
 import React from 'react';
 import CheckboxTable from '../../../components/CheckboxTable';
 import { CREATE_SET } from '../../../graphql/set/mutations';
-import { CreateSetRequest } from '../../../graphql/set/types';
 import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
 import { Translation, Translations } from '../../../graphql/translation/types';
 import { useAuth } from '../../../hooks/useAuth';
@@ -11,15 +10,17 @@ import { useSettings } from '../../../hooks/useSettings';
 import { shuffleArray } from '../../../utils/helperFunctions';
 import { TableData, TableHeader } from '../types';
 
-
 const WordSelection = () => {
-  const [selectedData, setSelectedData] = React.useState<number[]>([]);
   const [tableData, setTableData] = React.useState<TableData[]>([]);
   const translationsPool = React.useRef<Translation[]>([]);
-  const selectedWords = React.useRef<number[]>([]);
+  const [selectedWords, setSelectedWords] = React.useState<number[]>([]);
 
   const { settings } = useSettings();
   const { currentUser } = useAuth();
+
+  const displayRows = 6;
+  const minWords = 20;
+  const maxWords = 100;
 
   const [createSetMutation] = useMutation(CREATE_SET);
   const translationsQuery = useQuery<Translations>(GET_ALL_TRANSLATIONS, {
@@ -37,9 +38,9 @@ const WordSelection = () => {
     return createSetMutation({
       variables: {
         set: {
-          name: 'new set 1',
+          name: 'amazing',
           createdAt: new Date(),
-          translationIds: selectedWords.current,
+          translationIds: selectedWords,
         },
       },
     }).then((resp) => resp.data.createSet);
@@ -65,16 +66,21 @@ const WordSelection = () => {
         .filter((translation) => translation.level.difficulty === difficulty)
         .slice(0, rows) || [];
 
-    translationsPool.current = translations.filter((el) => !data.includes(el)) || [];
+    translationsPool.current =
+      translations.filter((el) => !data.includes(el)) || [];
     setTableData(mapTranslations(data));
-    setSelectedData([]);
   };
 
+  const handleCheckboxChange = (ids: number[]) => {
+    setSelectedWords(ids);
+  }
+
   const loadNewData = (translations: Translation[]) => {
-    if (selectedData.length) {
-      selectedWords.current.push(...selectedData);
-    }
-    handleSetTableData(translations, 6, 1);
+    handleSetTableData(
+      translations,
+      displayRows,
+      currentUser?.level?.difficulty || 1
+    );
   };
 
   return (
@@ -82,11 +88,13 @@ const WordSelection = () => {
       <CheckboxTable
         tableData={tableData}
         tableHeaders={tableHeaders}
-        selectedData={selectedData}
-        setSelectedData={setSelectedData}
+        selectedData={selectedWords}
+        handleCheckboxChange={handleCheckboxChange}
       />
-      <Button onClick={() => loadNewData(translationsPool.current)}>Next</Button>
-      <Button onClick={() => createSet()}>createset</Button>
+      <Button onClick={() => loadNewData(translationsPool.current)}>
+        Next
+      </Button>
+      { <p>{console.log(selectedWords)}a</p>&& <Button onClick={() => createSet()}>createset</Button>}{' '}
     </div>
   );
 };
