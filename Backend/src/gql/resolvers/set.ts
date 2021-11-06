@@ -5,6 +5,7 @@ import {
   Int,
   UseMiddleware,
   Mutation,
+  Ctx,
 } from 'type-graphql';
 import {
   createEntity,
@@ -17,6 +18,8 @@ import { Service } from 'typedi';
 import Set from '../../models/Set';
 import { SetInput } from '../types/set';
 import Translation from '../../models/Translation';
+import { GQLContext } from '../../types/gqlContext';
+import { CurrentUserNotFoundError } from '../../utils/customErrors';
 
 @Service()
 @Resolver()
@@ -41,11 +44,16 @@ class SetResolver {
 
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Set)
-  async createSet(@Arg('set') setInput: SetInput) {
+  async createSet(@Arg('set') setInput: SetInput, @Ctx() ctx: GQLContext) {
+    const userId = ctx.req.session.userId;
+    if (!userId) {
+      throw new CurrentUserNotFoundError(userId);
+    }
     const translations = await Translation.findByIds(setInput.translationIds);
     const result = await createEntity(Set, {
       name: setInput.name,
       createdAt: setInput.createdAt,
+      profileId: userId,
       translations,
     });
     return result;

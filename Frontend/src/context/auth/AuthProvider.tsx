@@ -1,25 +1,51 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import React from 'react';
 import { GET_CURRENT_USER } from '../../graphql/profile/queries';
 import { Profile } from '../../graphql/profile/types';
+import { LOGIN } from '../../graphql/user/mutations';
 
 interface IAuthContext {
   currentUser: Profile | null;
+  authLoading: boolean;
+  authenticated: boolean;
+  login?: (email: string, password: string) => void;
+  logout?: () => void;
 }
 
 export const AuthContext = React.createContext<IAuthContext>({
   currentUser: null,
+  authLoading: false,
+  authenticated: false,
+  login: undefined,
+  logout: undefined,
 });
 
 const AuthProvider: React.FC = ({ children }) => {
-  const currentUserQuery = useQuery(GET_CURRENT_USER);
-  return (
-    <AuthContext.Provider
-      value={{ currentUser: currentUserQuery?.data?.currentUser }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const { data, loading } = useQuery(GET_CURRENT_USER);
+  const [loginMutation] = useMutation(LOGIN);
+
+  const currentUser = data;
+  const authLoading = loading;
+
+  const login = (email: string, password: string) => {
+    return loginMutation({
+      variables: { email, password },
+    }).then((resp) => resp.data);
+  };
+
+  const logout = () => {
+    
+  };
+
+  const values = {
+    currentUser: data?.currentUser,
+    authLoading: loading,
+    authenticated: !!data,
+    login,
+
+  };
+
+  return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

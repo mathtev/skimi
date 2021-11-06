@@ -1,29 +1,29 @@
-import { Resolver, Ctx, Arg, Query } from 'type-graphql';
+import { Resolver, Ctx, Arg, Query, Mutation, UseMiddleware } from 'type-graphql';
 import { Service } from 'typedi';
+import { ErrorHandler } from '../../middlewares/errorHandler';
 import User from '../../models/User';
 import { GQLContext } from '../../types/gqlContext';
 
 @Service()
 @Resolver()
 export class AuthResolver {
-  @Query(() => User, { nullable: true })
+  @UseMiddleware([ErrorHandler])
+  @Mutation(() => User, { nullable: true })
   async login(
     @Arg('email') email: string,
     @Arg('password') password: string,
     @Ctx() ctx: GQLContext
-  ): Promise<User | null> {
+  ): Promise<User> {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return null;
+      throw new Error('User not found')
     }
     //const valid = await bcrypt.compare(password, user.password);
     const valid = password === user.password;
     if (!valid) {
-      return null;
+      throw new Error('Invalid password')
     }
-    ctx.req.session.userId = user.id.toString();
-    ctx.req.session.save()
-    console.log(ctx.req.session);
+    ctx.req.session.userId = user.id;
     return user;
   }
 }

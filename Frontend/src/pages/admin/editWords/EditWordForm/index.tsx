@@ -10,10 +10,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Field, Form, Formik, FormikState } from 'formik';
 import React from 'react';
 import { Level } from '../../../../graphql/level/types';
-import { Translation, Translations } from '../../../../graphql/translation/types';
+import {
+  Translation,
+  Translations,
+} from '../../../../graphql/translation/types';
 import { Word, Words } from '../../../../graphql/word/types';
-import CustomField from './CustomField';
-import CustomSelect from './CustomSelect';
+import CustomField from '../../../../components/CustomField';
+import CustomSelect from '../../../../components/CustomSelect';
 import { ApolloQueryResult } from '@apollo/client';
 
 const useStyles = makeStyles((theme: Theme) =>

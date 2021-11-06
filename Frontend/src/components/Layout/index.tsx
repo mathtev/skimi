@@ -11,11 +11,21 @@ import {
 } from 'react-router-dom';
 import Home from '../../pages/Home';
 import Admin from '../../pages/admin';
+import { useAuth } from '../../hooks/useAuth';
+import Login from '../../pages/Login';
+import { PrivateRoute } from '../PrivateRoute';
+import Loader from 'react-loader-spinner';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minHeight: '100vh',
-    width: '100vw',
+    position: 'absolute',
+    inset: 0,
+  },
+  loader: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     paddingTop: `calc(${cssVariables.headerHeight + theme.spacing(6)}px)`,
@@ -24,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Layout = () => {
   const classes = useStyles();
+  const { currentUser, authLoading, authenticated } = useAuth();
 
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
@@ -31,19 +42,37 @@ const Layout = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const pageLoaded = !authLoading;
+
   return (
     <div className={classes.root}>
-      <Router>
-        <Header toggleSidebar={toggleSidebar} />
-        <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-        <main className={classes.content}>
-          <Switch>
-            <Route path="/" exact render={() => <Redirect to="/home" />} />
-            <Route path="/home" exact component={Home} />
-            <Route path="/admin" component={Admin} />
-          </Switch>
-        </main>
-      </Router>
+      {pageLoaded ? (
+        <Router>
+          <Header toggleSidebar={toggleSidebar} />
+          <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+          <main className={classes.content}>
+            <Switch>
+              <Route path="/" exact render={() => <Redirect to="/home" />} />
+              <PrivateRoute
+                path="/home"
+                exact
+                authenticated={authenticated}
+                component={Home}
+              />
+              <PrivateRoute
+                path="/admin"
+                authenticated={authenticated}
+                component={Admin}
+              />
+              <Route path="/login" exact component={Login} />
+            </Switch>
+          </main>
+        </Router>
+      ) : (
+        <div className={classes.loader}>
+          <Loader type="BallTriangle" height={100} width={100} />
+        </div>
+      )}
     </div>
   );
 };

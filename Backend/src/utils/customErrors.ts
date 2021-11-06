@@ -8,6 +8,12 @@ export class CustomError extends Error {
   }
 }
 
+export class CurrentUserNotFoundError extends CustomError {
+  constructor(id: number) {
+    super(`Could not find current user of id ${id} `, "CURRENT_USER_NOT_FOUND", 404);
+  }
+}
+
 export class RouteNotFoundError extends CustomError {
   constructor(url: string) {
     super(`Route '${url}' does not exist.`, "ROUTE_NOT_FOUND", 404);

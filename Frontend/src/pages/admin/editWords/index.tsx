@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       margin: theme.spacing(0, 'auto'),
       width: '50%',
+      overflowX: 'hidden'
     },
     wordListTitle: {
       marginTop: 40,
