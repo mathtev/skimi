@@ -10,8 +10,7 @@ import { ApolloServer } from 'apollo-server-express';
 import Redis from 'ioredis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import { ApolloServerLoaderPlugin } from "type-graphql-dataloader";
-
+import { ApolloServerLoaderPlugin } from 'type-graphql-dataloader';
 
 require('dotenv').config();
 
@@ -30,7 +29,10 @@ const initExpressGraphql = async () => {
   const redis = new Redis();
   const RedisStore = connectRedis(session);
 
-  app.use(cors());
+  const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  };
 
   const schema = await buildSchema({
     resolvers: RESOLVERS,
@@ -43,7 +45,7 @@ const initExpressGraphql = async () => {
     introspection: true,
     plugins: [
       ApolloServerLoaderPlugin({
-        typeormGetConnection: getConnection,  // for use with TypeORM
+        typeormGetConnection: getConnection, // for use with TypeORM
       }),
     ],
   });
@@ -61,12 +63,15 @@ const initExpressGraphql = async () => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
-        sameSite: 'lax'
+        sameSite: 'lax',
       },
     })
   );
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: corsOptions
+  }) 
 
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

@@ -5,6 +5,7 @@ import {
   HttpLink,
   ApolloLink,
   ApolloProvider,
+  createHttpLink,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import Layout from './components/Layout';
@@ -12,6 +13,7 @@ import ThemeProvider from './context/theme/ThemeProvider';
 import SettingsProvider from './context/settings/SettingsProvider';
 import AppStateProvider from './context/appState/AppStateProvider';
 import AuthProvider from './context/auth/AuthProvider';
+import { BrowserRouter as Router } from "react-router-dom";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -23,14 +25,16 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-const link = ApolloLink.from([
-  errorLink,
-  new HttpLink({ uri: 'http://localhost:5000/graphql' }),
-]);
+const link = createHttpLink({
+  uri: 'http://localhost:5000/graphql',
+  credentials: 'include',
+});
+
+const apolloLink = ApolloLink.from([errorLink, link]);
 
 const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
-  link: link,
+  link: apolloLink,
 });
 
 function App() {
@@ -40,17 +44,19 @@ function App() {
     nativeLanguage: 'english',
   };
   return (
-    <ApolloProvider client={apolloClient}>
-      <ThemeProvider defaultDark={isDark}>
-      <AuthProvider>
-        <AppStateProvider>
-          <SettingsProvider defaultSettings={defaultSettings}>
-            <Layout />
-          </SettingsProvider>
-        </AppStateProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </ApolloProvider>
+    <Router>
+      <ApolloProvider client={apolloClient}>
+        <ThemeProvider defaultDark={isDark}>
+          <AuthProvider>
+            <AppStateProvider>
+              <SettingsProvider defaultSettings={defaultSettings}>
+                <Layout />
+              </SettingsProvider>
+            </AppStateProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </ApolloProvider>
+    </Router>
   );
 }
 

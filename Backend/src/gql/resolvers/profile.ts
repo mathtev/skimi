@@ -13,6 +13,7 @@ class ProfileResolver {
   async currentUser(
     @Ctx() ctx: GQLContext
   ): Promise<Profile> {
+    console.log('lol')
     const userId = ctx.req.session.userId;
 
     const result = await findEntityById(Profile, userId, {

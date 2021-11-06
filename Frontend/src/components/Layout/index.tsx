@@ -7,7 +7,6 @@ import {
   Redirect,
   Route,
   Switch,
-  BrowserRouter as Router,
 } from 'react-router-dom';
 import Home from '../../pages/Home';
 import Admin from '../../pages/admin';
@@ -34,8 +33,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Layout = () => {
   const classes = useStyles();
-  const { currentUser, authLoading, authenticated } = useAuth();
+  const { currentUser, authLoading, authenticated, login, logout } = useAuth();
 
+  console.log(currentUser);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const toggleSidebar = () => {
@@ -43,14 +43,19 @@ const Layout = () => {
   };
 
   const pageLoaded = !authLoading;
+  console.log(authenticated, currentUser);
 
   return (
     <div className={classes.root}>
       {pageLoaded ? (
-        <Router>
+        <div>
           <Header toggleSidebar={toggleSidebar} />
           <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
           <main className={classes.content}>
+            <button onClick={() => login('test@mail.com', 'qwerty123')}>
+              login
+            </button>
+            <button onClick={() => logout()}>logout</button>
             <Switch>
               <Route path="/" exact render={() => <Redirect to="/home" />} />
               <PrivateRoute
@@ -64,10 +69,10 @@ const Layout = () => {
                 authenticated={authenticated}
                 component={Admin}
               />
-              <Route path="/login" exact component={Login} />
             </Switch>
           </main>
-        </Router>
+          <Route path="/login" exact component={Login} />
+        </div>
       ) : (
         <div className={classes.loader}>
           <Loader type="BallTriangle" height={100} width={100} />
