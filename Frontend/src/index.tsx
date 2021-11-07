@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom';
 import {
   ApolloClient,
   InMemoryCache,
-  HttpLink,
   ApolloLink,
   ApolloProvider,
   createHttpLink,
@@ -13,7 +12,9 @@ import ThemeProvider from './context/theme/ThemeProvider';
 import SettingsProvider from './context/settings/SettingsProvider';
 import AppStateProvider from './context/appState/AppStateProvider';
 import AuthProvider from './context/auth/AuthProvider';
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter } from 'react-router-dom';
+import LevelsProvider from './context/levels/LevelsProvider';
+import LanguagesProvider from './context/languages/LanguagesProvider';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -44,19 +45,23 @@ function App() {
     nativeLanguage: 'english',
   };
   return (
-    <Router>
+    <BrowserRouter>
       <ApolloProvider client={apolloClient}>
         <ThemeProvider defaultDark={isDark}>
           <AuthProvider>
             <AppStateProvider>
               <SettingsProvider defaultSettings={defaultSettings}>
-                <Layout />
+                <LanguagesProvider>
+                  <LevelsProvider>
+                    <Layout />
+                  </LevelsProvider>
+                </LanguagesProvider>
               </SettingsProvider>
             </AppStateProvider>
           </AuthProvider>
         </ThemeProvider>
       </ApolloProvider>
-    </Router>
+    </BrowserRouter>
   );
 }
 

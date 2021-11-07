@@ -34,11 +34,13 @@ const useStyles = makeStyles((theme) => ({
 
 interface MobileHeaderProps {
   navLinks: navLinksType;
+  logout: () => Promise<any>;
   toggleSidebar: () => void;
 }
 
 const MobileHeader: React.FC<MobileHeaderProps> = ({
   navLinks,
+  logout,
   toggleSidebar,
 }) => {
   const classes = useStyles();

@@ -73,9 +73,10 @@ const useStyles = makeStyles((theme) => ({
 
 interface DesktopToolBarProps {
   navLinks: navLinksType;
+  logout: () => Promise<any>;
 }
 
-const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks }) => {
+const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks, logout }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -135,6 +136,7 @@ const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks }) => {
         >
           <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
           <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
+          <MenuItem onClick={logout}>Logout</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

@@ -3,11 +3,7 @@ import React from 'react';
 import { cssVariables } from '../../context/theme/theme';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
-import {
-  Redirect,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import Home from '../../pages/Home';
 import Admin from '../../pages/admin';
 import { useAuth } from '../../hooks/useAuth';
@@ -33,9 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Layout = () => {
   const classes = useStyles();
-  const { currentUser, authLoading, authenticated, login, logout } = useAuth();
-
-  console.log(currentUser);
+  const { currentUser, authLoading, authenticated} = useAuth();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const toggleSidebar = () => {
@@ -43,36 +37,35 @@ const Layout = () => {
   };
 
   const pageLoaded = !authLoading;
-  console.log(authenticated, currentUser);
+
+  console.log(authenticated)
 
   return (
     <div className={classes.root}>
-      {pageLoaded ? (
+      {pageLoaded && authenticated ? (
         <div>
           <Header toggleSidebar={toggleSidebar} />
           <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
           <main className={classes.content}>
-            <button onClick={() => login('test@mail.com', 'qwerty123')}>
-              login
-            </button>
-            <button onClick={() => logout()}>logout</button>
             <Switch>
-              <Route path="/" exact render={() => <Redirect to="/home" />} />
-              <PrivateRoute
+              <Route
                 path="/home"
                 exact
-                authenticated={authenticated}
                 component={Home}
               />
-              <PrivateRoute
+              <Route
                 path="/admin"
-                authenticated={authenticated}
                 component={Admin}
               />
+              <Route path="/" render={() => <Redirect to="/home" />} />
             </Switch>
           </main>
-          <Route path="/login" exact component={Login} />
         </div>
+      ) : !authenticated && pageLoaded ? (
+        <>
+        <Route path="/" render={() => <Redirect to="/login" />} />
+        <Route path="/login" component={Login} />
+        </>
       ) : (
         <div className={classes.loader}>
           <Loader type="BallTriangle" height={100} width={100} />

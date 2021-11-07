@@ -1,23 +1,16 @@
-import { useMutation, useQuery } from '@apollo/client';
-import { ADD_WORD } from '../../../graphql/word/mutations';
-import { AddWordRequest, Word, Words } from '../../../graphql/word/types';
-import { Levels } from '../../../graphql/level/types';
-import { Languages } from '../../../graphql/language/types';
-import { GET_ALL_WORDS } from '../../../graphql/word/queries';
-import { GET_ALL_LEVELS } from '../../../graphql/level/queries';
-import { GET_ALL_LANGUAGES } from '../../../graphql/language/queries';
-import {
-  CREATE_TRANSLATION,
-  DELETE_TRANSLATION,
-} from '../../../graphql/translation/mutations';
+import { AddWordRequest, Word } from '../../../graphql/word/types';
 import { useSettings } from '../../../hooks/useSettings';
 
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 
-import { Translation, Translations } from '../../../graphql/translation/types';
+import { Translation } from '../../../graphql/translation/types';
 import EditWordForm, { FormValues } from './EditWordForm';
-import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
-import { useEditWordMutation, useEditWordQuery } from './graphql';
+import { useLanguages } from '../../../hooks/useLanguages';
+import { useLevels } from '../../../hooks/useLevels';
+import { useTranslations } from '../../../graphql/translation/queries';
+import { ADD_WORD } from '../../../graphql/word/mutations';
+import { CREATE_TRANSLATION, DELETE_TRANSLATION } from '../../../graphql/translation/mutations';
+import { useMutation } from '@apollo/client';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,12 +30,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const EditWords = () => {
   const classes = useStyles();
+  
+  const levels = useLevels();
+  const languages = useLanguages();
+  const translations = useTranslations()
 
+  const [addWordMutation] = useMutation(ADD_WORD);
+  const [createTranslationMutation] = useMutation(CREATE_TRANSLATION);
+  const [deleteTranslationMutation] = useMutation(DELETE_TRANSLATION);
 
-  const {translationsQuery, levelsQuery, languagesQuery} = useEditWordQuery()
-  const {addWordMutation, createTranslationMutation, deleteTranslationMutation} = useEditWordMutation()
-
-  const translationsCopy = translationsQuery.data && [...translationsQuery.data.translations];
+  const translationsCopy = translations.data && [...translations.data.translations];
   const sortedTranslations = translationsCopy?.sort((a, b) =>
     a.wordFrom.name > b.wordFrom.name ? 1 : b.wordFrom.name > a.wordFrom.name ? -1 : 0
   );
@@ -56,10 +53,10 @@ const EditWords = () => {
     return s1.toLowerCase() === s2.toLowerCase();
   };
 
-  const languageFrom = languagesQuery.data?.languages.find((language) =>
+  const languageFrom = languages.data.find((language) =>
     compareStrings(language.name, appSettings.settings?.nativeLanguage)
   );
-  const languageTo = languagesQuery.data?.languages.find((language) =>
+  const languageTo = languages.data.find((language) =>
     compareStrings(language.name, appSettings.settings?.learningLanguage)
   );
 
@@ -72,7 +69,7 @@ const EditWords = () => {
   const deleteTranslation = (id: number) => {
     return deleteTranslationMutation({
       variables: { id },
-    }).then(() => translationsQuery.refetch());
+    }).then(() => translations.refetch());
   };
 
   const createTranslation = (
@@ -116,8 +113,8 @@ const EditWords = () => {
         createTranslation(resp[0].id, resp[1].id, parseInt(formData.levelId));
       })
       .then(() => {
-        levelsQuery.refetch();
-        translationsQuery.refetch();
+        levels.refetch!();
+        translations.refetch();
       })
       .catch((e: Error) => console.error('server error:', e.message));
   };
@@ -130,7 +127,7 @@ const EditWords = () => {
         translation={undefined}
         languageFrom={languageFrom?.name}
         languageTo={languageTo?.name}
-        levels={levelsQuery.data?.levels}
+        levels={levels.data}
         handleSubmit={handleSubmit}
         deleteTranslation={deleteTranslation}
       />
@@ -144,7 +141,7 @@ const EditWords = () => {
             translation={translation}
             languageFrom={languageFrom?.name}
             languageTo={languageTo?.name}
-            levels={levelsQuery.data?.levels}
+            levels={levels.data}
             handleSubmit={handleSubmit}
             deleteTranslation={deleteTranslation}
           />

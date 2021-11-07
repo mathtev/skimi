@@ -8,21 +8,21 @@ interface IAuthContext {
   currentUser: Profile | null;
   authLoading: boolean;
   authenticated: boolean;
-  login: (email: string, password: string) => void;
-  logout: () => void;
+  login?: (email: string, password: string) => Promise<any>;
+  logout?: () => Promise<any>;
 }
 
 export const AuthContext = React.createContext<IAuthContext>({
   currentUser: null,
   authLoading: false,
   authenticated: false,
-  login: () => undefined,
-  logout: () => undefined,
+  login: undefined,
+  logout: undefined,
 });
 
 const AuthProvider: React.FC = ({ children }) => {
   const { data, loading, refetch } = useQuery(GET_CURRENT_USER, {
-    onCompleted: (user) => setCurrentUser(user),
+    onCompleted: (data) => setCurrentUser(data.currentUser),
   });
   const [loginMutation] = useMutation(LOGIN);
   const [logoutMutation] = useMutation(LOGOUT);
@@ -34,7 +34,7 @@ const AuthProvider: React.FC = ({ children }) => {
   const login = (email: string, password: string) => {
     return loginMutation({
       variables: { email, password },
-      onCompleted: (data) => {console.log('completed');refetch()},
+      onCompleted: () => refetch(),
     });
   };
 

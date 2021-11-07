@@ -7,6 +7,7 @@ import { CREATE_SET } from '../../../graphql/set/mutations';
 import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
 import { Translation, Translations } from '../../../graphql/translation/types';
 import { useAuth } from '../../../hooks/useAuth';
+import { useLevels } from '../../../hooks/useLevels';
 import { useSettings } from '../../../hooks/useSettings';
 import { shuffleArray } from '../../../utils/helperFunctions';
 import { TableData, TableHeader } from '../types';
@@ -40,15 +41,20 @@ const WordSelection: React.FC<WordSelectionProps> = ({
   const classes = useStyles();
   const { settings } = useSettings();
   const { currentUser } = useAuth();
+  const levels = useLevels();
 
-  const [tableData, setTableData] = React.useState<TableData[]>([]);
+  const userLevel = currentUser?.level?.difficulty || 1;
+
   const translationsPool = React.useRef<Translation[]>([]);
+  const numSelected = React.useRef<number>(0);
+  const estimatedLevel = React.useRef<number>(userLevel);
+  const [tableData, setTableData] = React.useState<TableData[]>([]);
   const [selectedWords, setSelectedWords] = React.useState<number[]>([]);
   const [title, setTitle] = React.useState('New set');
   const [errorMessage, setErrorMessage] = React.useState('');
 
   const [createSetMutation] = useMutation(CREATE_SET);
-  const translationsQuery = useQuery<Translations>(GET_ALL_TRANSLATIONS, {
+  const translations = useQuery<Translations>(GET_ALL_TRANSLATIONS, {
     onCompleted: (data) => {
       loadNewData(data.translations);
     },
@@ -106,6 +112,11 @@ const WordSelection: React.FC<WordSelectionProps> = ({
     );
   };
 
+  // napisać providery dla level oraz language  2.5h, pfffff 1h ez
+  // skończyć funkcję estimate new level        1.5h
+  // Na stronie your sets wylistować zestawy    4h
+  // Stworzyć stronę pokazującą zestaw i słowa  2h
+
   const handleSetTableData = (
     translations: Translation[],
     rows: number,
@@ -126,12 +137,46 @@ const WordSelection: React.FC<WordSelectionProps> = ({
   };
 
   const loadNewData = (translations: Translation[]) => {
-    handleSetTableData(
-      translations,
-      displayRows,
-      currentUser?.level?.difficulty || 1
-    );
+    handleSetTableData(translations, displayRows, estimatedLevel.current);
   };
+
+  const handleNext = (translations: Translation[]) => {
+    numSelected.current = selectedWords.length - numSelected.current;
+    estimateNewLevel();
+    loadNewData(translations);
+  };
+
+  const estimateNewLevel = () => {
+    let newLevel = estimatedLevel.current;
+    const numLevels = levels.data.length;
+    const perceent = (numSelected.current / displayRows) * 100;
+    console.log('prc', perceent)
+    if (perceent > 90) {
+      newLevel -= 2;
+    } else if (perceent > 70) {
+      newLevel -= 1;
+    }else if (perceent < 10) {
+      newLevel += 2;
+    } else if (perceent < 30) {
+      newLevel += 1;
+    } 
+    if (newLevel > numLevels) {
+      newLevel = numLevels;
+    } else if (newLevel < 1) {
+      newLevel = 1;
+    }
+    estimatedLevel.current = newLevel;
+    console.log('dis', estimatedLevel.current);
+  };
+
+  // obecny poziom zwiększam o 2 lub o 1
+  // obecny poziom zmniejszam o 2 lub o 1
+  // seśli nie mogę to daję ten na granicy
+  // < 90%, obniżamy o 2
+  // < 70%, obniżamy o 1
+  // między 30 a 70%, zostawiamy
+  // > 30%, podwyższamy o 1
+  // > 10%, podwyższamy o 2
 
   return (
     <form onSubmit={handleSubmit}>
@@ -157,7 +202,7 @@ const WordSelection: React.FC<WordSelectionProps> = ({
       />
       <div className={classes.buttons}>
         {tableData.length > 0 && (
-          <Button onClick={() => loadNewData(translationsPool.current)}>
+          <Button onClick={() => handleNext(translationsPool.current)}>
             Next
           </Button>
         )}
