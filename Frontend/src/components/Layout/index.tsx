@@ -10,6 +10,7 @@ import { useAuth } from '../../hooks/useAuth';
 import Login from '../../pages/Login';
 import { PrivateRoute } from '../PrivateRoute';
 import Loader from 'react-loader-spinner';
+import YourSets from '../../pages/YourSets';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,8 +39,6 @@ const Layout = () => {
 
   const pageLoaded = !authLoading;
 
-  console.log(authenticated)
-
   return (
     <div className={classes.root}>
       {pageLoaded && authenticated ? (
@@ -52,6 +51,10 @@ const Layout = () => {
                 path="/home"
                 exact
                 component={Home}
+              />
+              <Route
+                path="/your-sets"
+                component={YourSets}
               />
               <Route
                 path="/admin"

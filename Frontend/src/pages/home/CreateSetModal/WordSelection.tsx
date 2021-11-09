@@ -112,8 +112,6 @@ const WordSelection: React.FC<WordSelectionProps> = ({
     );
   };
 
-  // napisać providery dla level oraz language  2.5h, pfffff 1h ez
-  // skończyć funkcję estimate new level        1.5h
   // Na stronie your sets wylistować zestawy    4h
   // Stworzyć stronę pokazującą zestaw i słowa  2h
 
@@ -166,17 +164,7 @@ const WordSelection: React.FC<WordSelectionProps> = ({
       newLevel = 1;
     }
     estimatedLevel.current = newLevel;
-    console.log('dis', estimatedLevel.current);
   };
-
-  // obecny poziom zwiększam o 2 lub o 1
-  // obecny poziom zmniejszam o 2 lub o 1
-  // seśli nie mogę to daję ten na granicy
-  // < 90%, obniżamy o 2
-  // < 70%, obniżamy o 1
-  // między 30 a 70%, zostawiamy
-  // > 30%, podwyższamy o 1
-  // > 10%, podwyższamy o 2
 
   return (
     <form onSubmit={handleSubmit}>
