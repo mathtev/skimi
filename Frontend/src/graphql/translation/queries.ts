@@ -1,4 +1,5 @@
-import { gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
+import { Translations } from "./types";
 
 export const GET_ALL_TRANSLATIONS = gql`
   query getTranslations {
@@ -23,4 +24,10 @@ export const GET_ALL_TRANSLATIONS = gql`
     }
   }
 `;
+
+export const useTranslations = () => {
+  const { data, loading, refetch } =
+    useQuery<Translations>(GET_ALL_TRANSLATIONS);
+  return { data, loading, refetch };
+};
 

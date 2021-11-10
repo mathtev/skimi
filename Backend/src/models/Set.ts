@@ -38,18 +38,19 @@ class Set extends BaseEntity {
   @ManyToOne(() => Profile)
   profile: Profile;
 
+  @Field(() => [Translation], { defaultValue: [] })
   @ManyToMany(() => Translation)
   @JoinTable({
-    name: "translation_set",
+    name: 'translation_set',
     joinColumn: {
-        name: "setId",
-        referencedColumnName: "id"
+      name: 'setId',
+      referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-        name: "translationId",
-        referencedColumnName: "id"
-    }
-})
+      name: 'translationId',
+      referencedColumnName: 'id',
+    },
+  })
   translations: Translation[];
 }
 

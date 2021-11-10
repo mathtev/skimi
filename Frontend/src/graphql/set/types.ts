@@ -13,6 +13,10 @@ export interface CreateSetRequest {
   createdAt: Date;
 }
 
+export interface SetResponse {
+  set: Set;
+}
+
 export interface Sets {
   sets: Set[];
 }

@@ -6,8 +6,8 @@ export const navLinks: navLinksType = [
     path: '/home'
   },
   {
-    title: 'learn',
-    path: '/learn'
+    title: 'edit words',
+    path: '/admin/edit-words'
   },
   {
     title: 'your sets',

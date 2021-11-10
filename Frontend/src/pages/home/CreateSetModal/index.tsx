@@ -3,7 +3,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import WordSelection from './WordSelection';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -63,8 +63,7 @@ const CreateSetModal: React.FC<CreateSetModalProps> = ({
             <Button className={classes.closeButton} onClick={handleModalClose}>
               Close &#10006;
             </Button>
-            <h2 id="transition-modal-title">Transition modal</h2>
-            <WordSelection />
+            <WordSelection minWords={10} displayRows={6} handleModalClose={handleModalClose} />
           </div>
         </Fade>
       </Modal>

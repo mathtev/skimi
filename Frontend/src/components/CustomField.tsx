@@ -2,8 +2,11 @@ import { TextField } from '@material-ui/core';
 import { FieldAttributes, useField } from 'formik';
 import React from 'react'
 
-const CustomField: React.FC<FieldAttributes<{}> & { label: string }> = ({
+type fieldAttr = {label: string, type: string}
+
+const CustomField: React.FC<FieldAttributes<{}> & fieldAttr> = ({
   label,
+  type,
   ...props
 }) => {
   const [field, meta] = useField<{}>(props);
@@ -15,6 +18,7 @@ const CustomField: React.FC<FieldAttributes<{}> & { label: string }> = ({
       helperText={errorText}
       error={!!errorText}
       label={label}
+      type={type}
     />
   );
 };

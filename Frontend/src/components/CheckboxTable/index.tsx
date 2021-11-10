@@ -76,11 +76,12 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  minSelected: number;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, minSelected } = props;
 
   return (
     <Toolbar
@@ -95,7 +96,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          <b>{numSelected} / {minSelected}</b> words selected 
         </Typography>
       ) : (
         <Typography
@@ -106,19 +107,6 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         >
           Choose words
         </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
       )}
     </Toolbar>
   );
@@ -151,6 +139,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SelectionTableProps<T, K> {
+  minWords: number;
   tableData: T[];
   tableHeaders: K[];
   selectedData: number[];
@@ -158,6 +147,7 @@ interface SelectionTableProps<T, K> {
 }
 
 const CheckboxTable = <T extends { id: number }, K>({
+  minWords,
   tableData,
   tableHeaders,
   selectedData,
@@ -165,19 +155,20 @@ const CheckboxTable = <T extends { id: number }, K>({
 }: PropsWithChildren<SelectionTableProps<T, K>>) => {
   const classes = useStyles();
 
-  const isSelected = (row: T) =>
-    selectedData.filter((x) => x === row.id).length > 0;
+  const isSelected = (row: T) => {
+    return selectedData.filter((x) => x === row.id).length > 0;
+  };
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newSelecteds;
-    const ids = tableData.map((x) => x.id)
+    const ids = tableData.map((x) => x.id);
     if (event.target.checked) {
       newSelecteds = selectedData.concat(ids);
-      newSelecteds = Array.from(new Set(newSelecteds))
+      newSelecteds = Array.from(new Set(newSelecteds));
       handleCheckboxChange(newSelecteds);
       return;
     }
-    newSelecteds = selectedData.filter( ( id ) => !ids.includes( id ) );
+    newSelecteds = selectedData.filter((id) => !ids.includes(id));
     handleCheckboxChange(newSelecteds);
   };
 
@@ -191,14 +182,20 @@ const CheckboxTable = <T extends { id: number }, K>({
     handleCheckboxChange(newSelecteds);
   };
 
-  const numSelected = selectedData.length;
+  const numSelected = selectedData.filter((id) =>
+    tableData.some((obj) => obj.id === id)
+  ).length;
+
   const columnNames =
     tableData[0] && Object.keys(tableData[0]).filter((name) => name !== 'id');
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={numSelected} />
+        <EnhancedTableToolbar
+          numSelected={selectedData.length}
+          minSelected={minWords}
+        />
         <TableContainer>
           <Table
             className={classes.table}

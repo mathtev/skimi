@@ -10,15 +10,14 @@ import { GQLContext } from '../../types/gqlContext';
 class ProfileResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => Profile)
-  async currentUser(
-    @Ctx() ctx: GQLContext
-  ): Promise<Profile> {
+  async currentUser(@Ctx() ctx: GQLContext): Promise<Profile | null> {
     const userId = ctx.req.session.userId;
-
+    if (!userId) {
+      return null;
+    }
     const result = await findEntityById(Profile, userId, {
       relations: ['user', 'level', 'sets'],
     });
-
     return result;
   }
 }
