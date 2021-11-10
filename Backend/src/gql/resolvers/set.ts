@@ -27,7 +27,9 @@ class SetResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Set])
   async sets(): Promise<Set[]> {
-    const result = await findAllEntities(Set);
+    const result = await findAllEntities(Set, {
+      relations: ['translations'],
+    });
     return result;
   }
 

@@ -11,6 +11,7 @@ import Login from '../../pages/Login';
 import { PrivateRoute } from '../PrivateRoute';
 import Loader from 'react-loader-spinner';
 import YourSets from '../../pages/YourSets';
+import SetDetails from '../../pages/YourSets/SetDetails';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Layout = () => {
   const classes = useStyles();
-  const { currentUser, authLoading, authenticated} = useAuth();
+  const { currentUser, authLoading, authenticated } = useAuth();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const toggleSidebar = () => {
@@ -47,27 +48,18 @@ const Layout = () => {
           <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
           <main className={classes.content}>
             <Switch>
-              <Route
-                path="/home"
-                exact
-                component={Home}
-              />
-              <Route
-                path="/your-sets"
-                component={YourSets}
-              />
-              <Route
-                path="/admin"
-                component={Admin}
-              />
+              <Route path="/home" exact component={Home} />
+              <Route path="/your-sets" exact component={YourSets} />
+              <Route path="/your-sets/:id" component={SetDetails} />
+              <Route path="/admin" component={Admin} />
               <Route path="/" render={() => <Redirect to="/home" />} />
             </Switch>
           </main>
         </div>
       ) : !authenticated && pageLoaded ? (
         <>
-        <Route path="/" render={() => <Redirect to="/login" />} />
-        <Route path="/login" component={Login} />
+          <Route path="/" render={() => <Redirect to="/login" />} />
+          <Route path="/login" component={Login} />
         </>
       ) : (
         <div className={classes.loader}>

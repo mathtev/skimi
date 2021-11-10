@@ -6,6 +6,22 @@ export const GET_ALL_SETS = gql`
       id
       name
       createdAt
+      translations {
+        id
+        levelId
+        enWordId
+        deWordId
+        wordTo {
+          id
+          name
+          languageId
+        }
+        wordFrom {
+          id
+          name
+          languageId
+        }
+      }
     }
   }
 `;

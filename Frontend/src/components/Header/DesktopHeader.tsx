@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     letterSpacing: '3px',
     fontWeight: 'bold',
-    color: '#fffc5c',
+    color: theme.palette.secondary.light,
     padding: 0,
   },
   linksContainer: {
@@ -92,7 +92,7 @@ const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks, logout }) => {
     <AppBar className={classes.root} position="fixed">
       <Toolbar>
         <NavLink to="" className={classes.titleButton}>
-          <Typography className={classes.title} variant="h6">
+          <Typography className={classes.title} variant="h6" color="error">
             SKIMI
           </Typography>
         </NavLink>
@@ -111,7 +111,7 @@ const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks, logout }) => {
         <div className={classes.grow} />
         <HeaderSearch />
         <IconButton aria-label="show 17 new notifications" color="inherit">
-          <Badge variant="dot" color="secondary">
+          <Badge variant="dot" color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>

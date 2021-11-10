@@ -22,14 +22,16 @@ export const AuthContext = React.createContext<IAuthContext>({
 
 const AuthProvider: React.FC = ({ children }) => {
   const { data, loading, refetch } = useQuery(GET_CURRENT_USER, {
-    onCompleted: (data) => setCurrentUser(data.currentUser),
+    onCompleted: (data) => {
+      setCurrentUser(data?.currentUser);
+    },
   });
   const [loginMutation] = useMutation(LOGIN);
   const [logoutMutation] = useMutation(LOGOUT);
 
   const [currentUser, setCurrentUser] = React.useState(null);
+  const authenticated = !!data
   const authLoading = loading;
-  const authenticated = !!currentUser; // check it later
 
   const login = (email: string, password: string) => {
     return loginMutation({
