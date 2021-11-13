@@ -37,7 +37,7 @@ class SetResolver {
   @Query(() => Set)
   async set(@Arg('id', () => Int) id: number): Promise<Set> {
     const result = await findEntityById(Set, id, {
-      relations: ['translations'],
+      relations: ['translations', 'translationSets'],
     });
     return result;
   }

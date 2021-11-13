@@ -9,11 +9,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
 import Profile from './Profile';
 import Translation from './Translation';
+import TranslationSet from './TranslationSet';
 
 @ObjectType()
 @Entity()
@@ -38,6 +40,10 @@ class Set extends BaseEntity {
   @ManyToOne(() => Profile)
   profile: Profile;
 
+  @Field(() => [TranslationSet], { defaultValue: [] })
+  @OneToMany(type => TranslationSet, translationSet => translationSet.set)
+  translationSets: TranslationSet[];
+  
   @Field(() => [Translation], { defaultValue: [] })
   @ManyToMany(() => Translation)
   @JoinTable({

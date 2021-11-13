@@ -32,6 +32,26 @@ export const GET_SET = gql`
       id
       name
       createdAt
+      translationSets {
+        id
+        skill
+        translation {
+          id
+          levelId
+          enWordId
+          deWordId
+          wordTo {
+            id
+            name
+            languageId
+          }
+          wordFrom {
+            id
+            name
+            languageId
+          }
+        } 
+      }
       translations {
         id
         levelId

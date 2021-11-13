@@ -4,6 +4,7 @@ import Profile from "../models/Profile";
 import Sentence from "../models/Sentence";
 import Set from "../models/Set";
 import Translation from "../models/Translation";
+import TranslationSet from "../models/TranslationSet";
 import User from "../models/User";
 import Word from "../models/Word";
 
@@ -16,6 +17,7 @@ export type EntityTypes =
   | typeof Sentence
   | typeof User
   | typeof Profile
+  | typeof TranslationSet
   | typeof Word;
 
 export type EntityInstance =
@@ -26,6 +28,7 @@ export type EntityInstance =
   | Sentence
   | User
   | Profile
+  | TranslationSet
   | Set;
 
 export const entities: { [key: string]: EntityTypes } = {
@@ -36,5 +39,6 @@ export const entities: { [key: string]: EntityTypes } = {
   User,
   Profile,
   Sentence,
+  TranslationSet,
   Set,
 };

@@ -1,4 +1,4 @@
-.movieCard {
+.card {
   text-align: center;
   max-height: 600px;
   height: 100%;
@@ -6,9 +6,10 @@
   display: flex;
   flex-direction: column;
   border: 1px solid #dddddd;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 6%), 0 1px 2px rgb(0 0 0 / 8%);
 }
 
-.movieCard:hover {
+.card:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.22);
 }
 
@@ -16,7 +17,7 @@
   height: 150px;
 }
 
-.movieCard img {
+.card img {
   margin: 20px 40px;
   min-height: 0;
   height: auto;
