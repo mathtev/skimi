@@ -50,12 +50,12 @@ interface IRouterParams {
 }
 
 const skillColors = [
-  '#37d637',
-  '#a4e738',
-  '#f1f53c',
-  '#f5d33c',
-  '#fc9927',
+  '#ffffff',
   '#f53c3c',
+  '#fc9927',
+  '#f1f53c',
+  '#c7e738',
+  '#37d637',
 ];
 
 const SetDetails = () => {
@@ -79,7 +79,7 @@ const SetDetails = () => {
   };
 
   const updateSkill = (id: number, skill: number) => {
-    console.log(skill, id)
+    console.log(skill, id);
     return translationSetUpdateMutation({
       variables: { id, input: { skill } },
       onCompleted: () => refetch(),
@@ -90,7 +90,7 @@ const SetDetails = () => {
     let skill = translationSets.find((x) => x.id === translationSetId)?.skill;
     if (skill === undefined) return;
     skill -= 1;
-    if (skill < 0) skill = 0;
+    if (skill < 1) skill = 1;
     updateSkill(translationSetId, skill);
   };
 
@@ -136,7 +136,6 @@ const SetDetails = () => {
         >
           <span>{translationSet?.translation?.wordFrom.name} </span>
           <span>{translationSet?.translation?.wordTo.name} </span>
-          <span>{translationSet?.skill} </span>
         </Card>
       ))}
     </div>
