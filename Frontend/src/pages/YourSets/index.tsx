@@ -38,7 +38,6 @@ const YourSets = () => {
   const classes = useStyles();
   let { path } = useRouteMatch();
   const { data, loading, refetch } = useQuery<Sets>(GET_ALL_SETS);
-  console.log(data)
   return (
     <div className={classes.container}>
       {data?.sets &&

@@ -1,10 +1,12 @@
 import { Translation } from "../translation/types";
+import { TranslationSet } from "../translationSet/types";
 
 export interface Set {
   id: number;
   name: string;
   createdAt: Date;
-  translations?: Translation[]
+  translations?: Translation[];
+  translationSets: TranslationSet[];
 }
 
 export interface CreateSetRequest {

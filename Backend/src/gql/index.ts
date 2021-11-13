@@ -4,6 +4,7 @@ import LevelResolver from './resolvers/level';
 import ProfileResolver from './resolvers/profile';
 import SetResolver from './resolvers/set';
 import TranslationResolver from './resolvers/translation';
+import TranslationSetResolver from './resolvers/translationSet';
 import WordResolver from './resolvers/word';
 
 export const RESOLVERS = [
@@ -13,5 +14,6 @@ export const RESOLVERS = [
   TranslationResolver,
   SetResolver,
   ProfileResolver,
-  AuthResolver
+  AuthResolver,
+  TranslationSetResolver
 ] as const;

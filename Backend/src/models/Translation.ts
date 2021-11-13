@@ -6,10 +6,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import Level from './Level';
+import TranslationSet from './TranslationSet';
 import Word from './Word';
 
 
@@ -48,6 +50,10 @@ class Translation extends BaseEntity {
   @Field(() => Int)
   @Column("integer")
   levelId: number;
+
+  @Field(() => [TranslationSet], { defaultValue: [] })
+  @OneToMany(type => TranslationSet, translationSet => translationSet.translation)
+  translationSets: TranslationSet[];
 }
 
 export default Translation;

@@ -4,7 +4,7 @@ import TinderCard from 'react-tinder-card';
 import { Translation } from '../../graphql/translation/types';
 import { Direction } from '../Flashcards';
 
-import './MovieCard.css';
+import './Flashcard.css';
 
 interface FlashcardProps {
   translation: Translation;
@@ -46,7 +46,7 @@ const Flashcard: React.FC<FlashcardProps> = ({
       onSwipeRequirementFulfilled={(dir: Direction) => handleFulfilled(dir)}
       swipeThreshold={swipeThreshold}
     >
-      <div className="movieCard">
+      <div className="card">
         <div className="details">
           <h2>{translation.wordFrom.name}</h2>
           <h2>{translation.wordTo.name}</h2>
