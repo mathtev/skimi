@@ -107,7 +107,7 @@ const EditWords = () => {
       name: formData.word2,
       languageId: languageTo.id,
     };
-    // this is not good and causes 5 rerenders, should make one request
+    // bad should make one request
     Promise.all([addWord(newWord1), addWord(newWord2)])
       .then((resp) => {
         createTranslation(resp[0].id, resp[1].id, parseInt(formData.levelId));

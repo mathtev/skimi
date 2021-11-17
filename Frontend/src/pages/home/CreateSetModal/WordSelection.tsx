@@ -112,8 +112,6 @@ const WordSelection: React.FC<WordSelectionProps> = ({
     );
   };
 
-  // Na stronie your sets wylistować zestawy    4h
-  // Stworzyć stronę pokazującą zestaw i słowa  2h
 
   const handleSetTableData = (
     translations: Translation[],

@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { Translation } from '../../../graphql/translation/types';
 import { TranslationSet } from '../../../graphql/translationSet/types';
 import { UPDATE_TRANSLATION_SET } from '../../../graphql/translationSet/mutations';
+import { CircularProgressWithLabel } from '../../../components/CircularProgressWithLabel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +30,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
+    },
+    wordName: {
+      flexBasis: '50%'
     },
     flashCards: {
       width: '35%',
@@ -52,11 +56,22 @@ interface IRouterParams {
 const skillColors = [
   '#ffffff',
   '#f53c3c',
-  '#fc9927',
-  '#f1f53c',
-  '#c7e738',
+  '#f53c3c',
+  '#ffb413',
+  '#ffb413',
+  '#f7f306',
+  '#f7f306',
+  '#b0f83d',
+  '#b0f83d',
   '#37d637',
+  '#373ad6',
 ];
+
+// dodac kolumny tarnalationid, textfrom i textto w sentence
+// stworzyć relację one translation to many sentences
+// skill na flashcardsskill 
+// dodać przycisk learn przenoszący do nowej podstrony
+// dodać learnSkill
 
 const SetDetails = () => {
   const classes = useStyles();
@@ -78,6 +93,7 @@ const SetDetails = () => {
     return reverse ? sorted.reverse() : sorted;
   };
 
+
   const updateSkill = (id: number, skill: number) => {
     console.log(skill, id);
     return translationSetUpdateMutation({
@@ -90,7 +106,8 @@ const SetDetails = () => {
     let skill = translationSets.find((x) => x.id === translationSetId)?.skill;
     if (skill === undefined) return;
     skill -= 1;
-    if (skill < 1) skill = 1;
+    if (skill === -1) skill = 1; 
+    else if (skill <= 0) return;
     updateSkill(translationSetId, skill);
   };
 
@@ -98,7 +115,7 @@ const SetDetails = () => {
     let skill = translationSets.find((x) => x.id === translationSetId)?.skill;
     if (skill === undefined) return;
     skill += 1;
-    if (skill > 5) skill = 5;
+    if (skill > 10) return;
     updateSkill(translationSetId, skill);
   };
 
@@ -115,7 +132,9 @@ const SetDetails = () => {
           setActive={setFlashcardsActive}
           onReject={onReject}
           onAccept={onAccept}
-        />
+        >
+
+        </Flashcards>
       )}
       <Typography variant="h5">{set?.name}</Typography>
       <Button
@@ -126,16 +145,14 @@ const SetDetails = () => {
       >
         Flashcards
       </Button>
-      {sortBySkill(translationSets, true).map((translationSet) => (
+      {sortBySkill(translationSets).map((translationSet) => (
         <Card
           className={classes.word}
           key={translationSet.id}
-          style={{
-            borderRight: `4px solid ${skillColors[translationSet?.skill]}`,
-          }}
         >
-          <span>{translationSet?.translation?.wordFrom.name} </span>
-          <span>{translationSet?.translation?.wordTo.name} </span>
+          <span className={classes.wordName}>{translationSet?.translation?.wordFrom.name} </span>
+          <span className={classes.wordName}>{translationSet?.translation?.wordTo.name} </span>
+          <CircularProgressWithLabel value={translationSet?.skill * 10} />
         </Card>
       ))}
     </div>

@@ -20,6 +20,11 @@ import { TranslationInput } from '../types/translation';
 import { Service } from 'typedi';
 import Word from '../../models/Word';
 
+// create translation
+// podaję dane translacji
+// nie podaję id
+// 
+
 @Service()
 @Resolver()
 class TranslationResolver {
