@@ -20,10 +20,15 @@ import { TranslationInput } from '../types/translation';
 import { Service } from 'typedi';
 import Word from '../../models/Word';
 
-// create translation
-// podaję dane translacji
-// nie podaję id
-// 
+// ogarnięcoe translacji - 3 dni
+// dodawanie zdań - 2 dni
+// dodanie nowego typu nauki - 14 dni
+// rejestracja - 1 dnień
+// stylowanie - 4 dni
+// napisanie pracy - 20 dni
+
+// razem: 44 dni
+// zostało: 12 + 25 + 10 = 47
 
 @Service()
 @Resolver()

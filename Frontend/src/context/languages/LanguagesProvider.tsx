@@ -1,27 +1,43 @@
 import { useQuery } from '@apollo/client';
 import React, { createContext } from 'react';
+import { isNullOrUndefined } from 'util';
 import { GET_ALL_LANGUAGES } from '../../graphql/language/queries';
 import { Language, Languages } from '../../graphql/language/types';
-
+import { useSettings } from '../../hooks/useSettings';
+import { compareStrings } from '../../utils/helperFunctions';
 
 interface ILanguagesContext {
-  data: Language[];
-  loading: boolean;
-  refetch?: (variables?: any) => Promise<any>;
+  languages: Language[];
+  languageFrom?: Language;
+  languageTo?: Language;
 }
 
 export const LanguagesContext = createContext<ILanguagesContext>({
-  data: [],
-  loading: false,
-  refetch: undefined,
+  languages: [],
+  languageFrom: undefined,
+  languageTo: undefined,
 });
 
+interface LanguagesProviderProps {
+  languageFrom: string;
+  languageTo: string;
+}
+
 const LanguagesProvider: React.FC = ({ children }) => {
+  const { nativeLanguage, learningLanguage } = useSettings();
   const { data, loading, refetch } = useQuery<Languages>(GET_ALL_LANGUAGES);
-  const languages =  data?.languages || [];
+  const languages = data?.languages || [];
+
+  const languageFrom = languages.find((language) =>
+    compareStrings(language.name, nativeLanguage)
+  );
+
+  const languageTo = languages.find((language) =>
+    compareStrings(language.name, learningLanguage)
+  );
 
   return (
-    <LanguagesContext.Provider value={{ data: languages, loading, refetch }}>
+    <LanguagesContext.Provider value={{ languages, languageFrom, languageTo }}>
       {children}
     </LanguagesContext.Provider>
   );

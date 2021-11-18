@@ -1,4 +1,5 @@
-import { gql } from "@apollo/client";
+import { gql, useQuery } from '@apollo/client';
+import { Words } from './types';
 
 export const GET_ALL_WORDS = gql`
   query words($languageId: Int) {
@@ -21,3 +22,9 @@ export const GET_ALL_WORDS = gql`
   }
 `;
 
+export const useWordsQuery = (languageId?: number) => {
+  const { data, loading, refetch } = useQuery<Words>(GET_ALL_WORDS, {
+    variables: { languageId },
+  });
+  return { data, loading, refetch };
+};

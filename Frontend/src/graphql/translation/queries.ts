@@ -25,7 +25,7 @@ export const GET_ALL_TRANSLATIONS = gql`
   }
 `;
 
-export const useTranslations = () => {
+export const useTranslationsQuery = () => {
   const { data, loading, refetch } =
     useQuery<Translations>(GET_ALL_TRANSLATIONS);
   return { data, loading, refetch };

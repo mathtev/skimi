@@ -5,6 +5,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -23,13 +24,13 @@ class Translation extends BaseEntity {
   id: number;
 
   @Field(() => Word, { defaultValue: [] })
-  @OneToOne(() => Word)
+  @ManyToOne(() => Word)
   @JoinColumn({ name: "enWordId", referencedColumnName: "id"})
   @TypeormLoader((type) => Word, (translation: Translation) => translation.enWordId)
   wordFrom: Word;
 
   @Field(() => Word, { defaultValue: [] })
-  @OneToOne(() => Word)
+  @ManyToOne(() => Word)
   @JoinColumn({ name: "deWordId", referencedColumnName: "id"})
   @TypeormLoader((type) => Word, (translation: Translation) => translation.deWordId)
   wordTo: Word;

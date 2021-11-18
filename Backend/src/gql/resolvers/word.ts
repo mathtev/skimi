@@ -11,6 +11,7 @@ import {
 } from 'type-graphql';
 import {
   createEntity,
+  deleteEntity,
   findAllEntities,
   findEntityById,
 } from '../../utils/typeorm';
@@ -64,7 +65,6 @@ class WordResolver {
     const result = await findAllEntities(Word, {
       where: [{ languageId }],
     });
-    console.log(ctx.req.session);
     return result;
   }
 
@@ -85,6 +85,13 @@ class WordResolver {
       word.id = queryData.id;
     }
     const result = await createEntity(Word, word);
+    return result;
+  }
+
+  @UseMiddleware([ErrorHandler])
+  @Mutation(() => Word)
+  async deleteWord(@Arg('wordId', () => Int) wordId: number): Promise<Word> {
+    const result = deleteEntity(Word, wordId);
     return result;
   }
 
