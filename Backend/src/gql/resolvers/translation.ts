@@ -5,20 +5,17 @@ import {
   Arg,
   Int,
   Mutation,
-  FieldResolver,
-  Root,
 } from 'type-graphql';
 import {
   createEntity,
   deleteEntity,
   findAllEntities,
-  findEntityById,
 } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Translation from '../../models/Translation';
 import { TranslationInput } from '../types/translation';
 import { Service } from 'typedi';
-import Word from '../../models/Word';
+
 
 // ogarnięcoe translacji - 3 dni
 // dodawanie zdań - 2 dni

@@ -1,7 +1,10 @@
-import { AddWordRequest, Word } from '../../../graphql/word/types';
-import { useSettings } from '../../../hooks/useSettings';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  Typography,
 
-import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
+} from '@material-ui/core';
 
 import { Translation } from '../../../graphql/translation/types';
 import EditTranslationForm, { FormValues } from './EditTranslationForm';
@@ -15,19 +18,29 @@ import {
 } from '../../../graphql/translation/mutations';
 import { useMutation } from '@apollo/client';
 import { compareStrings } from '../../../utils/helperFunctions';
+import { useSearchWordsQuery } from '../../../graphql/word/queries';
+import CustomAsyncSelect, {
+  SelectOption,
+} from '../../../components/CustomAsyncSelect';
+import React from 'react';
+import TranslationsTable from './TranslationsTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       margin: theme.spacing(0, 'auto'),
-      width: '50%',
       overflowX: 'hidden',
+      maxWidth: '800px',
     },
     wordListTitle: {
       marginTop: 40,
     },
-    wordList: {
+    translation: {
       display: 'flex',
+      justifyContent: 'space-between',
+    },
+    word: {
+      width: '100%',
     },
   })
 );
@@ -36,10 +49,13 @@ const EditTranslations = () => {
   const classes = useStyles();
 
   const levels = useLevels();
-  const {languages, languageFrom, languageTo} = useLanguages();
+  const { languageFrom, languageTo } = useLanguages();
   const translations = useTranslationsQuery();
+  const { searchWords } = useSearchWordsQuery();
+  const [selectedWordFrom, setSelectedWordFrom] =
+    React.useState<SelectOption>();
+  const [selectedWordTo, setSelectedWordTo] = React.useState<SelectOption>();
 
-  //const [addWordMutation] = useMutation(ADD_WORD);
   const [createTranslationMutation] = useMutation(CREATE_TRANSLATION);
   const [deleteTranslationMutation] = useMutation(DELETE_TRANSLATION);
 
@@ -47,20 +63,11 @@ const EditTranslations = () => {
     ...translations.data.translations,
   ];
   const sortedTranslations = translationsCopy?.sort((a, b) =>
-    a.wordFrom.name > b.wordFrom.name
-      ? 1
-      : b.wordFrom.name > a.wordFrom.name
-      ? -1
-      : 0
+    // prettier-ignore
+    a.wordFrom.name > b.wordFrom.name ? 1 : b.wordFrom.name > a.wordFrom.name ? -1 : 0
   );
 
-  const appSettings = useSettings();
-
-  // const addWord = (word: AddWordRequest) => {
-  //   return addWordMutation({
-  //     variables: { word },
-  //   }).then((resp) => resp.data.addWord);
-  // };
+  //searchWords(1,'wo')
 
   const deleteTranslation = (id: number) => {
     return deleteTranslationMutation({
@@ -95,30 +102,29 @@ const EditTranslations = () => {
         translations.refetch();
       })
       .catch((e: Error) => console.error('server error:', e.message));
-    // const newWord1: AddWordRequest = {
-    //   id: word1?.id,
-    //   name: formData.word1,
-    //   languageId: languageFrom.id,
-    // };
-    // const newWord2: AddWordRequest = {
-    //   id: word2?.id,
-    //   name: formData.word2,
-    //   languageId: languageTo.id,
-    // };
-    // Promise.all([addWord(newWord1), addWord(newWord2)])
-    //   .then((resp) => {
-    //     createTranslation(resp[0].id, resp[1].id, parseInt(formData.levelId));
-    //   })
-    //   .then(() => {
-    //     levels.refetch!();
-    //     translations.refetch();
-    //   })
-    //   .catch((e: Error) => console.error('server error:', e.message));
   };
 
   return (
     <div className={classes.root}>
       <Typography variant="h5">Add new word</Typography>
+      {languageFrom && (
+        <CustomAsyncSelect
+          name="selectWord"
+          getData={searchWords}
+          languageId={languageFrom.id}
+          selectedValue={selectedWordFrom}
+          handleSelectChange={setSelectedWordFrom}
+        />
+      )}
+      {languageTo && (
+        <CustomAsyncSelect
+          name="selectWord"
+          getData={searchWords}
+          languageId={languageTo.id}
+          selectedValue={selectedWordTo}
+          handleSelectChange={setSelectedWordTo}
+        />
+      )}
       <EditTranslationForm
         word={undefined}
         translation={undefined}
@@ -131,19 +137,12 @@ const EditTranslations = () => {
       <Typography variant="h5" className={classes.wordListTitle}>
         Word list
       </Typography>
-      {sortedTranslations?.map((translation: Translation) => (
-        <div key={translation.id} className={classes.wordList}>
-          <EditTranslationForm
-            word={translation.wordFrom}
-            translation={translation}
-            languageFrom={languageFrom?.name}
-            languageTo={languageTo?.name}
-            levels={levels.data}
-            handleSubmit={handleSubmit}
-            deleteTranslation={deleteTranslation}
-          />
-        </div>
-      ))}
+      <TranslationsTable
+        translations={sortedTranslations}
+        languageFrom={languageFrom}
+        languageTo={languageTo}
+        deleteTranslation={deleteTranslation}
+      />
     </div>
   );
 };

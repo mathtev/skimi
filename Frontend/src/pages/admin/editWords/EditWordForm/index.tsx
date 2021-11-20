@@ -1,9 +1,4 @@
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  IconButton,
-} from '@material-ui/core';
+import { makeStyles, Theme, createStyles, IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Field, Form, Formik, FormikState } from 'formik';
@@ -17,8 +12,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      margin: 'auto',
-      maxWidth: '300px',
     },
     formButton: {
       marginBottom: 0,
@@ -34,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface EditWordFormProps {
   word: Word;
-  handleSubmit: (formData: FormValues) => Promise<void>;
+  handleSubmit: (id: number, formData: FormValues) => Promise<void>;
   deleteWord: (wordId: number) => void;
 }
 
@@ -62,21 +55,18 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
           { setSubmitting, resetForm }
         ) => {
           setSubmitting(true);
-          await handleSubmit(formData);
+          await handleSubmit(word.id, formData);
           setSubmitting(false);
           resetForm();
         }}
       >
         {({ values, errors, isSubmitting }: FormikState<FormValues>) => (
           <Form className={classes.formRoot}>
-            <Field
-              name="name"
-              type="input"
-              as={CustomField}
-            />
+            <Field name="name" type="input" as={CustomField} />
 
             <IconButton
               className={classes.formButton}
+              style={{marginLeft: '20px'}}
               disabled={isSubmitting}
               type="submit"
             >
@@ -85,7 +75,7 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
             <IconButton
               className={classes.formButton}
               disabled={isSubmitting}
-              onClick={()=>deleteWord(word.id)}
+              onClick={() => deleteWord(word.id)}
             >
               <DeleteIcon className={classes.formIcon} />
             </IconButton>

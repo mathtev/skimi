@@ -8,20 +8,40 @@ import { AddWordRequest } from '../../../graphql/word/types';
 import { useLanguages } from '../../../hooks/useLanguages';
 import EditWordForm, { FormValues } from './EditWordForm';
 
+import { makeStyles, Theme, createStyles } from '@material-ui/core';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      maxWidth: '350px',
+      margin: 'auto',
+    },
+    languageSelect: {
+      width: 100,
+      marginBottom: 30,
+    },
+  })
+);
+
 const EditWords = () => {
+  const classes = useStyles();
+
   const [addWordMutation] = useMutation(ADD_WORD);
   const [deleteWordMutation] = useMutation(DELETE_WORD);
-  const { languages, languageFrom, languageTo } = useLanguages();
-  const [languageId, setlanguageId] = React.useState<number | undefined>(
-    languageFrom?.id
-  );
+
+  const { languages, languageFrom } = useLanguages();
+  // prettier-ignore
+  const [languageId, setlanguageId] = React.useState<number | undefined>(languageFrom?.id);
+
   const _words = useWordsQuery(languageId);
   const words = _words?.data?.words;
 
   const addWord = (word: AddWordRequest) => {
     return addWordMutation({
       variables: { word },
-    }).then((resp) => resp.data.addWord);
+    }).then(() => _words.refetch());
   };
 
   const deleteWord = (wordId: number) => {
@@ -35,15 +55,21 @@ const EditWords = () => {
     setlanguageId(id);
   };
 
-  const handleSubmit = async (formData: FormValues) => {
+  const handleSubmit = async (id: number, formData: FormValues) => {
     if (!languageId) return;
-    const newWord = { name: formData.name, languageId };
+    const newWord = { id, name: formData.name, languageId };
     addWord(newWord);
   };
 
   return (
-    <div>
-      <TextField select label="lol" defaultValue="" onChange={handleChange}>
+    <div className={classes.container}>
+      <TextField
+        className={classes.languageSelect}
+        select
+        defaultValue={languageFrom?.id}
+        label="language"
+        onChange={handleChange}
+      >
         {languages.map((language: Language) => (
           <MenuItem key={language.id} value={`${language.id}`}>
             {language.code}
