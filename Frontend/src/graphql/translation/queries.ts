@@ -21,6 +21,11 @@ export const GET_ALL_TRANSLATIONS = gql`
         name
         languageId
       }
+      sentences {
+        id
+        textFrom
+        textTo
+      }
     }
   }
 `;

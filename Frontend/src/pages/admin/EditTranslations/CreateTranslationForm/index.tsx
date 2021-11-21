@@ -57,7 +57,7 @@ interface CreateTranslationFormProps {
   languageTo: Language;
   levels: Level[];
   // prettier-ignore
-  handleSubmit: (wordFromId: number, wordToId: number, formData: FormValues) => Promise<void>
+  handleSubmit: (formData: FormValues, wordFromId?: number, wordToId?: number) => Promise<void>
 }
 
 export interface FormValues {
@@ -92,9 +92,9 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
           setSubmitting(true);
           if (selectedWordFrom && selectedWordTo)
             await handleSubmit(
-              selectedWordFrom.value,
-              selectedWordTo.value,
-              formData
+              formData,
+              selectedWordFrom?.value,
+              selectedWordTo?.value
             );
           setSubmitting(false);
           resetForm();

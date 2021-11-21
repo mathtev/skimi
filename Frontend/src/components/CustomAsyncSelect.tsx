@@ -2,7 +2,7 @@ import { SingleValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { Word } from '../graphql/word/types';
 
-export type SelectOption = { label: string; value: number };
+export type SelectOption = { label: string; value?: number };
 
 interface SelectAsyncProps {
   name?: string;

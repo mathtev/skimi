@@ -6,7 +6,7 @@ export class SentenceInput implements Partial<Sentence> {
   @Field(() => Int, { nullable: true })
   id: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
   translationId: number;
 
   @Field()

@@ -19,13 +19,16 @@ import {
 import { Language } from '../../../../graphql/language/types';
 import { ApolloQueryResult } from '@apollo/client';
 import DeleteIcon from '@material-ui/icons/Delete';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
+import { Link } from 'react-router-dom';
+import TranslationDetailsModal from '../TranslationDetailsModal';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       marginTop: 20,
     },
-    deleteBtn: {
+    iconButton: {
       transform: 'scale(0.8)',
     },
     tableRow: {
@@ -42,6 +45,7 @@ interface TranslationsTableProps {
   languageFrom?: Language;
   languageTo?: Language;
   deleteTranslation: (id: number) => Promise<ApolloQueryResult<Translations>>;
+  handleModalOpen: (translation: Translation) => void;
 }
 
 const TranslationsTable: React.FC<TranslationsTableProps> = ({
@@ -49,6 +53,7 @@ const TranslationsTable: React.FC<TranslationsTableProps> = ({
   languageFrom,
   languageTo,
   deleteTranslation,
+  handleModalOpen,
 }) => {
   const classes = useStyles();
   return (
@@ -59,6 +64,7 @@ const TranslationsTable: React.FC<TranslationsTableProps> = ({
             <TableCell align="left">{languageFrom?.name}</TableCell>
             <TableCell align="left">{languageTo?.name}</TableCell>
             <TableCell align="left">Skill</TableCell>
+            <TableCell align="left">Details</TableCell>
             <TableCell align="left">Delete</TableCell>
           </TableRow>
         </TableHead>
@@ -70,7 +76,15 @@ const TranslationsTable: React.FC<TranslationsTableProps> = ({
               <TableCell align="left">{translation.level.code}</TableCell>
               <TableCell align="left">
                 <IconButton
-                  className={classes.deleteBtn}
+                  className={classes.iconButton}
+                  onClick={() => handleModalOpen(translation)}
+                >
+                  <InfoIcon />
+                </IconButton>
+              </TableCell>
+              <TableCell align="left">
+                <IconButton
+                  className={classes.iconButton}
                   onClick={() => deleteTranslation(translation.id)}
                 >
                   <DeleteIcon />

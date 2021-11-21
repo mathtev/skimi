@@ -11,6 +11,9 @@ import { useMutation } from '@apollo/client';
 import React from 'react';
 import TranslationsTable from './TranslationsTable';
 import CreateTranslationForm, { FormValues } from './CreateTranslationForm';
+import TranslationDetailsModal from './TranslationDetailsModal';
+import { Translation } from '../../../graphql/translation/types'
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,13 +37,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const EditTranslations = () => {
   const classes = useStyles();
-
   const levels = useLevels();
   const { languageFrom, languageTo } = useLanguages();
   const translations = useTranslationsQuery();
 
   const [createTranslationMutation] = useMutation(CREATE_TRANSLATION);
   const [deleteTranslationMutation] = useMutation(DELETE_TRANSLATION);
+
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [translation, setTranslation] = React.useState<Translation>();
 
   const translationsCopy = translations.data && [
     ...translations.data.translations,
@@ -52,7 +57,13 @@ const EditTranslations = () => {
 
   const loaded = languageFrom && languageTo && levels && translations;
 
-  //searchWords(1,'wo')
+  const handleModalOpen = (translation: Translation) => {
+    setModalOpen(true);
+    setTranslation(translation)
+  };
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   const deleteTranslation = (id: number) => {
     return deleteTranslationMutation({
@@ -61,9 +72,9 @@ const EditTranslations = () => {
   };
 
   const createTranslation = (
-    enWordId: number,
-    deWordId: number,
-    levelId: number
+    levelId: number,
+    enWordId?: number,
+    deWordId?: number
   ) => {
     return createTranslationMutation({
       variables: {
@@ -77,11 +88,11 @@ const EditTranslations = () => {
   };
 
   const handleSubmit = async (
-    wordFromId: number,
-    wordToId: number,
-    formData: FormValues
+    formData: FormValues,
+    wordFromId?: number,
+    wordToId?: number,
   ) => {
-    createTranslation(wordFromId, wordToId, +formData.levelId)
+    createTranslation(+formData.levelId, wordFromId, wordToId)
       .then(() => {
         translations.refetch();
       })
@@ -108,6 +119,15 @@ const EditTranslations = () => {
         languageFrom={languageFrom}
         languageTo={languageTo}
         deleteTranslation={deleteTranslation}
+        handleModalOpen={handleModalOpen}
+      />
+      <TranslationDetailsModal
+        modalOpen={modalOpen}
+        handleModalClose={handleModalClose}
+        translation={translation}
+        languageTo={languageTo}
+        languageFrom={languageFrom}
+        refetchTranslations={translations.refetch}
       />
     </div>
   );

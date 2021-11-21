@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { MenuItem, TextField } from '@material-ui/core';
+import { Box, MenuItem, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { Language } from '../../../graphql/language/types';
 import { ADD_WORD, DELETE_WORD } from '../../../graphql/word/mutations';
@@ -20,7 +20,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     languageSelect: {
       width: 100,
+      flexShrink: 0,
+      marginRight: 20,
+      justifyContent: 'center',
+    },
+    addNewWord: {
       marginBottom: 30,
+      display: 'flex',
+      justifyContent: 'space-between',
     },
   })
 );
@@ -55,7 +62,7 @@ const EditWords = () => {
     setlanguageId(id);
   };
 
-  const handleSubmit = async (id: number, formData: FormValues) => {
+  const handleSubmit = async (formData: FormValues, id?: number) => {
     if (!languageId) return;
     const newWord = { id, name: formData.name, languageId };
     addWord(newWord);
@@ -63,19 +70,28 @@ const EditWords = () => {
 
   return (
     <div className={classes.container}>
-      <TextField
-        className={classes.languageSelect}
-        select
-        defaultValue={languageFrom?.id}
-        label="language"
-        onChange={handleChange}
-      >
-        {languages.map((language: Language) => (
-          <MenuItem key={language.id} value={`${language.id}`}>
-            {language.code}
-          </MenuItem>
-        ))}
-      </TextField>
+      <Box mb={2}>
+        <Typography variant="h5">Add new word</Typography>
+      </Box>
+      <div className={classes.addNewWord}>
+        <TextField
+          className={classes.languageSelect}
+          select
+          defaultValue={languageFrom?.id}
+          size="small"
+          onChange={handleChange}
+        >
+          {languages.map((language: Language) => (
+            <MenuItem key={language.id} value={`${language.id}`}>
+              {language.code}
+            </MenuItem>
+          ))}
+        </TextField>
+        <EditWordForm handleSubmit={handleSubmit} />
+      </div>
+      <Box mb={2}>
+        <Typography variant="h5">Edit words</Typography>
+      </Box>
       {words &&
         words.map((word) => (
           <EditWordForm

@@ -34,7 +34,7 @@ class TranslationResolver {
   @Query(() => [Translation])
   async translations(): Promise<Translation[]> {
     const result = await findAllEntities(Translation, {
-      relations: ['wordFrom', 'wordTo', 'level'],
+      relations: ['wordFrom', 'wordTo', 'level', 'sentences'],
     });
     return result;
   }
