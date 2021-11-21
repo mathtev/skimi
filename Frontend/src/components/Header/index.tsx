@@ -21,7 +21,9 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const { logout } = useAuth();
 
   const handleLogout = async () => {
-    await logout!();
+    await logout!().then(
+      () => (window.location.href = 'http://localhost:3000')
+    );
   };
 
   return (

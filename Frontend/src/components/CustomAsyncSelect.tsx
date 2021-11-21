@@ -35,13 +35,15 @@ const CustomAsyncSelect: React.FC<SelectAsyncProps> = ({
   };
 
   return (
-    <AsyncSelect
-      name={name}
-      defaultOptions
-      value={selectedValue}
-      loadOptions={loadData}
-      onChange={onChange}
-    />
+    <div className="customAsync">
+      <AsyncSelect
+        name={name}
+        defaultOptions
+        value={selectedValue}
+        loadOptions={loadData}
+        onChange={onChange}
+      />
+    </div>
   );
 };
 

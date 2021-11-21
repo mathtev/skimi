@@ -23,17 +23,17 @@ import DeleteIcon from '@material-ui/icons/Delete';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginTop: 10
+      marginTop: 20,
     },
     deleteBtn: {
-      transform: 'scale(0.8)'
+      transform: 'scale(0.8)',
     },
     tableRow: {
-      "& .MuiTableCell-head": {
-          color: theme.palette.text.secondary,
-          backgroundColor: theme.palette.secondary.main
+      '& .MuiTableCell-head': {
+        color: theme.palette.text.secondary,
+        backgroundColor: theme.palette.secondary.main,
       },
-  }
+    },
   })
 );
 

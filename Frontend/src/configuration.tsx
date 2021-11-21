@@ -6,14 +6,6 @@ export const navLinks: navLinksType = [
     path: '/home'
   },
   {
-    title: 'edit translations',
-    path: '/admin/edit-translations'
-  },
-  {
-    title: 'edit words',
-    path: '/admin/edit-words'
-  },
-  {
     title: 'your sets',
     path: '/your-sets'
   }

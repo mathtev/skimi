@@ -19,11 +19,11 @@ export const createTheme = (): Theme =>
             '-webkit-box-shadow': 'inset 0 0 6px #bdbdbda6',
           },
           '*::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(0,0,0,.1)',
+            backgroundColor: '#72c5ff',
             outline: '0px solid slategrey',
             borderRadius: '50px',
             '&:hover': {
-              backgroundColor: '#b9b9b9'
+              backgroundColor: '#2183c8'
             }
           }
         }

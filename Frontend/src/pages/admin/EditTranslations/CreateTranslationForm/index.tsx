@@ -14,10 +14,14 @@ import {
   Translation,
   Translations,
 } from '../../../../graphql/translation/types';
-import { Word, Words } from '../../../../graphql/word/types';
-import CustomField from '../../../../components/CustomField';
+import { Word } from '../../../../graphql/word/types';
 import CustomSelect from '../../../../components/CustomSelect';
 import { ApolloQueryResult } from '@apollo/client';
+import CustomAsyncSelect, {
+  SelectOption,
+} from '../../../../components/CustomAsyncSelect';
+import { useSearchWordsQuery } from '../../../../graphql/word/queries';
+import { Language } from '../../../../graphql/language/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,7 +32,12 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
 
       '& > *': {
-        margin: theme.spacing('10px', '20px', '10px', '0'),
+        marginRight: 40,
+        marginTop: 20,
+      },
+
+      '& > .customAsync': {
+        flexGrow: '1',
       },
     },
     formButton: {
@@ -43,72 +52,80 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface EditTranslationFormProps {
-  word?: Word;
-  translation?: Translation;
-  languageFrom?: string;
-  languageTo?: string;
-  levels?: Level[];
-  handleSubmit: (
-    formData: FormValues,
-    word1?: Word,
-    word2?: Word
-  ) => Promise<void>;
-  deleteTranslation: (id: number) => Promise<ApolloQueryResult<Translations>>;
+interface CreateTranslationFormProps {
+  languageFrom: Language;
+  languageTo: Language;
+  levels: Level[];
+  // prettier-ignore
+  handleSubmit: (wordFromId: number, wordToId: number, formData: FormValues) => Promise<void>
 }
 
 export interface FormValues {
-  word1: string;
-  word2: string;
   levelId: string;
 }
 
-const EditTranslationForm: React.FC<EditTranslationFormProps> = ({
-  word,
-  translation,
+const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
   languageFrom,
   languageTo,
   levels,
   handleSubmit,
-  deleteTranslation,
 }) => {
   const classes = useStyles();
+  const { searchWords } = useSearchWordsQuery();
+  const [selectedWordFrom, setSelectedWordFrom] =
+    React.useState<SelectOption>();
+  const [selectedWordTo, setSelectedWordTo] = React.useState<SelectOption>();
 
+  console.log(selectedWordFrom)
   return (
     <>
       <Formik
         validateOnChange={true}
         enableReinitialize={true}
         initialValues={{
-          word1: word?.name || '',
-          word2: translation?.wordTo?.name || '',
-          levelId: translation?.levelId ? `${translation.levelId}` : '',
+          levelId: '',
         }}
         onSubmit={async (
           formData: FormValues,
           { setSubmitting, resetForm }
         ) => {
           setSubmitting(true);
-          await handleSubmit(formData, word, translation?.wordTo);
+          if (selectedWordFrom && selectedWordTo)
+            await handleSubmit(
+              selectedWordFrom.value,
+              selectedWordTo.value,
+              formData
+            );
           setSubmitting(false);
           resetForm();
+          setSelectedWordFrom(undefined);
+          setSelectedWordTo(undefined);
         }}
       >
         {({ values, errors, isSubmitting }: FormikState<FormValues>) => (
           <Form className={classes.formRoot}>
-            <Field
-              label={languageFrom}
-              name="word1"
-              type="input"
-              as={CustomField}
+            <CustomAsyncSelect
+              key={selectedWordFrom?.value}
+              name="selectWordFrom"
+              getData={searchWords}
+              languageId={languageFrom.id}
+              selectedValue={selectedWordFrom}
+              handleSelectChange={setSelectedWordFrom}
+            />
+            <CustomAsyncSelect
+              key={selectedWordTo?.value}
+              name="selectWordTo"
+              getData={searchWords}
+              languageId={languageTo.id}
+              selectedValue={selectedWordTo}
+              handleSelectChange={setSelectedWordTo}
             />
             <Field
-              label={languageTo}
-              name="word2"
-              type="input"
-              as={CustomField}
-            />
-            <Field name="levelId" label="level" as={CustomSelect}>
+              name="levelId"
+              label="level"
+              variant="outlined"
+              as={CustomSelect}
+            >
               {levels?.map((level: Level) => (
                 <MenuItem key={level.id} value={`${level.id}`}>
                   {level.code}
@@ -123,14 +140,6 @@ const EditTranslationForm: React.FC<EditTranslationFormProps> = ({
             >
               <EditIcon className={classes.formIcon} />
             </IconButton>
-            {translation && (
-              <IconButton
-                onClick={() => deleteTranslation(translation.id)}
-                className={classes.formButton}
-              >
-                <DeleteIcon className={classes.formIcon} />
-              </IconButton>
-            )}
           </Form>
         )}
       </Formik>
@@ -138,4 +147,4 @@ const EditTranslationForm: React.FC<EditTranslationFormProps> = ({
   );
 };
 
-export default EditTranslationForm;
+export default CreateTranslationForm;
