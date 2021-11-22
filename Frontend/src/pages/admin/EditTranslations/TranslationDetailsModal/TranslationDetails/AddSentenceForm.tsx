@@ -1,10 +1,11 @@
 import { makeStyles, Theme, createStyles, IconButton } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { Field, Form, Formik, FormikState } from 'formik';
 import React from 'react';
-import { Word } from '../../../../graphql/word/types';
-import CustomField from '../../../../components/CustomField';
+import CustomField from '../../../../../components/CustomField';
+import { Translation } from '../../../../../graphql/translation/types';
+import { useMutation } from '@apollo/client';
+import { CREATE_SENTENCE } from '../../../../../graphql/sentence/mutations';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,7 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 0,
       marginRight: 0,
     },
-
     formIcon: {
       width: '20px',
       height: '20px',
@@ -25,22 +25,30 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface EditWordFormProps {
-  word?: Word;
-  deleteWord?: (wordId: number) => void;
-  handleSubmit: (formData: FormValues, id?: number) => Promise<void>;
+interface AddSentenceFormProps {
+  translation: Translation;
+  refetchTranslations: any;
 }
 
 export interface FormValues {
-  name: string;
+  sentenceFrom: string;
+  sentenceTo: string;
 }
 
-const EditWordForm: React.FC<EditWordFormProps> = ({
-  word,
-  handleSubmit,
-  deleteWord,
-}) => {
+const AddSentenceForm: React.FC<AddSentenceFormProps> = ({ translation, refetchTranslations }) => {
   const classes = useStyles();
+  const [createSentenceMutation] = useMutation(CREATE_SENTENCE);
+
+  const addSentence = (
+    textFrom: string,
+    textTo: string,
+    translationId: number
+  ) => {
+    const sentence = { textFrom, textTo, translationId };
+    return createSentenceMutation({
+      variables: { sentence },
+    }).then(() => refetchTranslations());
+  };
 
   return (
     <>
@@ -48,14 +56,19 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
         validateOnChange={true}
         enableReinitialize={true}
         initialValues={{
-          name: word?.name || '',
+          sentenceFrom: '',
+          sentenceTo: '',
         }}
         onSubmit={async (
           formData: FormValues,
           { setSubmitting, resetForm }
         ) => {
           setSubmitting(true);
-          await handleSubmit(formData, word?.id);
+          await addSentence(
+            formData.sentenceFrom,
+            formData.sentenceTo,
+            translation.id
+          );
           setSubmitting(false);
           resetForm();
         }}
@@ -63,9 +76,15 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
         {({ values, errors, isSubmitting }: FormikState<FormValues>) => (
           <Form className={classes.formRoot}>
             <Field
-              name="name"
+              name="sentenceFrom"
               type="input"
-              placeholder="Enter word"
+              placeholder="Enter sentence..."
+              as={CustomField}
+            />
+            <Field
+              name="sentenceTo"
+              type="input"
+              placeholder="Enter sentence..."
               as={CustomField}
             />
             <IconButton
@@ -76,15 +95,6 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
             >
               <EditIcon className={classes.formIcon} />
             </IconButton>
-            {deleteWord && word && (
-              <IconButton
-                className={classes.formButton}
-                disabled={isSubmitting}
-                onClick={() => deleteWord(word.id)}
-              >
-                <DeleteIcon className={classes.formIcon} />
-              </IconButton>
-            )}
           </Form>
         )}
       </Formik>
@@ -92,4 +102,4 @@ const EditWordForm: React.FC<EditWordFormProps> = ({
   );
 };
 
-export default EditWordForm;
+export default AddSentenceForm;

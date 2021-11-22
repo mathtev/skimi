@@ -15,7 +15,12 @@ interface FlashcardsProps {
 
 export type Direction = 'left' | 'right' | 'up' | 'down';
 
-const Flashcards: React.FC<FlashcardsProps> = ({ translations, setActive, onReject, onAccept }) => {
+const Flashcards: React.FC<FlashcardsProps> = ({
+  translations,
+  setActive,
+  onReject,
+  onAccept,
+}) => {
   React.useEffect(() => {
     const handleKeyPressed = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') handleSlide('left');
@@ -95,15 +100,14 @@ const Flashcards: React.FC<FlashcardsProps> = ({ translations, setActive, onReje
   const handleReject = () => {
     const currentCard = cards[currentIndexRef.current];
     rejectedCards.current.unshift(currentCard);
-    onReject(currentCard.id)
+    onReject(currentCard.id);
   };
 
   const handleAccept = () => {
     const currentCard = cards[currentIndexRef.current];
-    console.log(currentCard)
+    console.log(currentCard);
     acceptedCards.current.unshift(currentCard);
-    onAccept(currentCard.id)
-
+    onAccept(currentCard.id);
   };
 
   const handleSetCards = (newCards: TranslationSet[]) => {
@@ -150,7 +154,7 @@ const Flashcards: React.FC<FlashcardsProps> = ({ translations, setActive, onReje
           <div className="feedback">
             <p>
               You learned {acceptedCards.current.length} / {translations.length}
-              <br/>
+              <br />
               keep going!
             </p>
             <LinearProgress
@@ -171,10 +175,10 @@ const Flashcards: React.FC<FlashcardsProps> = ({ translations, setActive, onReje
           <div className="feedback">
             <p>
               Congrats!
-              <br/>
+              <br />
               you learned all words
             </p>
-           
+
             <Button
               variant="contained"
               color="secondary"
@@ -184,7 +188,6 @@ const Flashcards: React.FC<FlashcardsProps> = ({ translations, setActive, onReje
             </Button>
           </div>
         )}
-        
       </div>
       {canSwipe && (
         <div className="buttons">

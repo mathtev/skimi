@@ -39,7 +39,7 @@ const WordSelection: React.FC<WordSelectionProps> = ({
   handleModalClose,
 }) => {
   const classes = useStyles();
-  const { settings } = useSettings();
+  const { nativeLanguage, learningLanguage } = useSettings();
   const { currentUser } = useAuth();
   const levels = useLevels();
 
@@ -61,8 +61,8 @@ const WordSelection: React.FC<WordSelectionProps> = ({
   });
 
   const tableHeaders: TableHeader[] = [
-    { id: 'wordFrom', label: settings?.nativeLanguage },
-    { id: 'wordTo', label: settings?.learningLanguage },
+    { id: 'wordFrom', label: nativeLanguage },
+    { id: 'wordTo', label: learningLanguage },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,8 +112,6 @@ const WordSelection: React.FC<WordSelectionProps> = ({
     );
   };
 
-  // Na stronie your sets wylistować zestawy    4h
-  // Stworzyć stronę pokazującą zestaw i słowa  2h
 
   const handleSetTableData = (
     translations: Translation[],

@@ -1,13 +1,12 @@
 import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 import { entities } from '../types/entityTypes';
 
-require('dotenv').config()
+require('dotenv').config();
 
 const commonConfig: ConnectionOptions = {
   type: 'postgres',
   entities: Object.values(entities),
 };
-
 
 const connectionOptions: ConnectionOptions =
   process.env.NODE_ENV === 'production'

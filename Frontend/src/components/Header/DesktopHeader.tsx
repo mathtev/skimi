@@ -3,6 +3,7 @@ import {
   alpha,
   AppBar,
   Badge,
+  Button,
   IconButton,
   makeStyles,
   Menu,
@@ -14,7 +15,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { cssVariables } from '../../context/theme/theme';
 import HeaderSearch from './HeaderSearch';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { navLinksType } from '../../types';
 
 const useStyles = makeStyles((theme) => ({
@@ -69,6 +70,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: alpha(theme.palette.common.white, 0.07),
     opacity: 1,
   },
+  dropdownLink: {
+    color: '#000',
+    textDecoration: 'none'
+  }
 }));
 
 interface DesktopToolBarProps {
@@ -79,13 +84,24 @@ interface DesktopToolBarProps {
 const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks, logout }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [dropdownAnchor, setDropdownAnchor] =
+    React.useState<null | HTMLElement>(null);
+
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleDropdownMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setDropdownAnchor(event.currentTarget);
+  };
   const isMenuOpen = Boolean(anchorEl);
+  const isDropdownOpen = Boolean(dropdownAnchor);
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const handleDropdownClose = () => {
+    setDropdownAnchor(null);
+  };
+
   const menuId = 'primary-search-account-menu';
 
   return (
@@ -107,6 +123,29 @@ const DesktopHeader: React.FC<DesktopToolBarProps> = ({ navLinks, logout }) => {
               {link.title}
             </NavLink>
           ))}
+          <Button onClick={handleDropdownMenuOpen} className={classes.link}>
+            Admin
+          </Button>
+          <Menu
+            id="menu-dropdown"
+            getContentAnchorEl={null}
+            anchorEl={dropdownAnchor}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open={isDropdownOpen}
+            onClose={handleDropdownClose}
+          >
+            <Link to="/admin/edit-translations" className={classes.dropdownLink}>
+              <MenuItem onClick={handleDropdownClose}>
+                Edit translations
+              </MenuItem>
+            </Link>
+            <Link to="/admin/edit-words" className={classes.dropdownLink}>
+              <MenuItem onClick={handleDropdownClose}>
+                Edit words
+              </MenuItem>
+            </Link>
+          </Menu>
         </div>
         <div className={classes.grow} />
         <HeaderSearch />

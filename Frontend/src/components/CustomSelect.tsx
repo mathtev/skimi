@@ -2,9 +2,12 @@ import { TextField } from '@material-ui/core';
 import { FieldAttributes, useField } from 'formik';
 import React from 'react';
 
+type VariantType = 'standard' | 'filled' | 'outlined' | undefined;
+type FieldAttr = { label: string; variant: VariantType };
 
-const CustomSelect: React.FC<FieldAttributes<{}> & { label: string }> = ({
+const CustomSelect: React.FC<FieldAttributes<{}> & FieldAttr> = ({
   label,
+  variant,
   children,
   ...props
 }) => {
@@ -15,8 +18,13 @@ const CustomSelect: React.FC<FieldAttributes<{}> & { label: string }> = ({
       {...field}
       error={!!errorText}
       select
+      size="small"
       label={label}
-      style={{ minWidth: '60px' }}
+      variant={variant}
+      InputLabelProps={{
+        style: { color: '#858585' },
+      }}
+      style={{ minWidth: '90px', color: '#000' }}
       defaultValue=""
     >
       {children}

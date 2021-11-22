@@ -6,17 +6,19 @@ export interface Settings {
   nativeLanguage: string;
 }
 
-interface ISettingsContext {
-  settings: Settings | null;
-  updateSettings: (newSettings: Settings) => void;
-}
-
 interface SettingsProviderProps {
   defaultSettings: Settings;
 }
 
+interface ISettingsContext {
+  learningLanguage?: string;
+  nativeLanguage?: string;
+  updateSettings: (newSettings: Settings) => void;
+}
+
 export const SettingsContext = createContext<ISettingsContext>({
-  settings: null,
+  learningLanguage: undefined,
+  nativeLanguage: undefined,
   updateSettings: () => undefined,
 });
 
@@ -31,7 +33,7 @@ const SettingsProvider: React.FC<SettingsProviderProps> = ({
   };
 
   return (
-    <SettingsContext.Provider value={{ settings, updateSettings }}>
+    <SettingsContext.Provider value={{ ...settings, updateSettings }}>
       {children}
     </SettingsContext.Provider>
   );

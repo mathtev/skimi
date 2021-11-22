@@ -5,20 +5,27 @@ import {
   Arg,
   Int,
   Mutation,
-  FieldResolver,
-  Root,
 } from 'type-graphql';
 import {
   createEntity,
   deleteEntity,
   findAllEntities,
-  findEntityById,
 } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Translation from '../../models/Translation';
 import { TranslationInput } from '../types/translation';
 import { Service } from 'typedi';
 import Word from '../../models/Word';
+
+// ogarnięcoe translacji - 3 dni        done 2 dni
+// dodawanie zdań - 2 dni               done 2 dni
+// dodanie nowego typu nauki - 14 dni
+// rejestracja - 1 dnień
+// stylowanie - 4 dni
+// napisanie pracy - 20 dni
+
+// razem: 44 dni
+// zostało: 12 + 25 + 10 = 47
 
 @Service()
 @Resolver()
@@ -27,7 +34,7 @@ class TranslationResolver {
   @Query(() => [Translation])
   async translations(): Promise<Translation[]> {
     const result = await findAllEntities(Translation, {
-      relations: ['wordFrom', 'wordTo', 'level'],
+      relations: ['wordFrom', 'wordTo', 'level', 'sentences'],
     });
     return result;
   }
@@ -35,22 +42,28 @@ class TranslationResolver {
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Translation)
   async createTranslation(
-    @Arg('translation') translationInput: TranslationInput
+    @Arg('levelId', () => Int) levelId: number,
+    @Arg('nameFrom') nameFrom: string,
+    @Arg('nameTo') nameTo: string,
+    @Arg('languageFromId', () => Int) languageFromId: number,
+    @Arg('languageToId', () => Int) languageToId: number
   ): Promise<Translation> {
-    const enWordId = translationInput.enWordId;
-    const deWordId = translationInput.deWordId;
+    let wordFrom = await Word.findOne({ where: { name: nameFrom } });
+    let wordTo = await Word.findOne({ where: { name: nameTo } });
 
-    const queryData = await Translation.createQueryBuilder('translation')
-      .select('translation.id')
-      .where(
-        'translation.enWordId = :enWordId and translation.deWordId = :deWordId',
-        { enWordId, deWordId }
-      )
-      .getOne();
-    if (queryData) {
-      translationInput.id = queryData.id;
+    if (!wordFrom) {
+      const wordInput = { name: nameFrom, languageId: languageFromId };
+      wordFrom = await createEntity(Word, wordInput);
     }
-    const result = await createEntity(Translation, translationInput);
+    if (!wordTo) {
+      const wordInput = { name: nameTo, languageId: languageToId };
+      wordTo = await createEntity(Word, wordInput);
+    }
+    const result = await createEntity(Translation, {
+      levelId,
+      enWordId: wordFrom.id,
+      deWordId: wordTo.id,
+    });
     return result;
   }
 

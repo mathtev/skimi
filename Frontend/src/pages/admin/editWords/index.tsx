@@ -1,152 +1,106 @@
-import { AddWordRequest, Word } from '../../../graphql/word/types';
-import { useSettings } from '../../../hooks/useSettings';
-
-import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
-
-import { Translation } from '../../../graphql/translation/types';
-import EditWordForm, { FormValues } from './EditWordForm';
-import { useLanguages } from '../../../hooks/useLanguages';
-import { useLevels } from '../../../hooks/useLevels';
-import { useTranslations } from '../../../graphql/translation/queries';
-import { ADD_WORD } from '../../../graphql/word/mutations';
-import { CREATE_TRANSLATION, DELETE_TRANSLATION } from '../../../graphql/translation/mutations';
 import { useMutation } from '@apollo/client';
+import { Box, MenuItem, TextField, Typography } from '@material-ui/core';
+import React from 'react';
+import { Language } from '../../../graphql/language/types';
+import { ADD_WORD, DELETE_WORD } from '../../../graphql/word/mutations';
+import { useWordsQuery } from '../../../graphql/word/queries';
+import { AddWordRequest } from '../../../graphql/word/types';
+import { useLanguages } from '../../../hooks/useLanguages';
+import EditWordForm, { FormValues } from './EditWordForm';
+
+import { makeStyles, Theme, createStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      margin: theme.spacing(0, 'auto'),
-      width: '50%',
-      overflowX: 'hidden'
-    },
-    wordListTitle: {
-      marginTop: 40,
-    },
-    wordList: {
+    container: {
       display: 'flex',
+      flexDirection: 'column',
+      maxWidth: '350px',
+      margin: 'auto',
+    },
+    languageSelect: {
+      width: 100,
+      flexShrink: 0,
+      marginRight: 20,
+      justifyContent: 'center',
+    },
+    addNewWord: {
+      marginBottom: 30,
+      display: 'flex',
+      justifyContent: 'space-between',
     },
   })
 );
 
 const EditWords = () => {
   const classes = useStyles();
-  
-  const levels = useLevels();
-  const languages = useLanguages();
-  const translations = useTranslations()
 
   const [addWordMutation] = useMutation(ADD_WORD);
-  const [createTranslationMutation] = useMutation(CREATE_TRANSLATION);
-  const [deleteTranslationMutation] = useMutation(DELETE_TRANSLATION);
+  const [deleteWordMutation] = useMutation(DELETE_WORD);
 
-  const translationsCopy = translations.data && [...translations.data.translations];
-  const sortedTranslations = translationsCopy?.sort((a, b) =>
-    a.wordFrom.name > b.wordFrom.name ? 1 : b.wordFrom.name > a.wordFrom.name ? -1 : 0
-  );
+  const { languages, languageFrom } = useLanguages();
+  // prettier-ignore
+  const [languageId, setlanguageId] = React.useState<number | undefined>(languageFrom?.id);
 
-  const appSettings = useSettings();
-
-  const compareStrings = (s1?: string, s2?: string): boolean => {
-    if (!s1 || !s2) {
-      return false;
-    }
-    return s1.toLowerCase() === s2.toLowerCase();
-  };
-
-  const languageFrom = languages.data.find((language) =>
-    compareStrings(language.name, appSettings.settings?.nativeLanguage)
-  );
-  const languageTo = languages.data.find((language) =>
-    compareStrings(language.name, appSettings.settings?.learningLanguage)
-  );
+  const _words = useWordsQuery(languageId);
+  const words = _words?.data?.words;
 
   const addWord = (word: AddWordRequest) => {
     return addWordMutation({
       variables: { word },
-    }).then((resp) => resp.data.addWord);
+    }).then(() => _words.refetch());
   };
 
-  const deleteTranslation = (id: number) => {
-    return deleteTranslationMutation({
-      variables: { id },
-    }).then(() => translations.refetch());
+  const deleteWord = (wordId: number) => {
+    return deleteWordMutation({
+      variables: { wordId },
+    }).then(() => _words.refetch());
   };
 
-  const createTranslation = (
-    enWordId: number,
-    deWordId: number,
-    levelId: number
-  ) => {
-    return createTranslationMutation({
-      variables: {
-        translation: {
-          enWordId: enWordId,
-          deWordId: deWordId,
-          levelId: levelId,
-        },
-      },
-    }).then((resp) => resp.data.createTranslation);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const id = +e.target.value;
+    setlanguageId(id);
   };
 
-  const handleSubmit = async (
-    formData: FormValues,
-    word1?: Word,
-    word2?: Word
-  ) => {
-    if (!languageTo || !languageFrom) {
-      console.error('language undefined');
-      return;
-    }
-    const newWord1: AddWordRequest = {
-      id: word1?.id,
-      name: formData.word1,
-      languageId: languageFrom.id,
-    };
-    const newWord2: AddWordRequest = {
-      id: word2?.id,
-      name: formData.word2,
-      languageId: languageTo.id,
-    };
-    // this is not good and causes 5 rerenders, should make one request
-    Promise.all([addWord(newWord1), addWord(newWord2)])
-      .then((resp) => {
-        createTranslation(resp[0].id, resp[1].id, parseInt(formData.levelId));
-      })
-      .then(() => {
-        levels.refetch!();
-        translations.refetch();
-      })
-      .catch((e: Error) => console.error('server error:', e.message));
+  const handleSubmit = async (formData: FormValues, id?: number) => {
+    if (!languageId) return;
+    const newWord = { id, name: formData.name, languageId };
+    addWord(newWord);
   };
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h5">Add new word</Typography>
-      <EditWordForm
-        word={undefined}
-        translation={undefined}
-        languageFrom={languageFrom?.name}
-        languageTo={languageTo?.name}
-        levels={levels.data}
-        handleSubmit={handleSubmit}
-        deleteTranslation={deleteTranslation}
-      />
-      <Typography variant="h5" className={classes.wordListTitle}>
-        Word list
-      </Typography>
-      {sortedTranslations?.map((translation: Translation) => (
-        <div key={translation.id} className={classes.wordList}>
+    <div className={classes.container}>
+      <Box mb={2}>
+        <Typography variant="h5">Add new word</Typography>
+      </Box>
+      <div className={classes.addNewWord}>
+        <TextField
+          className={classes.languageSelect}
+          select
+          defaultValue={languageFrom?.id}
+          size="small"
+          onChange={handleChange}
+        >
+          {languages.map((language: Language) => (
+            <MenuItem key={language.id} value={`${language.id}`}>
+              {language.code}
+            </MenuItem>
+          ))}
+        </TextField>
+        <EditWordForm handleSubmit={handleSubmit} />
+      </div>
+      <Box mb={2}>
+        <Typography variant="h5">Edit words</Typography>
+      </Box>
+      {words &&
+        words.map((word) => (
           <EditWordForm
-            word={translation.wordFrom}
-            translation={translation}
-            languageFrom={languageFrom?.name}
-            languageTo={languageTo?.name}
-            levels={levels.data}
+            key={word.id}
+            word={word}
             handleSubmit={handleSubmit}
-            deleteTranslation={deleteTranslation}
+            deleteWord={deleteWord}
           />
-        </div>
-      ))}
+        ))}
     </div>
   );
 };

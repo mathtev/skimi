@@ -44,22 +44,23 @@ function App() {
     learningLanguage: 'german',
     nativeLanguage: 'english',
   };
+  
   return (
     <BrowserRouter>
       <ApolloProvider client={apolloClient}>
-        <ThemeProvider defaultDark={isDark}>
-          <AuthProvider>
-            <AppStateProvider>
-              <SettingsProvider defaultSettings={defaultSettings}>
+        <SettingsProvider defaultSettings={defaultSettings}>
+          <ThemeProvider defaultDark={isDark}>
+            <AuthProvider>
+              <AppStateProvider>
                 <LanguagesProvider>
                   <LevelsProvider>
                     <Layout />
                   </LevelsProvider>
                 </LanguagesProvider>
-              </SettingsProvider>
-            </AppStateProvider>
-          </AuthProvider>
-        </ThemeProvider>
+              </AppStateProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </SettingsProvider>
       </ApolloProvider>
     </BrowserRouter>
   );

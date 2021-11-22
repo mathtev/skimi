@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import Level from './Level';
+import Sentence from './Sentence';
 import TranslationSet from './TranslationSet';
 import Word from './Word';
 
@@ -23,13 +24,13 @@ class Translation extends BaseEntity {
   id: number;
 
   @Field(() => Word, { defaultValue: [] })
-  @OneToOne(() => Word)
+  @ManyToOne(() => Word)
   @JoinColumn({ name: "enWordId", referencedColumnName: "id"})
   @TypeormLoader((type) => Word, (translation: Translation) => translation.enWordId)
   wordFrom: Word;
 
   @Field(() => Word, { defaultValue: [] })
-  @OneToOne(() => Word)
+  @ManyToOne(() => Word)
   @JoinColumn({ name: "deWordId", referencedColumnName: "id"})
   @TypeormLoader((type) => Word, (translation: Translation) => translation.deWordId)
   wordTo: Word;
@@ -54,6 +55,10 @@ class Translation extends BaseEntity {
   @Field(() => [TranslationSet], { defaultValue: [] })
   @OneToMany(type => TranslationSet, translationSet => translationSet.translation)
   translationSets: TranslationSet[];
+
+  @Field(type => [Sentence], { defaultValue: [] })
+  @OneToMany(type => Sentence, sentence => sentence.translation)
+  sentences: Sentence[];
 }
 
 export default Translation;

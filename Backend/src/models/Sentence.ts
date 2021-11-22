@@ -1,5 +1,7 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Field, Int, ObjectType } from 'type-graphql';
+import { TypeormLoader } from 'type-graphql-dataloader';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import Translation from './Translation';
 
 @ObjectType()
 @Entity()
@@ -8,14 +10,23 @@ class Sentence extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Field()
+  @Column('text')
+  textFrom: string;
 
   @Field()
   @Column('text')
-  wordText: string;
+  textTo: string;
 
   @Field(() => Int)
   @Column("integer")
-  wordId: number;
+  translationId: number;
+
+  @Field(() => Translation, { defaultValue: [] })
+  @ManyToOne(() => Translation)
+  @JoinColumn({ name: "translationId", referencedColumnName: "id"})
+  @TypeormLoader((type) => Translation, (sentence: Sentence) => sentence.translationId)
+  translation: Translation;
 }
 
 export default Sentence;

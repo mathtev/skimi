@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     link: {
       textDecoration: 'none',
       margin: '20px 10px',
+      maxWidth: 300
     },
     card: {
       height: 100,
@@ -38,6 +39,11 @@ const YourSets = () => {
   const classes = useStyles();
   let { path } = useRouteMatch();
   const { data, loading, refetch } = useQuery<Sets>(GET_ALL_SETS);
+
+  React.useEffect(() => {
+    refetch();
+  }, [refetch])
+  
   return (
     <div className={classes.container}>
       {data?.sets &&

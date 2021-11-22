@@ -11,6 +11,7 @@ import {
 } from 'type-graphql';
 import {
   createEntity,
+  deleteEntity,
   findAllEntities,
   findEntityById,
 } from '../../utils/typeorm';
@@ -31,22 +32,6 @@ class WordResolver {
     private readonly translationRepository: Repository<Translation>
   ) {}
 
-  // @UseMiddleware([ErrorHandler])
-  // @Query(() => Word)
-  // async Word(
-  //   @Arg('name')
-  //   name: string
-  // ): Promise<Word> {
-  //   const word = await Word.createQueryBuilder('word')
-  //     .select()
-  //     .where('word.name = :name', { name })
-  //     .getOne();
-  //   if (!word) {
-  //     throw new EntityNotFoundError(typeof Word.name);
-  //   }
-  //   return word;
-  // }
-
   @UseMiddleware([ErrorHandler])
   @Query(() => Word)
   async word(@Arg('id', () => Int) id: number): Promise<Word> {
@@ -64,27 +49,20 @@ class WordResolver {
     const result = await findAllEntities(Word, {
       where: [{ languageId }],
     });
-    console.log(ctx.req.session);
     return result;
   }
 
   @UseMiddleware([ErrorHandler])
   @Mutation(() => Word)
   async addWord(@Arg('word') wordInput: WordInput): Promise<Word> {
-    const name = wordInput.name;
-    const languageId = wordInput.languageId;
-    let word = wordInput;
-    const queryData = await Word.createQueryBuilder('word')
-      .select('word.id')
-      .where('word.name = :name and word.languageId = :languageId', {
-        name,
-        languageId,
-      })
-      .getOne();
-    if (queryData) {
-      word.id = queryData.id;
-    }
-    const result = await createEntity(Word, word);
+    const result = await createEntity(Word, wordInput);
+    return result;
+  }
+
+  @UseMiddleware([ErrorHandler])
+  @Mutation(() => Word)
+  async deleteWord(@Arg('wordId', () => Int) wordId: number): Promise<Word> {
+    const result = deleteEntity(Word, wordId);
     return result;
   }
 
@@ -94,6 +72,25 @@ class WordResolver {
       where: [{ enWordId: word.id }],
       relations: ['wordTo'],
     });
+    return result;
+  }
+
+  @UseMiddleware([ErrorHandler])
+  @Query(() => [Word])
+  async searchWords(
+    @Arg('searchTerm', () => String, { nullable: true })
+    searchTerm: string | null,
+    @Arg('languageId', () => Int)
+    languageId: number
+  ): Promise<Word[]> {
+    let whereSQL = 'word.languageId = :languageId';
+    if (searchTerm) {
+      whereSQL += ' AND (word.name ILIKE :searchTerm)';
+    }
+    const result = await Word.createQueryBuilder('word')
+      .select()
+      .where(whereSQL, { languageId, searchTerm: `%${searchTerm}%` })
+      .getMany();
     return result;
   }
 }

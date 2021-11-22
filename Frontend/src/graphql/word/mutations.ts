@@ -8,3 +8,12 @@ export const ADD_WORD = gql`
     }
   }
 `;
+
+export const DELETE_WORD = gql`
+  mutation deleteWord($wordId: Int!) {
+    deleteWord(wordId: $wordId){
+      id
+      name
+    }
+  }
+`;
