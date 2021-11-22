@@ -14,3 +14,4 @@ export interface Translation {
 export interface Translations {
   translations: Translation[];
 }
+

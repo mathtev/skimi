@@ -1,8 +1,20 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const CREATE_TRANSLATION = gql`
-  mutation createTranslation($translation: TranslationInput!) {
-    createTranslation(translation: $translation){
+  mutation createTranslation(
+    $levelId: Int!
+    $nameFrom: String!
+    $nameTo: String!
+    $languageFromId: Int!
+    $languageToId: Int!
+  ) {
+    createTranslation(
+      levelId: $levelId
+      nameFrom: $nameFrom
+      nameTo: $nameTo
+      languageFromId: $languageFromId
+      languageToId: $languageToId
+    ) {
       id
       enWordId
       deWordId
@@ -12,7 +24,7 @@ export const CREATE_TRANSLATION = gql`
 
 export const DELETE_TRANSLATION = gql`
   mutation deleteTranslation($id: Int!) {
-    deleteTranslation(id: $id){
+    deleteTranslation(id: $id) {
       id
       enWordId
       deWordId

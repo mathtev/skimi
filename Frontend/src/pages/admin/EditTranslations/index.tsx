@@ -12,8 +12,7 @@ import React from 'react';
 import TranslationsTable from './TranslationsTable';
 import CreateTranslationForm, { FormValues } from './CreateTranslationForm';
 import TranslationDetailsModal from './TranslationDetailsModal';
-import { Translation } from '../../../graphql/translation/types'
-
+import { Translation } from '../../../graphql/translation/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,7 +58,7 @@ const EditTranslations = () => {
 
   const handleModalOpen = (translation: Translation) => {
     setModalOpen(true);
-    setTranslation(translation)
+    setTranslation(translation);
   };
   const handleModalClose = () => {
     setModalOpen(false);
@@ -71,28 +70,24 @@ const EditTranslations = () => {
     }).then(() => translations.refetch());
   };
 
-  const createTranslation = (
-    levelId: number,
-    enWordId?: number,
-    deWordId?: number
-  ) => {
+  const createTranslation = (data: FormValues) => {
     return createTranslationMutation({
       variables: {
-        translation: {
-          enWordId,
-          deWordId,
-          levelId,
-        },
+        levelId: +data.levelId,
+        nameFrom: data.nameFrom,
+        nameTo: data.nameTo,
+        languageFromId: languageFrom!.id,
+        languageToId: languageTo!.id,
       },
     }).then((resp) => resp.data.createTranslation);
   };
 
-  const handleSubmit = async (
-    formData: FormValues,
-    wordFromId?: number,
-    wordToId?: number,
-  ) => {
-    createTranslation(+formData.levelId, wordFromId, wordToId)
+  const handleSubmit = async (formData: FormValues) => {
+    if (!languageFrom || !languageTo) {
+      console.error('languages undefined');
+      return;
+    }
+    createTranslation(formData)
       .then(() => {
         translations.refetch();
       })

@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
       '& > .customAsync': {
         flexGrow: '1',
+        width: '100%'
       },
     },
     formButton: {
@@ -62,6 +63,8 @@ interface CreateTranslationFormProps {
 
 export interface FormValues {
   levelId: string;
+  nameFrom: string;
+  nameTo: string;
 }
 
 const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
@@ -72,11 +75,9 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
 }) => {
   const classes = useStyles();
   const { searchWords } = useSearchWordsQuery();
-  const [selectedWordFrom, setSelectedWordFrom] =
-    React.useState<SelectOption>();
-  const [selectedWordTo, setSelectedWordTo] = React.useState<SelectOption>();
+  const [selectedWordFrom, setSelectedWordFrom] =React.useState('');
+  const [selectedWordTo, setSelectedWordTo] = React.useState('');
 
-  console.log(selectedWordFrom)
   return (
     <>
       <Formik
@@ -84,41 +85,34 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
         enableReinitialize={true}
         initialValues={{
           levelId: '',
+          nameFrom: selectedWordFrom,
+          nameTo: selectedWordTo
         }}
         onSubmit={async (
           formData: FormValues,
           { setSubmitting, resetForm }
         ) => {
           setSubmitting(true);
-          if (selectedWordFrom && selectedWordTo)
-            await handleSubmit(
-              formData,
-              selectedWordFrom?.value,
-              selectedWordTo?.value
-            );
+          await handleSubmit(formData);
           setSubmitting(false);
           resetForm();
-          setSelectedWordFrom(undefined);
-          setSelectedWordTo(undefined);
         }}
       >
         {({ values, errors, isSubmitting }: FormikState<FormValues>) => (
           <Form className={classes.formRoot}>
             <CustomAsyncSelect
-              key={selectedWordFrom?.value}
+              handleSelectChange={setSelectedWordFrom}
+              key="selectWordFrom"
               name="selectWordFrom"
               getData={searchWords}
               languageId={languageFrom.id}
-              selectedValue={selectedWordFrom}
-              handleSelectChange={setSelectedWordFrom}
             />
             <CustomAsyncSelect
-              key={selectedWordTo?.value}
+              handleSelectChange={setSelectedWordTo}
+              key="selectWordTo"
               name="selectWordTo"
               getData={searchWords}
               languageId={languageTo.id}
-              selectedValue={selectedWordTo}
-              handleSelectChange={setSelectedWordTo}
             />
             <Field
               name="levelId"
