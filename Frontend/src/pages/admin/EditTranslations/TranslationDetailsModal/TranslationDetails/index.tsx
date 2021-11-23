@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@material-ui/core';
+import {  Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import { Translation } from '../../../../../graphql/translation/types';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';

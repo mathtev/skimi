@@ -12,6 +12,7 @@ import { PrivateRoute } from '../PrivateRoute';
 import Loader from 'react-loader-spinner';
 import YourSets from '../../pages/YourSets';
 import SetDetails from '../../pages/YourSets/SetDetails';
+import LearnMode from '../../pages/YourSets/SetDetails/LearnMode';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +51,7 @@ const Layout = () => {
             <Switch>
               <Route path="/home" exact component={Home} />
               <Route path="/your-sets" exact component={YourSets} />
+              <Route path="/learn/:id" exact component={LearnMode} />
               <Route path="/your-sets/:id" component={SetDetails} />
               <Route path="/admin" component={Admin} />
               <Route path="/" render={() => <Redirect to="/home" />} />

@@ -38,7 +38,7 @@ const SentenceList: React.FC<SentenceListProps> = ({
         <b className={classes.sentenceText}>{languageTo?.name}</b>
       </div>
       {sentences.map((sentence) => (
-        <div className={classes.sentence}>
+        <div className={classes.sentence} key={sentence.id}>
           <span className={classes.sentenceText}>{sentence.textFrom}</span>
           <span className={classes.sentenceText}>{sentence.textTo}</span>
         </div>

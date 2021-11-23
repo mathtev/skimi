@@ -3,7 +3,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { Button, TextField } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import WordSelection from './WordSelection';
 
 const useStyles = makeStyles((theme: Theme) =>

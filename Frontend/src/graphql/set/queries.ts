@@ -1,4 +1,5 @@
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
+import { SetResponse } from './types';
 
 export const GET_ALL_SETS = gql`
   query getAllSets {
@@ -32,7 +33,7 @@ export const GET_SET = gql`
       id
       name
       createdAt
-      translationSets {
+      translationSetGroup {
         id
         skill
         translation {
@@ -50,7 +51,7 @@ export const GET_SET = gql`
             name
             languageId
           }
-        } 
+        }
       }
       translations {
         id
@@ -71,3 +72,11 @@ export const GET_SET = gql`
     }
   }
 `;
+
+export const useSetQuery = (id: number) => {
+  const {data, loading, refetch} = useQuery<SetResponse>(GET_SET, {
+    variables: { id },
+  });
+  return {data, loading, refetch}
+};
+

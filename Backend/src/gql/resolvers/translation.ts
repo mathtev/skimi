@@ -13,7 +13,6 @@ import {
 } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Translation from '../../models/Translation';
-import { TranslationInput } from '../types/translation';
 import { Service } from 'typedi';
 import Word from '../../models/Word';
 

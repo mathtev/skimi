@@ -42,9 +42,8 @@ export const useWordsQuery = (languageId?: number) => {
 };
 
 export const useSearchWordsQuery = () => {
-  // prettier-ignore
   const searchWordsLazy = useImperativeQuery(SEARCH_WORDS);
-
+  
   const searchWords = (languageId: number, searchTerm?: string) => {
     return searchWordsLazy({
       variables: { languageId, searchTerm },
