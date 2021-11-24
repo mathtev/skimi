@@ -37,10 +37,10 @@ export const createTheme = (): Theme =>
         main: '#2183c8',
         light: '#72c5ff'
       },
-      text: {
-        primary: '#000',
-        secondary: '#fff'
-      },
+      // text: {
+      //   primary: '#000',
+      //   secondary: '#fff'
+      // },
     },
   });
   

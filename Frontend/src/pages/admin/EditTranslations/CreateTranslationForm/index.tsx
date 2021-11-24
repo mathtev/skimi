@@ -85,6 +85,8 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
         ) => {
           setSubmitting(true);
           await handleSubmit(formData);
+          setSelectedWordFrom('');
+          setSelectedWordTo('');
           setSubmitting(false);
           resetForm();
         }}
@@ -93,12 +95,14 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
           <Form className={classes.formRoot}>
             <CustomAsyncSelect
               handleSelectChange={setSelectedWordFrom}
+              selectedValue={selectedWordFrom}
               name="selectWordFrom"
               getData={searchWords}
               languageId={languageFrom.id}
             />
             <CustomAsyncSelect
               handleSelectChange={setSelectedWordTo}
+              selectedValue={selectedWordTo}
               name="selectWordTo"
               getData={searchWords}
               languageId={languageTo.id}

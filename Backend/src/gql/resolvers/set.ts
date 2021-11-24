@@ -9,6 +9,7 @@ import {
 } from 'type-graphql';
 import {
   createEntity,
+  deleteEntity,
   findAllEntities,
   findEntityById,
   updateEntity,
@@ -56,6 +57,13 @@ class SetResolver {
       profileId: userId,
       translations,
     });
+    return result;
+  }
+
+  @UseMiddleware([ErrorHandler])
+  @Mutation(() => Set)
+  async deleteSet(@Arg('id', () => Int) id: number) {
+    const result = await deleteEntity(Set, id);
     return result;
   }
 }

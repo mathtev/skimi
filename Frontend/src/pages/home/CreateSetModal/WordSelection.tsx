@@ -46,10 +46,12 @@ const WordSelection: React.FC<WordSelectionProps> = ({
   const userLevel = currentUser?.level?.difficulty || 1;
 
   const translationsPool = React.useRef<Translation[]>([]);
-  const numSelected = React.useRef<number>(0);
+  const prevWordsLen = React.useRef<number>(0);
   const estimatedLevel = React.useRef<number>(userLevel);
+
   const [tableData, setTableData] = React.useState<TableData[]>([]);
   const [selectedWords, setSelectedWords] = React.useState<number[]>([]);
+
   const [title, setTitle] = React.useState('New set');
   const [errorMessage, setErrorMessage] = React.useState('');
 
@@ -134,10 +136,10 @@ const WordSelection: React.FC<WordSelectionProps> = ({
 
   const loadNewData = (translations: Translation[]) => {
     handleSetTableData(translations, displayRows, estimatedLevel.current);
+    prevWordsLen.current = selectedWords.length;
   };
 
   const handleNext = (translations: Translation[]) => {
-    numSelected.current = selectedWords.length - numSelected.current;
     estimateNewLevel();
     loadNewData(translations);
   };
@@ -145,8 +147,8 @@ const WordSelection: React.FC<WordSelectionProps> = ({
   const estimateNewLevel = () => {
     let newLevel = estimatedLevel.current;
     const numLevels = levels.data.length;
-    const perceent = (numSelected.current / displayRows) * 100;
-    console.log('prc', perceent)
+    const numChecked = selectedWords.length - prevWordsLen.current;
+    const perceent = (numChecked / displayRows) * 100;
     if (perceent > 90) {
       newLevel -= 2;
     } else if (perceent > 70) {

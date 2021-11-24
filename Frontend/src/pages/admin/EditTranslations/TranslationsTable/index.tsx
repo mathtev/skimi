@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tableRow: {
       '& .MuiTableCell-head': {
-        color: theme.palette.text.secondary,
+        color: '#fff',
         backgroundColor: theme.palette.secondary.main,
       },
     },
