@@ -51,6 +51,11 @@ export const GET_SET = gql`
             name
             languageId
           }
+          sentences {
+            id
+            textFrom
+            textTo
+          }
         }
       }
       translations {
@@ -67,6 +72,11 @@ export const GET_SET = gql`
           id
           name
           languageId
+        }
+        sentences {
+          id
+          textFrom
+          textTo
         }
       }
     }

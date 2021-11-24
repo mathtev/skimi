@@ -15,19 +15,11 @@ export const compareStrings = (s1?: string, s2?: string): boolean => {
   return s1.toLowerCase() === s2.toLowerCase();
 };
 
-interface IWeightedRandom {
-  [key: string]: any;
-  weight: number;
-}
-
-
 export const getRandom = (array: any[]) => {
-  let random = Math.random() * array.length;
-
-  return array[random];
+  return array[Math.floor(Math.random() * array.length)];
 };
 
-export const weightedRandom = (array: IWeightedRandom[]) => {
+export const weightedRandom = (array: any[]) => {
   let random;
   let index = 0;
   const weights = array.map((x) => x.weight);

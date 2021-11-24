@@ -5,21 +5,13 @@ import {
   Int,
   UseMiddleware,
   Mutation,
-  Ctx,
 } from 'type-graphql';
 import {
-  createEntity,
   findAllEntities,
-  findEntityById,
   updateEntity,
 } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import { Service } from 'typedi';
-import Set from '../../models/Set';
-import { SetInput } from '../types/set';
-import Translation from '../../models/Translation';
-import { GQLContext } from '../../types/gqlContext';
-import { CurrentUserNotFoundError } from '../../utils/customErrors';
 import TranslationSet from '../../models/TranslationSet';
 import { TranslationSetInput } from '../types/translationSet';
 

@@ -88,8 +88,7 @@ const SetDetails = () => {
     let skill = translations.find((x) => x.id === translationSetId)?.skill;
     if (skill === undefined) return;
     skill -= 1;
-    if (skill === -1) skill = 1;
-    else if (skill <= 0) return;
+    if (skill < 0) return;
     updateSkill(translationSetId, skill);
   };
 

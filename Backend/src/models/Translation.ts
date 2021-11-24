@@ -58,6 +58,7 @@ class Translation extends BaseEntity {
 
   @Field(type => [Sentence], { defaultValue: [] })
   @OneToMany(type => Sentence, sentence => sentence.translation)
+  @TypeormLoader((sentence: Sentence) => sentence.translationId, { selfKey: true })
   sentences: Sentence[];
 }
 
