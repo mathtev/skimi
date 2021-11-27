@@ -7,12 +7,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wordsFromContainer: {
       display: 'flex',
+      flexWrap: 'wrap'
     },
   })
 );
 
 const getListStyle = (isDraggingOver: boolean) => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  background: isDraggingOver ? '#f0f8ff' : '#fafafa',
+  borderBottom: '2px solid #bfbfbf',
   padding: 20,
   display: 'flex',
   alignItems: 'center',
@@ -23,6 +25,9 @@ const getListStyle = (isDraggingOver: boolean) => ({
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   userSelect: 'none',
   margin: '0 3px',
+  border: '1px solid #a09d9d',
+  padding: 7,
+  borderRadius: 8,
   //color: isDragging ? 'lightgreen' : 'grey',
   ...draggableStyle,
 });

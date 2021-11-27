@@ -2,7 +2,6 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Sentence } from '../../../../../graphql/sentence/types';
-import { shuffleArray } from '../../../../../utils/helperFunctions';
 import { reorderWords } from './reorder';
 import WordsList from './WordsList';
 
@@ -10,7 +9,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wordsList: {
       background: '#d3f7ff',
-      height: 50,
     },
     container: {
       display: 'flex',

@@ -7,7 +7,6 @@ import {
   shuffleArray,
   weightedRandom,
 } from '../../../../utils/helperFunctions';
-import { DragDropContext } from 'react-beautiful-dnd';
 import { useQuery } from '@apollo/client';
 import { SetResponse } from '../../../../graphql/set/types';
 import { Sentence } from '../../../../graphql/sentence/types';
@@ -30,11 +29,40 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      justifyContent: 'space-between',
+      height: '100%',
+      width: '100%',
+      maxWidth: 800,
+      margin: 'auto',
     },
     dragAndDrop: {
-      width: 600,
-      height: 400,
+      width: '100%',
+      height: '100%',
     },
+    progressBar: {
+      borderRadius: 10,
+      width: '100%',
+      height: '15px !important',
+    },
+    sentence: {
+      marginRight: 'auto',
+      fontWeight: 'bolder',
+      marginBottom: 25
+    },
+    exercise: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      maxWidth: 550,
+      maxHeight: 250
+    },
+    buttons: {
+      width: '80%',
+      display: 'flex',
+      justifyContent: 'space-evenly',
+      marginBottom: '6%'
+    }
   })
 );
 
@@ -115,6 +143,7 @@ const LearnMode: React.FC = () => {
 
     setWords(newWords);
     setSentence(randomSentence);
+    setCorrect(undefined);
     setTranslation(randomTranslation);
   };
 
@@ -179,20 +208,31 @@ const LearnMode: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <LinearProgress variant="determinate" value={value} />
-      <Typography variant="h5">{sentence?.textFrom}</Typography>
-      <div className={classes.dragAndDrop}>
-        {sentence && (
-          <WordsDnd
-            words={words}
-            sentence={sentence}
-            handleSetWords={handleSetWords}
-          />
-        )}
+      <LinearProgress
+        variant="determinate"
+        value={value}
+        color="secondary"
+        className={classes.progressBar}
+      />
+      <div className={classes.exercise}>
+        <Typography variant="h6" className={classes.sentence}>
+          {sentence?.textFrom}
+        </Typography>
+        <div className={classes.dragAndDrop}>
+          {sentence && (
+            <WordsDnd
+              words={words}
+              sentence={sentence}
+              handleSetWords={handleSetWords}
+            />
+          )}
+        </div>
       </div>
-      <Button onClick={showHint}>Hint</Button>
-      {allMoved && <Button onClick={checkAnswer}>Check answer</Button>}
-      {isCorrect !== undefined && <Button onClick={handleNext}>Next</Button>}
+      <div className={classes.buttons}>
+        <Button onClick={showHint}>Hint</Button>
+        {allMoved && <Button onClick={checkAnswer}>Check answer</Button>}
+        {isCorrect !== undefined && <Button onClick={handleNext}>Next</Button>}
+      </div>
     </div>
   );
 };

@@ -18,6 +18,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
     inset: 0,
+    height: '100%',
+    maxHeight: 600
+  },
+  layout: {
+    height: '100%',
   },
   loader: {
     height: '100%',
@@ -26,7 +31,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   content: {
+    height: '100%',
     paddingTop: `calc(${cssVariables.headerHeight + theme.spacing(6)}px)`,
+    baddingBottom: theme.spacing(6)
   },
 }));
 
@@ -44,7 +51,7 @@ const Layout = () => {
   return (
     <div className={classes.root}>
       {pageLoaded && authenticated ? (
-        <div>
+        <div className={classes.layout}>
           <Header toggleSidebar={toggleSidebar} />
           <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
           <main className={classes.content}>
