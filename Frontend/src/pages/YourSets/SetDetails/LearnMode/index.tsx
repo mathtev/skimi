@@ -1,26 +1,39 @@
 import React from 'react';
 import { useParams } from 'react-router';
 import { GET_SET } from '../../../../graphql/set/queries';
-import { getRandom, weightedRandom } from '../../../../utils/helperFunctions';
+import {
+  compareObjects,
+  getRandom,
+  shuffleArray,
+  weightedRandom,
+} from '../../../../utils/helperFunctions';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useQuery } from '@apollo/client';
 import { SetResponse } from '../../../../graphql/set/types';
 import { Sentence } from '../../../../graphql/sentence/types';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
-import WordsList from './WordsList';
-import { reorderWords } from './reorder';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  Typography,
+  Button,
+  LinearProgress,
+} from '@material-ui/core';
+
+import WordsDnd, { IWordDnd, IWordsDnd } from './WordsDnd';
+import { Translation } from '../../../../graphql/translation/types';
+import { TranslationSet } from '../../../../graphql/translationSet/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    wordsList: {
-      background: '#d3f7ff',
-      height: 50
-    },
-    container: {
+    root: {
       display: 'flex',
       flexDirection: 'column',
-      height: 300,
-      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    dragAndDrop: {
+      width: 600,
+      height: 400,
     },
   })
 );
@@ -29,82 +42,157 @@ interface IRouterParams {
   id: string;
 }
 
-export interface WordDnd {
-  id: string;
-  name: string;
-}
-
-export interface WordsDnd {
-  [key: string]: WordDnd[];
-  wordsFrom: WordDnd[];
-  wordsTo: WordDnd[];
-}
-
 const LearnMode: React.FC = () => {
   const id = +useParams<IRouterParams>().id;
   const classes = useStyles();
 
-  const [words, setWords] = React.useState<WordsDnd>({
+  const maxExercises = 10;
+  const defaultWords = {
     wordsFrom: [],
     wordsTo: [],
-  });
+  };
 
-  useQuery<SetResponse>(GET_SET, {
+  const [isCorrect, setCorrect] = React.useState<boolean | undefined>();
+  const [translation, setTranslation] = React.useState<Translation>();
+  const [words, setWords] = React.useState<IWordsDnd>(defaultWords);
+  const [sentence, setSentence] = React.useState<Sentence>();
+  const [value, setValue] = React.useState(0);
+
+  const correctSequence = React.useRef<IWordDnd[]>([]);
+
+  const allMoved = words.wordsFrom.length === correctSequence.current.length;
+
+  const { data } = useQuery<SetResponse>(GET_SET, {
     variables: { id },
     onCompleted: (data) => {
-      handleSetWordArrays(data);
+      loadNewExercise(data);
     },
   });
 
-  const handleSetWordArrays = (data: SetResponse) => {
-    const translationSetGroup = data?.set.translationSetGroup || [];
-    const weigtedTranslations = translationSetGroup.map((translationSet) => ({
-      translationSet,
-      weight: 10 - translationSet.skill,
-    }));
-    const translation =
-      weightedRandom(weigtedTranslations)?.translationSet.translation;
-    const sentence = translation?.sentences
-      ? (getRandom(translation.sentences) as Sentence)
-      : undefined;
+  const getRandomTranslation = (
+    translationSetGroup: TranslationSet[]
+  ): Translation => {
+    const weigtedTranslations = getWeightedTranslations(translationSetGroup);
+    const result = weightedRandom(weigtedTranslations);
 
-    if (!sentence) return;
-    const wordsTo = sentenceToArray(sentence.textTo, 'wordsTo');
+    return result.translationSet.translation;
+  };
 
-    if (wordsTo) {
-      setWords({ ...words, wordsTo });
+  const getWeightedTranslations = (translationSetGroup: TranslationSet[]) => {
+    return translationSetGroup.map((translationSet) => {
+      const result = {
+        translationSet,
+        weight: 10 - translationSet.skill,
+      };
+
+      if (translationSet.translation.id === translation?.id) {
+        result.weight = 0;
+      }
+
+      return result;
+    });
+  };
+
+  const getRandomSentence = (translation: Translation) => {
+    if (!translation || !translation.sentences) {
+      return;
+    }
+    const sentence = getRandom(translation.sentences) as Sentence;
+    return sentence;
+  };
+
+  const loadNewExercise = (data?: SetResponse) => {
+    if (!data) return;
+
+    const translations = data.set.translationSetGroup;
+    const randomTranslation = getRandomTranslation(translations);
+    const randomSentence = getRandomSentence(randomTranslation);
+    const scatteredWords = getWordsArray(randomSentence?.textTo);
+    const newWords = {
+      wordsFrom: [],
+      wordsTo: scatteredWords || [],
+    };
+
+    setWords(newWords);
+    setSentence(randomSentence);
+    setTranslation(randomTranslation);
+  };
+
+  const handleNext = (event: any) => {
+    const newValue = value + 100 / maxExercises;
+
+    if (newValue <= 100) {
+      loadNewExercise(data);
+      setValue(newValue);
+      return;
     }
   };
 
-  const sentenceToArray = (sentence: string, key: string) => {
-    const array = sentence.toLowerCase().split('.').join('').split(' ');
+  const handleSetWords = (data: IWordsDnd) => {
+    setWords(data);
+  };
+
+  const getWordsArray = (sentence?: string) => {
+    if (!sentence) return;
+
+    let array = sentence.split('.').join('').split(' ');
+
     const wordArray = array.map((wordName, index) => ({
-      id: key + index,
+      id: wordName + index,
       name: wordName,
     }));
-    return wordArray;
+    correctSequence.current = wordArray;
+
+    return shuffleArray(wordArray);
+  };
+
+  const checkAnswer = () => {
+    const correct = correctSequence.current;
+    const answer = words.wordsFrom;
+    const isCorrect = compareObjects(answer, correct, 'id');
+
+    setCorrect(isCorrect);
+  };
+
+  const showHint = () => {
+    const answeredWords = words.wordsFrom;
+    const correctWords = correctSequence.current;
+    let i: number;
+
+    for (i = 0; i < correctWords.length; i++) {
+      if (answeredWords[i]?.id !== correctWords[i].id) {
+        break;
+      }
+    }
+
+    const hintWord = correctWords[i];
+    if (!hintWord) return;
+
+    const removed = answeredWords.slice(i);
+    const wordsFrom = answeredWords.slice(0, i).concat(hintWord);
+    const wordsTo = words.wordsTo
+      .concat(removed)
+      .filter((word) => word.id !== hintWord.id);
+
+    setWords({ wordsFrom, wordsTo });
   };
 
   return (
-    <div>
-      <DragDropContext
-        onDragEnd={({ destination, source }) => {
-          // // dropped outside the list
-          if (!destination) {
-            return;
-          }
-
-          setWords(reorderWords(words, source, destination));
-        }}
-      >
-        <div className={classes.container}>
-          {Object.entries(words).map(([key, value], index: number) => (
-            <div className={classes.wordsList}>
-              <WordsList children id={key} type="CARD" words={value} />
-            </div>
-          ))}
-        </div>
-      </DragDropContext>
+    <div className={classes.root}>
+      <LinearProgress variant="determinate" value={value} />
+      <Typography variant="h5">{sentence?.textFrom}</Typography>
+      <div className={classes.dragAndDrop}>
+        {sentence && (
+          <WordsDnd
+            words={words}
+            sentence={sentence}
+            handleSetWords={handleSetWords}
+          />
+        )}
+      </div>
+      <Button onClick={showHint}>Hint</Button>
+      {allMoved && <Button onClick={checkAnswer}>Check answer</Button>}
+      {isCorrect !== undefined && <Button onClick={handleNext}>Next</Button>}
     </div>
   );
 };

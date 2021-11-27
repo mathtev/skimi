@@ -39,3 +39,14 @@ export const weightedRandom = (array: any[]) => {
 
   return array[index];
 };
+
+export const compareObjects = (
+  array1: any[],
+  array2: any[],
+  property: string
+) => {
+  const a = array1.map((obj) => obj[property]).join('');
+  const b = array2.map((obj) => obj[property]).join('');
+
+  return a === b;
+};

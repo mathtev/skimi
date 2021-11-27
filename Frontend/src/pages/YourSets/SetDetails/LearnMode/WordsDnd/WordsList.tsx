@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import { WordDnd } from '.';
+import { IWordDnd } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -11,45 +11,52 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const getListStyle = (isDraggingOver: boolean) => ({
+  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  padding: 20,
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  height: '100%',
+});
+
+const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+  userSelect: 'none',
+  margin: '0 3px',
+  //color: isDragging ? 'lightgreen' : 'grey',
+  ...draggableStyle,
+});
+
 interface WordsListProps {
   id: string;
   type: string;
-  words: WordDnd[];
+  words: IWordDnd[];
 }
 
 const WordsList: React.FC<WordsListProps> = ({ id, type, words }) => {
   const classes = useStyles();
 
-  const getListStyle = (isDraggingOver: boolean) => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-    padding: 20,
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-  });
-
   return (
-    <Droppable
-      droppableId={id}
-      type={type}
-      direction="horizontal"
-    >
+    <Droppable droppableId={id} type={type} direction="horizontal">
       {(provided, snapshot) => (
         <div
           className={classes.wordsFromContainer}
-          style={getListStyle(snapshot.isDraggingOver)}
           {...provided.droppableProps}
           ref={provided.innerRef}
+          style={getListStyle(snapshot.isDraggingOver)}
         >
           {words.map((word, index) => {
             return (
               <Draggable key={word.id} draggableId={word.id} index={index}>
-                {(provided) => (
+                {(provided, snapshot) => (
                   <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  style={getItemStyle(
+                    snapshot.isDragging,
+                    provided.draggableProps.style
+                  )}
                   >
                     {word.name}
                   </div>

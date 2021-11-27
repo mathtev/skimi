@@ -1,7 +1,6 @@
 import { DraggableLocation } from "react-beautiful-dnd";
-import { WordsDnd } from ".";
+import { IWordsDnd } from ".";
 
-// a little function to help us with reordering the result
 export const reorder = (
   list: any[],
   startIndex: number,
@@ -15,7 +14,7 @@ export const reorder = (
 };
 
 export const reorderWords = (
-  words: WordsDnd,
+  words: IWordsDnd,
   source: DraggableLocation,
   destination: DraggableLocation
 ) => {
@@ -33,7 +32,6 @@ export const reorderWords = (
   }
 
   // moving to different list
-
   // remove from original
   current.splice(source.index, 1);
   // insert into next
