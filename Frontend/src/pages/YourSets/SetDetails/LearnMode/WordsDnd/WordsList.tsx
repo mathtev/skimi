@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wordsFromContainer: {
       display: 'flex',
-      flexWrap: 'wrap'
+      overflowX: 'auto'
     },
   })
 );
@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const getListStyle = (isDraggingOver: boolean) => ({
   background: isDraggingOver ? '#f0f8ff' : '#fafafa',
   borderBottom: '2px solid #bfbfbf',
-  padding: 20,
   display: 'flex',
   alignItems: 'center',
   width: '100%',

@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wordsList: {
       background: '#d3f7ff',
+      height: 50,
     },
     container: {
       display: 'flex',

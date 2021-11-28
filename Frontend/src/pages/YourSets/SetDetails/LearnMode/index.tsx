@@ -51,11 +51,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     exercise: {
       height: '100%',
+      maxHeight: 250,
       display: 'flex',
       flexDirection: 'column',
-      width: '100%',
-      maxWidth: 550,
-      maxHeight: 250
+      width: 'auto',
+      maxWidth: '100%',
+      minWidth: 550,
     },
     buttons: {
       width: '80%',
