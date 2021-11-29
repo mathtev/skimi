@@ -87,16 +87,16 @@ const SetDetails = () => {
   const onReject = (translationSetId: number) => {
     let skill = translations.find((x) => x.id === translationSetId)?.skill;
     if (skill === undefined) return;
-    skill -= 1;
-    if (skill < 0) return;
+    skill -= 10;
+    if (skill < 0) skill = 0;
     updateSkill(translationSetId, skill);
   };
 
   const onAccept = (translationSetId: number) => {
     let skill = translations.find((x) => x.id === translationSetId)?.skill;
     if (skill === undefined) return;
-    skill += 1;
-    if (skill > 10) return;
+    skill += 10;
+    if (skill > 100) skill = 100;
     updateSkill(translationSetId, skill);
   };
 
@@ -143,7 +143,7 @@ const SetDetails = () => {
           <span className={classes.wordName}>
             {translationSet?.translation?.wordTo.name}{' '}
           </span>
-          <CircularProgressWithLabel value={translationSet?.skill * 10} />
+          <CircularProgressWithLabel value={translationSet?.skill} />
         </Card>
       ))}
     </div>

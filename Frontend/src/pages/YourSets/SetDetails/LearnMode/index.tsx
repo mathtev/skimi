@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxHeight: 250,
       display: 'flex',
       flexDirection: 'column',
-      width: 'auto',
+      width: '100%',
       maxWidth: '100%',
       minWidth: 550,
     },
@@ -66,6 +66,8 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
+
+// 
 
 interface IRouterParams {
   id: string;

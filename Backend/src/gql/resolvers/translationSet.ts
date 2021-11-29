@@ -5,11 +5,9 @@ import {
   Int,
   UseMiddleware,
   Mutation,
+  Float,
 } from 'type-graphql';
-import {
-  findAllEntities,
-  updateEntity,
-} from '../../utils/typeorm';
+import { findAllEntities, updateEntity } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import { Service } from 'typedi';
 import TranslationSet from '../../models/TranslationSet';
@@ -20,7 +18,7 @@ import { TranslationSetInput } from '../types/translationSet';
 class TranslationSetResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [TranslationSet])
-  async translationSetList(): Promise<TranslationSet[]> {
+  async translationSetGroup(): Promise<TranslationSet[]> {
     const result = await findAllEntities(TranslationSet, {
       relations: ['translation', 'set'],
     });
@@ -30,9 +28,9 @@ class TranslationSetResolver {
   @UseMiddleware([ErrorHandler])
   @Mutation(() => TranslationSet)
   async updateTranslationSet(
-    @Arg('id', () => Int) id: number, 
-    @Arg('input') input: TranslationSetInput, 
-    ): Promise<TranslationSet> {
+    @Arg('id', () => Int) id: number,
+    @Arg('input') input: TranslationSetInput
+  ): Promise<TranslationSet> {
     const result = updateEntity(TranslationSet, id, input);
     return result;
   }
