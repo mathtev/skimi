@@ -21,29 +21,6 @@ class ProfileResolver {
     });
     return result;
   }
-
-  @UseMiddleware([ErrorHandler])
-  @Query(() => Float)
-  async getUserEval(@Ctx() ctx: GQLContext): Promise<number> {
-    const userId = ctx.req.session.userId;
-
-    const entities = await TranslationSet.createQueryBuilder('translationSet')
-      .select()
-      .innerJoin('translationSet.set', 'set')
-      .innerJoinAndSelect('translationSet.translation', 'translation')
-      .innerJoinAndSelect('translation.level', 'level')
-      .innerJoin('set.profile', 'profile')
-      .innerJoin('profile.user', 'user')
-      .where('user.id = :userId', { userId })
-      .getMany();
-
-    const userEval = entities.reduce(
-      (sum, entity) => sum + entity.skill / 100 * entity.translation.level.difficulty,
-      0
-    );
-    const result = userEval / entities.length;
-    return result;
-  }
 }
 
 export default ProfileResolver;

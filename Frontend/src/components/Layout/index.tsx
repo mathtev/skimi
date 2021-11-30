@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     inset: 0,
     height: '100%',
-    maxHeight: 600
   },
   layout: {
     height: '100%',
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     height: '100%',
     paddingTop: `calc(${cssVariables.headerHeight + theme.spacing(6)}px)`,
-    baddingBottom: theme.spacing(6)
+    paddingBottom: theme.spacing(6),
   },
 }));
 

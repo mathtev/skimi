@@ -18,9 +18,9 @@ import Word from '../../models/Word';
 
 // ogarnięcoe translacji - 3 dni        done 2 dni
 // dodawanie zdań - 2 dni               done 2 dni
-// dodanie nowego typu nauki - 14 dni
+// dodanie nowego typu nauki - 14 dni   
 // rejestracja - 1 dnień
-// stylowanie - 4 dni
+// stylowanie - 4 dni 
 // napisanie pracy - 20 dni
 
 // razem: 44 dni

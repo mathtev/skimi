@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const EditTranslations = () => {
   const classes = useStyles();
-  const levels = useLevels();
+  const { levels } = useLevels();
   const { languageFrom, languageTo } = useLanguages();
   const translations = useTranslationsQuery();
 
@@ -102,7 +102,7 @@ const EditTranslations = () => {
         <CreateTranslationForm
           languageFrom={languageFrom!}
           languageTo={languageTo!}
-          levels={levels.data}
+          levels={levels}
           handleSubmit={handleSubmit}
         />
       )}

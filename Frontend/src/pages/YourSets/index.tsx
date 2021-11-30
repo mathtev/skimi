@@ -8,6 +8,7 @@ import {
   Button,
   Card,
   IconButton,
+  LinearProgress,
   Popover,
   Typography,
 } from '@material-ui/core';
@@ -34,11 +35,27 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 300,
     },
     card: {
+      position: 'relative',
       height: 100,
       padding: 10,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
+      paddingBottom: 15,
+    },
+    setProgress: {
+      width: '100%',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: '5px !important',
+      position: 'absolute',
+      margin: 0,
+      background: '#d4fffd',
+
+      '& .MuiLinearProgress-bar': {
+        backgroundColor: theme.palette.success.main,
+      },
     },
     bottomText: {},
   })
@@ -72,6 +89,11 @@ const YourSets = () => {
               <span className={classes.bottomText}>
                 {set.translations?.length} words
               </span>
+              <LinearProgress
+                className={classes.setProgress}
+                variant="determinate"
+                value={set.progress}
+              />
             </Card>
           </Link>
         ))}
