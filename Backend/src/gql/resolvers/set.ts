@@ -6,9 +6,11 @@ import {
   UseMiddleware,
   Mutation,
   Ctx,
+  Float,
 } from 'type-graphql';
 import {
   createEntity,
+  deleteEntity,
   findAllEntities,
   findEntityById,
   updateEntity,
@@ -20,6 +22,7 @@ import { SetInput } from '../types/set';
 import Translation from '../../models/Translation';
 import { GQLContext } from '../../types/gqlContext';
 import { CurrentUserNotFoundError } from '../../utils/customErrors';
+import TranslationSet from '../../models/TranslationSet';
 
 @Service()
 @Resolver()
@@ -37,7 +40,7 @@ class SetResolver {
   @Query(() => Set)
   async set(@Arg('id', () => Int) id: number): Promise<Set> {
     const result = await findEntityById(Set, id, {
-      relations: ['translations', 'translationSets'],
+      relations: ['translations', 'translationSetGroup'],
     });
     return result;
   }
@@ -56,6 +59,24 @@ class SetResolver {
       profileId: userId,
       translations,
     });
+    return result;
+  }
+
+  @UseMiddleware([ErrorHandler])
+  @Mutation(() => Set)
+  async deleteSet(@Arg('id', () => Int) id: number) {
+    const result = await deleteEntity(Set, id);
+    return result;
+  }
+
+  @UseMiddleware([ErrorHandler])
+  @Query(() => Float)
+  async getSetEval(@Arg('setId', () => Int) setId: number): Promise<number> {
+    const entities = await findAllEntities(TranslationSet, {
+      where: { setId },
+    });
+    const setEval = entities.reduce((sum, entity) => sum + entity.skill, 0);
+    const result = setEval / entities.length;
     return result;
   }
 }

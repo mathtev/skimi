@@ -1,16 +1,16 @@
 import { QueryResult, useMutation, useQuery } from '@apollo/client';
-import { Button, Card, Typography } from '@material-ui/core';
+import { Box, Button, Card, Typography } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
-import { GET_SET } from '../../../graphql/set/queries';
+import { GET_SET, useSetQuery } from '../../../graphql/set/queries';
 import { SetResponse } from '../../../graphql/set/types';
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import Flashcards from '../../../components/Flashcards';
 import classNames from 'classnames';
-import { Translation } from '../../../graphql/translation/types';
 import { TranslationSet } from '../../../graphql/translationSet/types';
 import { UPDATE_TRANSLATION_SET } from '../../../graphql/translationSet/mutations';
 import { CircularProgressWithLabel } from '../../../components/CircularProgressWithLabel';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,15 +32,21 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
     },
     wordName: {
-      flexBasis: '50%'
+      flexBasis: '50%',
     },
-    flashCards: {
+    studyModeButton: {
       width: '35%',
       margin: '20px 0',
       border: '2px solid',
       '&:hover': {
         border: '2px solid',
       },
+    },
+    learnLink: {
+      textDecoration: 'none',
+      color: 'inherit',
+      width: '100%',
+      height: '100%',
     },
     hideScroll: {
       height: 0,
@@ -53,38 +59,16 @@ interface IRouterParams {
   id: string;
 }
 
-const skillColors = [
-  '#ffffff',
-  '#f53c3c',
-  '#f53c3c',
-  '#ffb413',
-  '#ffb413',
-  '#f7f306',
-  '#f7f306',
-  '#b0f83d',
-  '#b0f83d',
-  '#37d637',
-  '#373ad6',
-];
-
-// dodac kolumny tarnalationid, textfrom i textto w sentence
-// stworzyć relację one translation to many sentences
-// skill na flashcardsskill 
-// dodać przycisk learn przenoszący do nowej podstrony
-// dodać learnSkill
-
 const SetDetails = () => {
   const classes = useStyles();
   const id = parseInt(useParams<IRouterParams>().id);
   const [flashcardsActive, setFlashcardsActive] = React.useState(false);
 
   const [translationSetUpdateMutation] = useMutation(UPDATE_TRANSLATION_SET);
-  const { data, loading, refetch } = useQuery<SetResponse>(GET_SET, {
-    variables: { id },
-  });
 
+  const { data, loading, refetch } = useSetQuery(id);
   const set = data?.set;
-  const translationSets = data?.set.translationSets || [];
+  const translations = data?.set.translationSetGroup || [];
 
   const sortBySkill = (translations: TranslationSet[], reverse?: boolean) => {
     const sorted = [...translations].sort((a, b) =>
@@ -93,9 +77,7 @@ const SetDetails = () => {
     return reverse ? sorted.reverse() : sorted;
   };
 
-
   const updateSkill = (id: number, skill: number) => {
-    console.log(skill, id);
     return translationSetUpdateMutation({
       variables: { id, input: { skill } },
       onCompleted: () => refetch(),
@@ -103,19 +85,18 @@ const SetDetails = () => {
   };
 
   const onReject = (translationSetId: number) => {
-    let skill = translationSets.find((x) => x.id === translationSetId)?.skill;
+    let skill = translations.find((x) => x.id === translationSetId)?.skill;
     if (skill === undefined) return;
-    skill -= 1;
-    if (skill === -1) skill = 1; 
-    else if (skill <= 0) return;
+    skill -= 10;
+    if (skill < 0) skill = 0;
     updateSkill(translationSetId, skill);
   };
 
   const onAccept = (translationSetId: number) => {
-    let skill = translationSets.find((x) => x.id === translationSetId)?.skill;
+    let skill = translations.find((x) => x.id === translationSetId)?.skill;
     if (skill === undefined) return;
-    skill += 1;
-    if (skill > 10) return;
+    skill += 10;
+    if (skill > 100) skill = 100;
     updateSkill(translationSetId, skill);
   };
 
@@ -128,31 +109,41 @@ const SetDetails = () => {
     >
       {flashcardsActive && (
         <Flashcards
-          translations={translationSets}
+          translations={translations}
           setActive={setFlashcardsActive}
           onReject={onReject}
           onAccept={onAccept}
-        >
-
-        </Flashcards>
+        ></Flashcards>
       )}
       <Typography variant="h5">{set?.name}</Typography>
-      <Button
-        className={classes.flashCards}
-        variant="outlined"
-        color="secondary"
-        onClick={() => setFlashcardsActive(true)}
-      >
-        Flashcards
-      </Button>
-      {sortBySkill(translationSets).map((translationSet) => (
-        <Card
-          className={classes.word}
-          key={translationSet.id}
+      <Box display="flex" justifyContent="space-between">
+        <Button
+          className={classes.studyModeButton}
+          variant="outlined"
+          color="secondary"
+          onClick={() => setFlashcardsActive(true)}
         >
-          <span className={classes.wordName}>{translationSet?.translation?.wordFrom.name} </span>
-          <span className={classes.wordName}>{translationSet?.translation?.wordTo.name} </span>
-          <CircularProgressWithLabel value={translationSet?.skill * 10} />
+          Flashcards
+        </Button>
+        <Button
+          className={classes.studyModeButton}
+          variant="outlined"
+          color="secondary"
+        >
+          <Link to={'/learn/' + id} className={classes.learnLink}>
+            Learn
+          </Link>
+        </Button>
+      </Box>
+      {sortBySkill(translations).map((translationSet) => (
+        <Card className={classes.word} key={translationSet.id}>
+          <span className={classes.wordName}>
+            {translationSet?.translation?.wordFrom.name}{' '}
+          </span>
+          <span className={classes.wordName}>
+            {translationSet?.translation?.wordTo.name}{' '}
+          </span>
+          <CircularProgressWithLabel value={translationSet?.skill} />
         </Card>
       ))}
     </div>

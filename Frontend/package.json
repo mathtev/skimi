@@ -20,6 +20,7 @@
     "history": "4.10.1",
     "ra-data-graphql": "^3.11.4",
     "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^17.0.2",
     "react-loader-spinner": "^4.0.0",
     "react-router-dom": "^5.3.0",
@@ -53,5 +54,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/react-beautiful-dnd": "^13.1.2"
+  }
 }

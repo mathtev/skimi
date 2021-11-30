@@ -18,10 +18,10 @@ const CustomAsyncSelect: React.FC<SelectAsyncProps> = ({
   getData,
   languageId,
   name,
+  selectedValue,
   handleSelectChange
 }) => {
-  const [value, setValue] = React.useState('');
-  const [selected, setSelected] = React.useState<SelectOption>();
+  const [selected, setSelected] = React.useState<SelectOption | null>();
   const loadData = (match: string) => {
     return getData(languageId, match)
       .then((resp) => {
@@ -35,14 +35,13 @@ const CustomAsyncSelect: React.FC<SelectAsyncProps> = ({
 
   const onInputChange = (newValue: SingleValue<string>, action: any) => {
     if (action.action === 'input-change') {
-      setValue(newValue || '');
+      setSelected(null);
       handleSelectChange(newValue || '')
     }
   };
 
   const onChange = (newValue: SingleValue<SelectOption>) => {
     if (newValue) {
-      setValue('');
       setSelected(newValue);
       handleSelectChange(newValue.label)
     }
@@ -54,11 +53,10 @@ const CustomAsyncSelect: React.FC<SelectAsyncProps> = ({
         name={name}
         defaultOptions
         value={selected}
-        inputValue={value}
+        inputValue={!selected ? selectedValue : ''}
         loadOptions={loadData}
         onInputChange={onInputChange}
         onChange={onChange}
-        
       />
     </div>
   );

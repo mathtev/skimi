@@ -34,12 +34,12 @@ class TranslationSet extends BaseEntity {
 
 
   @Field(() => Set)
-  @ManyToOne((type) => Set, (set) => set.translationSets, { primary: true })
+  @ManyToOne((type) => Set, (set) => set.translationSetGroup, { primary: true })
   @TypeormLoader((type) => Set, (translationSet: TranslationSet) => translationSet.setId)
   set: Set;
 
   @Field(() => Translation)
-  @ManyToOne((type) => Translation, (translation) => translation.translationSets, { primary: true })
+  @ManyToOne((type) => Translation, (translation) => translation.translationSetGroup, { primary: true })
   @TypeormLoader((type) => Translation, (translationSet: TranslationSet) => translationSet.translationId)
   translation: Translation;
 }

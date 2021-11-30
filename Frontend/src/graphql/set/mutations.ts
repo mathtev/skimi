@@ -9,3 +9,13 @@ export const CREATE_SET = gql`
     }
   }
 `;
+
+export const DELETE_SET = gql`
+  mutation deleteSet($id: Int!) {
+    deleteSet(id: $id){
+      id
+      name
+      createdAt
+    }
+  }
+`;

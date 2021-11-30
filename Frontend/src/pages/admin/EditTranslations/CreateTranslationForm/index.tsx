@@ -6,20 +6,11 @@ import {
   IconButton,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { Field, Form, Formik, FormikState } from 'formik';
 import React from 'react';
 import { Level } from '../../../../graphql/level/types';
-import {
-  Translation,
-  Translations,
-} from '../../../../graphql/translation/types';
-import { Word } from '../../../../graphql/word/types';
 import CustomSelect from '../../../../components/CustomSelect';
-import { ApolloQueryResult } from '@apollo/client';
-import CustomAsyncSelect, {
-  SelectOption,
-} from '../../../../components/CustomAsyncSelect';
+import CustomAsyncSelect from '../../../../components/CustomAsyncSelect';
 import { useSearchWordsQuery } from '../../../../graphql/word/queries';
 import { Language } from '../../../../graphql/language/types';
 
@@ -38,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
       '& > .customAsync': {
         flexGrow: '1',
-        width: '100%'
+        width: '100%',
       },
     },
     formButton: {
@@ -75,7 +66,7 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
 }) => {
   const classes = useStyles();
   const { searchWords } = useSearchWordsQuery();
-  const [selectedWordFrom, setSelectedWordFrom] =React.useState('');
+  const [selectedWordFrom, setSelectedWordFrom] = React.useState('');
   const [selectedWordTo, setSelectedWordTo] = React.useState('');
 
   return (
@@ -86,7 +77,7 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
         initialValues={{
           levelId: '',
           nameFrom: selectedWordFrom,
-          nameTo: selectedWordTo
+          nameTo: selectedWordTo,
         }}
         onSubmit={async (
           formData: FormValues,
@@ -94,6 +85,8 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
         ) => {
           setSubmitting(true);
           await handleSubmit(formData);
+          setSelectedWordFrom('');
+          setSelectedWordTo('');
           setSubmitting(false);
           resetForm();
         }}
@@ -102,14 +95,14 @@ const CreateTranslationForm: React.FC<CreateTranslationFormProps> = ({
           <Form className={classes.formRoot}>
             <CustomAsyncSelect
               handleSelectChange={setSelectedWordFrom}
-              key="selectWordFrom"
+              selectedValue={selectedWordFrom}
               name="selectWordFrom"
               getData={searchWords}
               languageId={languageFrom.id}
             />
             <CustomAsyncSelect
               handleSelectChange={setSelectedWordTo}
-              key="selectWordTo"
+              selectedValue={selectedWordTo}
               name="selectWordTo"
               getData={searchWords}
               languageId={languageTo.id}

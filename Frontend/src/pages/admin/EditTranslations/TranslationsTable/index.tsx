@@ -20,8 +20,6 @@ import { Language } from '../../../../graphql/language/types';
 import { ApolloQueryResult } from '@apollo/client';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
-import { Link } from 'react-router-dom';
-import TranslationDetailsModal from '../TranslationDetailsModal';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tableRow: {
       '& .MuiTableCell-head': {
-        color: theme.palette.text.secondary,
+        color: '#fff',
         backgroundColor: theme.palette.secondary.main,
       },
     },
