@@ -36,6 +36,9 @@ class Set extends BaseEntity {
   @Column('integer')
   profileId: number;
 
+  @Field(() => Int)
+  progress: number;
+
   @Field(() => Profile, { defaultValue: [] })
   @ManyToOne(() => Profile)
   profile: Profile;

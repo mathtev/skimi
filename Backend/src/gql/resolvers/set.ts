@@ -7,6 +7,8 @@ import {
   Mutation,
   Ctx,
   Float,
+  FieldResolver,
+  Root,
 } from 'type-graphql';
 import {
   createEntity,
@@ -25,7 +27,7 @@ import { CurrentUserNotFoundError } from '../../utils/customErrors';
 import TranslationSet from '../../models/TranslationSet';
 
 @Service()
-@Resolver()
+@Resolver((of) => Set)
 class SetResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [Set])
@@ -79,6 +81,17 @@ class SetResolver {
     const result = setEval / entities.length;
     return result;
   }
+
+  @FieldResolver()
+  async progress(@Root() set: Set) {
+    const entities = await findAllEntities(TranslationSet, {
+      where: [{ setId: set.id }],
+    });
+    const setEval = entities.reduce((sum, entity) => sum + entity.skill, 0);
+    const result = Math.round(setEval / entities.length);
+    return result;
+  }
+
 }
 
 export default SetResolver;

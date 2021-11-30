@@ -2,6 +2,7 @@ import { Translation } from "../translation/types";
 import { TranslationSet } from "../translationSet/types";
 
 export interface Set {
+  progress: number;
   id: number;
   name: string;
   createdAt: Date;

@@ -7,6 +7,7 @@ export const GET_ALL_SETS = gql`
       id
       name
       createdAt
+      progress
       translations {
         id
         levelId

@@ -9,3 +9,13 @@ export const GET_ALL_LEVELS = gql`
     }
   }
 `;
+
+export const GET_USER_LEVEL = gql`
+  query getUserLevel {
+    getUserLevel {
+      id
+      difficulty
+      code
+    }
+  }
+`;
