@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { GET_SET } from '../../../../graphql/set/queries';
 import {
   compareObjects,
@@ -17,11 +17,16 @@ import {
   Typography,
   Button,
   LinearProgress,
+  Box,
+  IconButton,
 } from '@material-ui/core';
 
 import WordsDnd, { IWordDnd, IWordsDnd } from './WordsDnd';
 import { Translation } from '../../../../graphql/translation/types';
 import { TranslationSet } from '../../../../graphql/translationSet/types';
+import AnswerFeedback from './AnswerFeedback';
+import { useSkill } from '../../../../hooks/useSkill';
+import ExerciseOver from './ExerciseOver';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,11 +48,12 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 10,
       width: '100%',
       height: '15px !important',
+      margin: 'auto',
     },
     sentence: {
       marginRight: 'auto',
       fontWeight: 'bolder',
-      marginBottom: 25
+      marginBottom: 25,
     },
     exercise: {
       height: '100%',
@@ -62,11 +68,14 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '80%',
       display: 'flex',
       justifyContent: 'space-evenly',
-      marginBottom: '6%'
-    }
+      marginBottom: '6%',
+    },
+    closeBtn: {
+      width: 50,
+      height: 50,
+    },
   })
 );
-
 
 interface IRouterParams {
   id: string;
@@ -75,47 +84,59 @@ interface IRouterParams {
 const LearnMode: React.FC = () => {
   const id = +useParams<IRouterParams>().id;
   const classes = useStyles();
+  const history = useHistory();
+  const { skillUp, skillDown } = useSkill();
 
-  const maxExercises = 10;
+  const maxExercises = 2;
   const defaultWords = {
-    wordsFrom: [],
     wordsTo: [],
+    wordsFrom: [],
   };
 
-  const [isCorrect, setCorrect] = React.useState<boolean | undefined>();
-  const [translation, setTranslation] = React.useState<Translation>();
-  const [words, setWords] = React.useState<IWordsDnd>(defaultWords);
-  const [sentence, setSentence] = React.useState<Sentence>();
+  const [feedbackVisible, setFeedbackVisible] = React.useState(false);
+  const [isCorrect, setCorrect] = React.useState<boolean>(false);
   const [value, setValue] = React.useState(0);
 
+  const [translation, setTranslation] = React.useState<TranslationSet>();
+  const [words, setWords] = React.useState<IWordsDnd>(defaultWords);
+  const [sentence, setSentence] = React.useState<Sentence>();
+  const [isOver, setOver] = React.useState(false);
+
+  const prevSetProgress = React.useRef<number>();
   const correctSequence = React.useRef<IWordDnd[]>([]);
 
-  const allMoved = words.wordsFrom.length === correctSequence.current.length;
-
-  const { data } = useQuery<SetResponse>(GET_SET, {
+  const { data, refetch } = useQuery<SetResponse>(GET_SET, {
     variables: { id },
     onCompleted: (data) => {
+      prevSetProgress.current = data.set.progress;
       loadNewExercise(data);
     },
   });
 
+  const allMoved = words.wordsFrom.length === correctSequence.current.length;
+  const finished = isOver && prevSetProgress.current && data?.set.progress;
+
+  const handleClose = () => {
+    history.goBack();
+  };
+
   const getRandomTranslation = (
     translationSetGroup: TranslationSet[]
-  ): Translation => {
+  ): TranslationSet => {
     const weigtedTranslations = getWeightedTranslations(translationSetGroup);
     const result = weightedRandom(weigtedTranslations);
 
-    return result.translationSet.translation;
+    return result.translationSet;
   };
 
   const getWeightedTranslations = (translationSetGroup: TranslationSet[]) => {
     return translationSetGroup.map((translationSet) => {
       const result = {
         translationSet,
-        weight: 10 - translationSet.skill,
+        weight: 100 - translationSet.skill,
       };
 
-      if (translationSet.translation.id === translation?.id) {
+      if (translationSet.id === translation?.id) {
         result.weight = 0;
       }
 
@@ -136,7 +157,7 @@ const LearnMode: React.FC = () => {
 
     const translations = data.set.translationSetGroup;
     const randomTranslation = getRandomTranslation(translations);
-    const randomSentence = getRandomSentence(randomTranslation);
+    const randomSentence = getRandomSentence(randomTranslation.translation);
     const scatteredWords = getWordsArray(randomSentence?.textTo);
     const newWords = {
       wordsFrom: [],
@@ -144,19 +165,22 @@ const LearnMode: React.FC = () => {
     };
 
     setWords(newWords);
+    setFeedbackVisible(false);
     setSentence(randomSentence);
-    setCorrect(undefined);
     setTranslation(randomTranslation);
   };
 
-  const handleNext = (event: any) => {
+  const handleContinue = (event: any) => {
     const newValue = value + 100 / maxExercises;
 
-    if (newValue <= 100) {
+    setValue(newValue);
+
+    if (newValue < 100) {
       loadNewExercise(data);
-      setValue(newValue);
       return;
     }
+
+    refetch().then(() => setOver(true));
   };
 
   const handleSetWords = (data: IWordsDnd) => {
@@ -182,7 +206,12 @@ const LearnMode: React.FC = () => {
     const answer = words.wordsFrom;
     const isCorrect = compareObjects(answer, correct, 'id');
 
+    if (translation) {
+      isCorrect ? skillUp!(translation, 10) : skillDown!(translation, 10);
+    }
+
     setCorrect(isCorrect);
+    setFeedbackVisible(true);
   };
 
   const showHint = () => {
@@ -210,12 +239,17 @@ const LearnMode: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <LinearProgress
-        variant="determinate"
-        value={value}
-        color="secondary"
-        className={classes.progressBar}
-      />
+      <Box display="flex" alignItems="center" width="100%">
+        <IconButton className={classes.closeBtn} onClick={handleClose}>
+          &#10006;
+        </IconButton>
+        <LinearProgress
+          variant="determinate"
+          value={value}
+          color="secondary"
+          className={classes.progressBar}
+        />
+      </Box>
       <div className={classes.exercise}>
         <Typography variant="h6" className={classes.sentence}>
           {sentence?.textFrom}
@@ -233,8 +267,23 @@ const LearnMode: React.FC = () => {
       <div className={classes.buttons}>
         <Button onClick={showHint}>Hint</Button>
         {allMoved && <Button onClick={checkAnswer}>Check answer</Button>}
-        {isCorrect !== undefined && <Button onClick={handleNext}>Next</Button>}
       </div>
+      {feedbackVisible && (
+        <AnswerFeedback
+          sentence={sentence}
+          isCorrect={isCorrect}
+          handleContinue={handleContinue}
+        />
+      )}
+      {finished && (
+        <ExerciseOver
+          oldProgress={prevSetProgress.current!}
+          newProgress={data!.set.progress}
+          handleClose={handleClose}
+        >
+          Go back
+        </ExerciseOver>
+      )}
     </div>
   );
 };

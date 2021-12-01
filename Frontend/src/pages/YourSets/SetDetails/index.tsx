@@ -11,6 +11,7 @@ import { TranslationSet } from '../../../graphql/translationSet/types';
 import { UPDATE_TRANSLATION_SET } from '../../../graphql/translationSet/mutations';
 import { CircularProgressWithLabel } from '../../../components/CircularProgressWithLabel';
 import { Link } from 'react-router-dom';
+import { useSkill } from '../../../hooks/useSkill';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,6 +63,8 @@ interface IRouterParams {
 const SetDetails = () => {
   const classes = useStyles();
   const id = parseInt(useParams<IRouterParams>().id);
+  const { skillUp, skillDown } = useSkill();
+
   const [flashcardsActive, setFlashcardsActive] = React.useState(false);
 
   const [translationSetUpdateMutation] = useMutation(UPDATE_TRANSLATION_SET);
@@ -77,27 +80,12 @@ const SetDetails = () => {
     return reverse ? sorted.reverse() : sorted;
   };
 
-  const updateSkill = (id: number, skill: number) => {
-    return translationSetUpdateMutation({
-      variables: { id, input: { skill } },
-      onCompleted: () => refetch(),
-    });
+  const onReject = (translationSet: TranslationSet, value: number) => {
+    skillDown!(translationSet, value)?.then(() => refetch());
   };
 
-  const onReject = (translationSetId: number) => {
-    let skill = translations.find((x) => x.id === translationSetId)?.skill;
-    if (skill === undefined) return;
-    skill -= 10;
-    if (skill < 0) skill = 0;
-    updateSkill(translationSetId, skill);
-  };
-
-  const onAccept = (translationSetId: number) => {
-    let skill = translations.find((x) => x.id === translationSetId)?.skill;
-    if (skill === undefined) return;
-    skill += 10;
-    if (skill > 100) skill = 100;
-    updateSkill(translationSetId, skill);
+  const onAccept = (translationSet: TranslationSet, value: number) => {
+    skillUp!(translationSet, value)?.then(() => refetch());
   };
 
   return (

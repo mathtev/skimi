@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Layout = () => {
   const classes = useStyles();
-  const { currentUser, authLoading, authenticated } = useAuth();
+  const { authLoading, authenticated } = useAuth();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const toggleSidebar = () => {

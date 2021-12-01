@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
 import React, { createContext } from 'react';
 import { isNullOrUndefined } from 'util';
-import { GET_ALL_LANGUAGES } from '../../graphql/language/queries';
-import { Language, Languages } from '../../graphql/language/types';
-import { useSettings } from '../../hooks/useSettings';
-import { compareStrings } from '../../utils/helperFunctions';
+import { GET_ALL_LANGUAGES } from '../../../graphql/language/queries';
+import { Language, Languages } from '../../../graphql/language/types';
+import { useSettings } from '../../../hooks/useSettings';
+import { compareStrings } from '../../../utils/helperFunctions';
 
 interface ILanguagesContext {
   languages: Language[];

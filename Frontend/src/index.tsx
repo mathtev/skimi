@@ -13,8 +13,10 @@ import SettingsProvider from './context/settings/SettingsProvider';
 import AppStateProvider from './context/appState/AppStateProvider';
 import AuthProvider from './context/auth/AuthProvider';
 import { BrowserRouter } from 'react-router-dom';
-import LevelsProvider from './context/levels/LevelsProvider';
-import LanguagesProvider from './context/languages/LanguagesProvider';
+import LevelsProvider from './context/graphqlData/levels/LevelsProvider';
+import LanguagesProvider from './context/graphqlData/languages/LanguagesProvider';
+import SkillProvider from './context/graphqlData/skill/SkillProvider';
+import GraphqlDataProvider from './context/graphqlData/GraphqlDataProvider';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -44,7 +46,7 @@ function App() {
     learningLanguage: 'german',
     nativeLanguage: 'english',
   };
-  
+
   return (
     <BrowserRouter>
       <ApolloProvider client={apolloClient}>
@@ -52,11 +54,9 @@ function App() {
           <ThemeProvider defaultDark={isDark}>
             <AuthProvider>
               <AppStateProvider>
-                <LanguagesProvider>
-                  <LevelsProvider>
-                    <Layout />
-                  </LevelsProvider>
-                </LanguagesProvider>
+                <GraphqlDataProvider>
+                  <Layout />
+                </GraphqlDataProvider>
               </AppStateProvider>
             </AuthProvider>
           </ThemeProvider>
