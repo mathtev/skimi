@@ -67,3 +67,7 @@ const ExerciseOver: React.FC<ExerciseOverProps> = ({
 };
 
 export default ExerciseOver;
+
+// no learned words
+// current level
+// 

@@ -2,7 +2,7 @@ import { Box, Button, makeStyles, Theme, Typography } from '@material-ui/core';
 import { createStyles } from '@material-ui/styles';
 import React from 'react';
 import clsx from 'clsx';
-import { Sentence } from '../../../../graphql/sentence/types';
+import { Sentence } from '../../graphql/sentence/types';
 
 const useStyles = (isCorrect: boolean) =>
   makeStyles((theme: Theme) => ({

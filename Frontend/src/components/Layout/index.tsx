@@ -11,8 +11,9 @@ import Login from '../../pages/Login';
 import { PrivateRoute } from '../PrivateRoute';
 import Loader from 'react-loader-spinner';
 import YourSets from '../../pages/YourSets';
+import LearnMode from '../../pages/LearnMode';
 import SetDetails from '../../pages/YourSets/SetDetails';
-import LearnMode from '../../pages/YourSets/SetDetails/LearnMode';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {

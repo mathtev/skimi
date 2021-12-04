@@ -1,15 +1,15 @@
 import React from 'react';
 import { useHistory, useParams } from 'react-router';
-import { GET_SET } from '../../../../graphql/set/queries';
+import { GET_SET } from '../../graphql/set/queries';
 import {
   compareObjects,
   getRandom,
   shuffleArray,
   weightedRandom,
-} from '../../../../utils/helperFunctions';
+} from '../../utils/helperFunctions';
 import { useQuery } from '@apollo/client';
-import { SetResponse } from '../../../../graphql/set/types';
-import { Sentence } from '../../../../graphql/sentence/types';
+import { SetResponse } from '../../graphql/set/types';
+import { Sentence } from '../../graphql/sentence/types';
 import {
   makeStyles,
   Theme,
@@ -22,10 +22,10 @@ import {
 } from '@material-ui/core';
 
 import WordsDnd, { IWordDnd, IWordsDnd } from './WordsDnd';
-import { Translation } from '../../../../graphql/translation/types';
-import { TranslationSet } from '../../../../graphql/translationSet/types';
+import { Translation } from '../../graphql/translation/types';
+import { TranslationSet } from '../../graphql/translationSet/types';
 import AnswerFeedback from './AnswerFeedback';
-import { useSkill } from '../../../../hooks/useSkill';
+import { useSkill } from '../../hooks/useSkill';
 import ExerciseOver from './ExerciseOver';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -87,7 +87,7 @@ const LearnMode: React.FC = () => {
   const history = useHistory();
   const { skillUp, skillDown } = useSkill();
 
-  const maxExercises = 2;
+  const maxExercises = 5;
   const defaultWords = {
     wordsTo: [],
     wordsFrom: [],
