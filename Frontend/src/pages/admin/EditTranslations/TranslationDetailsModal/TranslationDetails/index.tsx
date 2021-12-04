@@ -6,6 +6,7 @@ import { Language } from '../../../../../graphql/language/types';
 import SentenceList from './SentenceList';
 import AddSentenceForm from './AddSentenceForm';
 
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

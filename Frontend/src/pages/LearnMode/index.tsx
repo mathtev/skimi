@@ -121,16 +121,16 @@ const LearnMode: React.FC = () => {
   };
 
   const getRandomTranslation = (
-    translationSetGroup: TranslationSet[]
+    translationSetList: TranslationSet[]
   ): TranslationSet => {
-    const weigtedTranslations = getWeightedTranslations(translationSetGroup);
+    const weigtedTranslations = getWeightedTranslations(translationSetList);
     const result = weightedRandom(weigtedTranslations);
 
     return result.translationSet;
   };
 
-  const getWeightedTranslations = (translationSetGroup: TranslationSet[]) => {
-    return translationSetGroup.map((translationSet) => {
+  const getWeightedTranslations = (translationSetList: TranslationSet[]) => {
+    return translationSetList.map((translationSet) => {
       const result = {
         translationSet,
         weight: 100 - translationSet.skill,
@@ -155,7 +155,7 @@ const LearnMode: React.FC = () => {
   const loadNewExercise = (data?: SetResponse) => {
     if (!data) return;
 
-    const translations = data.set.translationSetGroup;
+    const translations = data.set.translationSetList;
     const randomTranslation = getRandomTranslation(translations);
     const randomSentence = getRandomSentence(randomTranslation.translation);
     const scatteredWords = getWordsArray(randomSentence?.textTo);

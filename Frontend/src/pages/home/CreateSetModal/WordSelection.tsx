@@ -1,12 +1,10 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Button, TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import CheckboxTable from '../../../components/CheckboxTable';
 import { CREATE_SET } from '../../../graphql/set/mutations';
-import { GET_ALL_TRANSLATIONS } from '../../../graphql/translation/queries';
-import { Translation, Translations } from '../../../graphql/translation/types';
-import { useAuth } from '../../../hooks/useAuth';
+import { Translation } from '../../../graphql/translation/types';
 import { useLevels } from '../../../hooks/useLevels';
 import { useSettings } from '../../../hooks/useSettings';
 import { shuffleArray } from '../../../utils/helperFunctions';
@@ -30,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface WordSelectionProps {
   displayRows: number;
   minWords: number;
+  translations: Translation[];
   handleModalClose: () => void;
 }
 
@@ -37,13 +36,13 @@ const WordSelection: React.FC<WordSelectionProps> = ({
   displayRows,
   minWords,
   handleModalClose,
+  translations,
 }) => {
   const classes = useStyles();
-  const { nativeLanguage, learningLanguage } = useSettings();
-  const { currentUser } = useAuth();
+  const { nativeLanguage, foreignLanguage } = useSettings();
   const { levels, userLevel } = useLevels();
 
-  const translationsPool = React.useRef<Translation[]>([]);
+  const translationsRef = React.useRef<Translation[]>(translations);
   const prevWordsLen = React.useRef<number>(0);
   const estimatedLevel = React.useRef<number>(userLevel?.difficulty || 1);
 
@@ -54,16 +53,15 @@ const WordSelection: React.FC<WordSelectionProps> = ({
   const [errorMessage, setErrorMessage] = React.useState('');
 
   const [createSetMutation] = useMutation(CREATE_SET);
-  const translations = useQuery<Translations>(GET_ALL_TRANSLATIONS, {
-    onCompleted: (data) => {
-      loadNewData(data.translations);
-    },
-  });
 
   const tableHeaders: TableHeader[] = [
     { id: 'wordFrom', label: nativeLanguage },
-    { id: 'wordTo', label: learningLanguage },
+    { id: 'wordTo', label: foreignLanguage },
   ];
+
+  React.useEffect(() => {
+    handleSetTableData(displayRows, estimatedLevel.current);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     validateInput(e.target.value);
@@ -112,18 +110,16 @@ const WordSelection: React.FC<WordSelectionProps> = ({
     );
   };
 
-  const handleSetTableData = (
-    translations: Translation[],
-    rows: number,
-    difficulty: number
-  ) => {
+  const handleSetTableData = (rows: number, difficulty: number) => {
+    const _translations = translationsRef.current;
+
     const data =
-      shuffleArray(translations)
+      shuffleArray(_translations)
         .filter((translation) => translation.level.difficulty === difficulty)
         .slice(0, rows) || [];
 
-    translationsPool.current =
-      translations.filter((el) => !data.includes(el)) || [];
+    translationsRef.current =
+      _translations.filter((el) => !data.includes(el)) || [];
 
     setTableData(mapTranslations(data));
   };
@@ -132,14 +128,14 @@ const WordSelection: React.FC<WordSelectionProps> = ({
     setSelectedWords(ids);
   };
 
-  const loadNewData = (translations: Translation[]) => {
-    handleSetTableData(translations, displayRows, estimatedLevel.current);
+  const loadNewData = () => {
+    handleSetTableData(displayRows, estimatedLevel.current);
     prevWordsLen.current = selectedWords.length;
   };
 
-  const handleNext = (translations: Translation[]) => {
+  const handleNext = () => {
     estimateNewLevel();
-    loadNewData(translations);
+    loadNewData();
   };
 
   const estimateNewLevel = () => {
@@ -153,7 +149,7 @@ const WordSelection: React.FC<WordSelectionProps> = ({
     } else if (perceent < 30) {
       newLevel += 1;
     }
-    
+
     if (newLevel > numLevels) {
       newLevel = numLevels;
     } else if (newLevel < 1) {
@@ -186,11 +182,7 @@ const WordSelection: React.FC<WordSelectionProps> = ({
         handleCheckboxChange={handleCheckboxChange}
       />
       <div className={classes.buttons}>
-        {tableData.length > 0 && (
-          <Button onClick={() => handleNext(translationsPool.current)}>
-            Next
-          </Button>
-        )}
+        {tableData.length > 0 && <Button onClick={handleNext}>Next</Button>}
         {selectedWords.length >= minWords && (
           <Button variant="contained" type="submit">
             create set

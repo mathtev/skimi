@@ -24,7 +24,7 @@ interface LanguagesProviderProps {
 }
 
 const LanguagesProvider: React.FC = ({ children }) => {
-  const { nativeLanguage, learningLanguage } = useSettings();
+  const { nativeLanguage, foreignLanguage } = useSettings();
   const { data, loading, refetch } = useQuery<Languages>(GET_ALL_LANGUAGES);
   const languages = data?.languages || [];
 
@@ -33,7 +33,7 @@ const LanguagesProvider: React.FC = ({ children }) => {
   );
 
   const languageTo = languages.find((language) =>
-    compareStrings(language.name, learningLanguage)
+    compareStrings(language.name, foreignLanguage)
   );
 
   return (

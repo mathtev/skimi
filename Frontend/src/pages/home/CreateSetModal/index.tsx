@@ -5,6 +5,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { Button } from '@material-ui/core';
 import WordSelection from './WordSelection';
+import { Translation } from '../../../graphql/translation/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,12 +38,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface CreateSetModalProps {
   modalOpen: boolean;
+  translations: Translation[];
   handleModalClose: () => void;
 }
 
 const CreateSetModal: React.FC<CreateSetModalProps> = ({
   modalOpen,
   handleModalClose,
+  translations,
 }) => {
   const classes = useStyles();
 
@@ -63,7 +66,12 @@ const CreateSetModal: React.FC<CreateSetModalProps> = ({
             <Button className={classes.closeButton} onClick={handleModalClose}>
               Close &#10006;
             </Button>
-            <WordSelection minWords={10} displayRows={6} handleModalClose={handleModalClose} />
+            <WordSelection
+              minWords={10}
+              displayRows={6}
+              handleModalClose={handleModalClose}
+              translations={translations}
+            />
           </div>
         </Fade>
       </Modal>

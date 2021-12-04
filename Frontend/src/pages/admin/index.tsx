@@ -1,7 +1,7 @@
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import EditTranslations from './EditTranslations';
 import EditWords from './EditWords';
-import TranslationDetailsModal from './EditTranslations/TranslationDetailsModal';
+
 
 const Admin = () => {
   let { path } = useRouteMatch();

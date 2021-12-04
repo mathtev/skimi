@@ -26,4 +26,37 @@ export const GET_TRANSLATION_SET = gql`
   }
 `;
 
+export const TRANSLATION_SET_GROUP = gql`
+query translationSetList {
+  translationSetList {
+    id
+    skill
+    translation {
+      id
+      enWordId
+      deWordId
+      level {
+        id
+        difficulty
+      }
+      wordTo {
+        id
+        name
+        languageId
+      }
+      wordFrom {
+        id
+        name
+        languageId
+      }
+    }
+    set {
+      id
+      name
+      createdAt
+    }
+  }
+}
+`;
+
 

@@ -11,3 +11,7 @@ export interface TranslationSet {
 export interface TranslationSetResponse {
   translationSet: TranslationSet;
 }
+
+export interface TranslationSetList {
+  translationSetList: TranslationSet[];
+}

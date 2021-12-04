@@ -35,7 +35,7 @@ export const GET_SET = gql`
       name
       createdAt
       progress
-      translationSetGroup {
+      translationSetList {
         id
         skill
         translation {

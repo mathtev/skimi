@@ -5,7 +5,7 @@ import Header from '../Header';
 import Sidebar from '../Sidebar';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Home from '../../pages/Home';
-import Admin from '../../pages/admin';
+import Admin from '../../pages/Admin';
 import { useAuth } from '../../hooks/useAuth';
 import Login from '../../pages/Login';
 import { PrivateRoute } from '../PrivateRoute';

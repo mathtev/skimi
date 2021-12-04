@@ -1,9 +1,8 @@
-import { QueryResult, useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Box, Button, Card, Typography } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
-import { GET_SET, useSetQuery } from '../../../graphql/set/queries';
-import { SetResponse } from '../../../graphql/set/types';
+import { useSetQuery } from '../../../graphql/set/queries';
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import Flashcards from '../../../components/Flashcards';
 import classNames from 'classnames';
@@ -71,7 +70,7 @@ const SetDetails = () => {
 
   const { data, loading, refetch } = useSetQuery(id);
   const set = data?.set;
-  const translations = data?.set.translationSetGroup || [];
+  const translations = data?.set.translationSetList || [];
 
   const sortBySkill = (translations: TranslationSet[], reverse?: boolean) => {
     const sorted = [...translations].sort((a, b) =>

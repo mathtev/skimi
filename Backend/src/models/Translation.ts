@@ -38,6 +38,7 @@ class Translation extends BaseEntity {
   @Field(() => Level)
   @OneToOne(() => Level)
   @JoinColumn({ name: "levelId", referencedColumnName: "id"})
+  @TypeormLoader((type) => Level, (translation: Translation) => translation.levelId)
   level: Level;
 
   @Field(() => Int)
@@ -54,7 +55,7 @@ class Translation extends BaseEntity {
 
   @Field(() => [TranslationSet], { defaultValue: [] })
   @OneToMany(type => TranslationSet, translationSet => translationSet.translation)
-  translationSetGroup: TranslationSet[];
+  translationSetList: TranslationSet[];
 
   @Field(type => [Sentence], { defaultValue: [] })
   @OneToMany(type => Sentence, sentence => sentence.translation)

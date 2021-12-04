@@ -13,9 +13,6 @@ import SettingsProvider from './context/settings/SettingsProvider';
 import AppStateProvider from './context/appState/AppStateProvider';
 import AuthProvider from './context/auth/AuthProvider';
 import { BrowserRouter } from 'react-router-dom';
-import LevelsProvider from './context/graphqlData/levels/LevelsProvider';
-import LanguagesProvider from './context/graphqlData/languages/LanguagesProvider';
-import SkillProvider from './context/graphqlData/skill/SkillProvider';
 import GraphqlDataProvider from './context/graphqlData/GraphqlDataProvider';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -43,7 +40,7 @@ const apolloClient = new ApolloClient({
 function App() {
   const isDark = localStorage.getItem('theme') === 'true';
   const defaultSettings = {
-    learningLanguage: 'german',
+    foreignLanguage: 'german',
     nativeLanguage: 'english',
   };
 

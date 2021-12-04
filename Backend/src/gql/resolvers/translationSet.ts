@@ -18,7 +18,7 @@ import { TranslationSetInput } from '../types/translationSet';
 class TranslationSetResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => [TranslationSet])
-  async translationSetGroup(): Promise<TranslationSet[]> {
+  async translationSetList(): Promise<TranslationSet[]> {
     const result = await findAllEntities(TranslationSet, {
       relations: ['translation', 'set'],
     });
