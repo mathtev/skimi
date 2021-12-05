@@ -1,9 +1,8 @@
-import { QueryResult, useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Box, Button, Card, Typography } from '@material-ui/core';
 import React from 'react';
 import { useParams } from 'react-router';
-import { GET_SET, useSetQuery } from '../../../graphql/set/queries';
-import { SetResponse } from '../../../graphql/set/types';
+import { useSetQuery } from '../../../graphql/set/queries';
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import Flashcards from '../../../components/Flashcards';
 import classNames from 'classnames';
@@ -11,6 +10,7 @@ import { TranslationSet } from '../../../graphql/translationSet/types';
 import { UPDATE_TRANSLATION_SET } from '../../../graphql/translationSet/mutations';
 import { CircularProgressWithLabel } from '../../../components/CircularProgressWithLabel';
 import { Link } from 'react-router-dom';
+import { useSkill } from '../../../hooks/useSkill';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,13 +62,15 @@ interface IRouterParams {
 const SetDetails = () => {
   const classes = useStyles();
   const id = parseInt(useParams<IRouterParams>().id);
+  const { skillUp, skillDown } = useSkill();
+
   const [flashcardsActive, setFlashcardsActive] = React.useState(false);
 
   const [translationSetUpdateMutation] = useMutation(UPDATE_TRANSLATION_SET);
 
   const { data, loading, refetch } = useSetQuery(id);
   const set = data?.set;
-  const translations = data?.set.translationSetGroup || [];
+  const translations = data?.set.translationSetList || [];
 
   const sortBySkill = (translations: TranslationSet[], reverse?: boolean) => {
     const sorted = [...translations].sort((a, b) =>
@@ -77,27 +79,12 @@ const SetDetails = () => {
     return reverse ? sorted.reverse() : sorted;
   };
 
-  const updateSkill = (id: number, skill: number) => {
-    return translationSetUpdateMutation({
-      variables: { id, input: { skill } },
-      onCompleted: () => refetch(),
-    });
+  const onReject = (translationSet: TranslationSet, value: number) => {
+    skillDown!(translationSet, value)?.then(() => refetch());
   };
 
-  const onReject = (translationSetId: number) => {
-    let skill = translations.find((x) => x.id === translationSetId)?.skill;
-    if (skill === undefined) return;
-    skill -= 10;
-    if (skill < 0) skill = 0;
-    updateSkill(translationSetId, skill);
-  };
-
-  const onAccept = (translationSetId: number) => {
-    let skill = translations.find((x) => x.id === translationSetId)?.skill;
-    if (skill === undefined) return;
-    skill += 10;
-    if (skill > 100) skill = 100;
-    updateSkill(translationSetId, skill);
+  const onAccept = (translationSet: TranslationSet, value: number) => {
+    skillUp!(translationSet, value)?.then(() => refetch());
   };
 
   return (

@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
 import React, { createContext } from 'react';
 import { isNullOrUndefined } from 'util';
-import { GET_ALL_LANGUAGES } from '../../graphql/language/queries';
-import { Language, Languages } from '../../graphql/language/types';
-import { useSettings } from '../../hooks/useSettings';
-import { compareStrings } from '../../utils/helperFunctions';
+import { GET_ALL_LANGUAGES } from '../../../graphql/language/queries';
+import { Language, Languages } from '../../../graphql/language/types';
+import { useSettings } from '../../../hooks/useSettings';
+import { compareStrings } from '../../../utils/helperFunctions';
 
 interface ILanguagesContext {
   languages: Language[];
@@ -24,7 +24,7 @@ interface LanguagesProviderProps {
 }
 
 const LanguagesProvider: React.FC = ({ children }) => {
-  const { nativeLanguage, learningLanguage } = useSettings();
+  const { nativeLanguage, foreignLanguage } = useSettings();
   const { data, loading, refetch } = useQuery<Languages>(GET_ALL_LANGUAGES);
   const languages = data?.languages || [];
 
@@ -33,7 +33,7 @@ const LanguagesProvider: React.FC = ({ children }) => {
   );
 
   const languageTo = languages.find((language) =>
-    compareStrings(language.name, learningLanguage)
+    compareStrings(language.name, foreignLanguage)
   );
 
   return (

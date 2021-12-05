@@ -1,7 +1,7 @@
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { Sentence } from '../../../../../graphql/sentence/types';
+import { Sentence } from '../../../graphql/sentence/types';
 import { reorderWords } from './reorder';
 import WordsList from './WordsList';
 
@@ -35,10 +35,14 @@ export interface IWordsDnd {
 interface WordsDndProps {
   words: IWordsDnd;
   sentence: Sentence;
-  handleSetWords: (data: IWordsDnd)=>void;
+  handleSetWords: (data: IWordsDnd) => void;
 }
 
-const WordsDnd: React.FC<WordsDndProps> = ({ words, sentence, handleSetWords }) => {
+const WordsDnd: React.FC<WordsDndProps> = ({
+  words,
+  sentence,
+  handleSetWords,
+}) => {
   const classes = useStyles();
 
   return (

@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wordsFromContainer: {
       display: 'flex',
-      overflowX: 'auto'
+      overflowX: 'auto',
     },
   })
 );
@@ -37,7 +37,11 @@ interface WordsListProps {
   words: IWordDnd[];
 }
 
-const WordsList: React.FC<WordsListProps> = ({ id, type, words }) => {
+const WordsList: React.FC<WordsListProps> = ({
+  id,
+  type,
+  words,
+}) => {
   const classes = useStyles();
 
   return (
@@ -54,15 +58,15 @@ const WordsList: React.FC<WordsListProps> = ({ id, type, words }) => {
               <Draggable key={word.id} draggableId={word.id} index={index}>
                 {(provided, snapshot) => (
                   <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  style={getItemStyle(
-                    snapshot.isDragging,
-                    provided.draggableProps.style
-                  )}
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    style={getItemStyle(
+                      snapshot.isDragging,
+                      provided.draggableProps.style
+                    )}
                   >
-                    {word.name}
+                    <span>{word.name}</span>
                   </div>
                 )}
               </Draggable>

@@ -2,7 +2,7 @@ import React, { createContext, useState } from 'react';
 
 
 export interface Settings {
-  learningLanguage: string;
+  foreignLanguage: string;
   nativeLanguage: string;
 }
 
@@ -11,13 +11,13 @@ interface SettingsProviderProps {
 }
 
 interface ISettingsContext {
-  learningLanguage?: string;
+  foreignLanguage?: string;
   nativeLanguage?: string;
   updateSettings: (newSettings: Settings) => void;
 }
 
 export const SettingsContext = createContext<ISettingsContext>({
-  learningLanguage: undefined,
+  foreignLanguage: undefined,
   nativeLanguage: undefined,
   updateSettings: () => undefined,
 });

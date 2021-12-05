@@ -45,7 +45,7 @@ class Set extends BaseEntity {
 
   @Field(() => [TranslationSet], { defaultValue: [] })
   @OneToMany(type => TranslationSet, translationSet => translationSet.set)
-  translationSetGroup: TranslationSet[];
+  translationSetList: TranslationSet[];
   
   @Field(() => [Translation], { defaultValue: [] })
   @ManyToMany(() => Translation)

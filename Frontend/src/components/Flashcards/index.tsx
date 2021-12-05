@@ -9,8 +9,8 @@ import { TranslationSet } from '../../graphql/translationSet/types';
 interface FlashcardsProps {
   translations: TranslationSet[];
   setActive: (state: boolean) => void;
-  onReject: (translationSetId: number) => void;
-  onAccept: (translationSetId: number) => void;
+  onReject: (translationSet: TranslationSet, value: number) => void;
+  onAccept: (translationSet: TranslationSet, value: number) => void;
 }
 
 export type Direction = 'left' | 'right' | 'up' | 'down';
@@ -100,14 +100,14 @@ const Flashcards: React.FC<FlashcardsProps> = ({
   const handleReject = () => {
     const currentCard = cards[currentIndexRef.current];
     rejectedCards.current.unshift(currentCard);
-    onReject(currentCard.id);
+    onReject(currentCard, 10);
   };
 
   const handleAccept = () => {
     const currentCard = cards[currentIndexRef.current];
     console.log(currentCard);
     acceptedCards.current.unshift(currentCard);
-    onAccept(currentCard.id);
+    onAccept(currentCard, 10);
   };
 
   const handleSetCards = (newCards: TranslationSet[]) => {

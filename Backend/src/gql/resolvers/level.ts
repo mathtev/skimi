@@ -41,7 +41,9 @@ class LevelResolver {
         sum + (entity.skill / 100) * entity.translation.level.difficulty + 0.49,
       0
     );
+
     userEval = Math.round(userEval / entities.length);
+    
     if (userEval < 1) {
       userEval = 1;
     }

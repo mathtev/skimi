@@ -7,7 +7,7 @@ export interface Set {
   name: string;
   createdAt: Date;
   translations?: Translation[];
-  translationSetGroup: TranslationSet[];
+  translationSetList: TranslationSet[];
 }
 
 export interface CreateSetRequest {

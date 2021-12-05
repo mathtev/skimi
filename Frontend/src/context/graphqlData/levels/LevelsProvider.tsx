@@ -1,7 +1,7 @@
 import { OperationVariables, QueryResult, useQuery } from '@apollo/client';
 import React, { createContext, useState } from 'react';
-import { GET_ALL_LEVELS, GET_USER_LEVEL } from '../../graphql/level/queries';
-import { Level, Levels } from '../../graphql/level/types';
+import { GET_ALL_LEVELS, GET_USER_LEVEL } from '../../../graphql/level/queries';
+import { Level, Levels } from '../../../graphql/level/types';
 
 interface ILevelsContext {
   levels: Level[];

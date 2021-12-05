@@ -5,14 +5,15 @@ import Header from '../Header';
 import Sidebar from '../Sidebar';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Home from '../../pages/Home';
-import Admin from '../../pages/admin';
+import Admin from '../../pages/Admin';
 import { useAuth } from '../../hooks/useAuth';
 import Login from '../../pages/Login';
 import { PrivateRoute } from '../PrivateRoute';
 import Loader from 'react-loader-spinner';
 import YourSets from '../../pages/YourSets';
+import LearnMode from '../../pages/LearnMode';
 import SetDetails from '../../pages/YourSets/SetDetails';
-import LearnMode from '../../pages/YourSets/SetDetails/LearnMode';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Layout = () => {
   const classes = useStyles();
-  const { currentUser, authLoading, authenticated } = useAuth();
+  const { authLoading, authenticated } = useAuth();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const toggleSidebar = () => {
