@@ -182,9 +182,13 @@ const WordSelection: React.FC<WordSelectionProps> = ({
         handleCheckboxChange={handleCheckboxChange}
       />
       <div className={classes.buttons}>
-        {tableData.length > 0 && <Button onClick={handleNext}>Next</Button>}
+        {tableData.length > 0 && (
+          <Button onClick={handleNext} variant="contained" color="secondary">
+            Next
+          </Button>
+        )}
         {selectedWords.length >= minWords && (
-          <Button variant="contained" type="submit">
+          <Button variant="contained" color="secondary" type="submit">
             create set
           </Button>
         )}

@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formTitle: {
       marginRight: 'auto',
-    }
+    },
   })
 );
 
@@ -65,7 +65,11 @@ const Login = () => {
         >
           {({ values, errors, isSubmitting }: FormikState<FormValues>) => (
             <Form className={classes.form}>
-              <Typography className={classes.formTitle} gutterBottom variant="h5">
+              <Typography
+                className={classes.formTitle}
+                gutterBottom
+                variant="h5"
+              >
                 Login
               </Typography>
               <Field label="email" name="email" type="email" as={CustomField} />
@@ -75,7 +79,13 @@ const Login = () => {
                 type="password"
                 as={CustomField}
               />
-              <Button disabled={isSubmitting} type="submit">
+              <Button
+                disabled={isSubmitting}
+                variant="contained"
+                color="secondary"
+                type="submit"
+                style={{marginTop: 30}}
+              >
                 Login
               </Button>
             </Form>
