@@ -5,20 +5,24 @@ import Profile from '../../models/Profile';
 import { Service } from 'typedi';
 import { GQLContext } from '../../types/gqlContext';
 import TranslationSet from '../../models/TranslationSet';
+import { UserNotFoundError } from '../../utils/customErrors';
 
 @Service()
 @Resolver()
 class ProfileResolver {
   @UseMiddleware([ErrorHandler])
   @Query(() => Profile)
-  async currentUser(@Ctx() ctx: GQLContext): Promise<Profile | null> {
+  async currentUser(@Ctx() ctx: GQLContext): Promise<Profile> {
     const userId = ctx.req.session.userId;
-    if (!userId) {
-      return null;
-    }
-    const result = await findEntityById(Profile, userId, {
+    const result = await Profile.findOne({
       relations: ['user', 'level', 'sets'],
+      where: { userId },
     });
+
+    if (!result) {
+      throw new UserNotFoundError(userId);
+    }
+
     return result;
   }
 }

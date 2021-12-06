@@ -10,11 +10,14 @@ import {
   Typography,
 } from '@material-ui/core';
 import React from 'react';
-import { Set as SetType } from '../../graphql/set/types';
+import { Set as SetType, Sets } from '../../graphql/set/types';
 import { GET_ALL_TRANSLATIONS } from '../../graphql/translation/queries';
 import { Translations } from '../../graphql/translation/types';
 import { TRANSLATION_SET_GROUP as TRANSLATION_SET_LIST } from '../../graphql/translationSet/queries';
-import { TranslationSetList } from '../../graphql/translationSet/types';
+import {
+  TranslationSet,
+  TranslationSetList,
+} from '../../graphql/translationSet/types';
 import { useAuth } from '../../hooks/useAuth';
 import { useLevels } from '../../hooks/useLevels';
 import CreateSetModal from './CreateSetModal';
@@ -24,6 +27,9 @@ import { useLanguages } from '../../hooks/useLanguages';
 import { cssVariables } from '../../context/theme/theme';
 import LabelledProgress from './LabelledProgress';
 import Hero from './Hero';
+import {
+  GET_ALL_SETS,
+} from '../../graphql/set/queries';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,6 +92,7 @@ const useStyles = makeStyles((theme) => ({
   link: {
     flex: '1 1 0px',
     width: 0,
+    maxWidth: 170,
     textDecoration: 'none',
   },
   subtitle: {
@@ -101,34 +108,50 @@ const Home = () => {
   const { languageFrom, languageTo } = useLanguages();
 
   const _translations = useQuery<Translations>(GET_ALL_TRANSLATIONS);
-  const _translationSetList = useQuery<TranslationSetList>(TRANSLATION_SET_LIST);
+  const _sets = useQuery<Sets>(GET_ALL_SETS);
 
   const translations = _translations.data?.translations || [];
-  const translationSetList = _translationSetList.data?.translationSetList || [];
-
-  const wordsMastered =
-    translationSetList.filter((ts) => ts.skill === 100).length || undefined;
+  const sets = _sets.data?.sets || [];
 
   const [modalOpen, setModalOpen] = React.useState(false);
 
+  const countWordsMastered = () => {
+    let count = 0;
+
+    for (let set of sets) {
+      for (let translation of set.translationSetList || []) {
+        if (translation.skill === 100) {
+          count += 1;
+        }
+      }
+    }
+
+    return count;
+  };
+
   const getRecentlyCreatedSets = (n: number) => {
-    const sets = [...new Set(translationSetList.map((ts) => ts.set))];
     //prettier-ignore
-    const sorted = sets.sort((a, b) =>
-      a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0
+    const sorted = [...sets].sort((a, b) =>
+      a.createdAt > b.createdAt ? -1 : a.createdAt < b.createdAt ? 1 : 0
     );
 
     return sorted.slice(0, n);
   };
 
-  const recentSets = getRecentlyCreatedSets(3);
-
   const handleModalOpen = () => {
     setModalOpen(true);
   };
+
   const handleModalClose = () => {
     setModalOpen(false);
   };
+
+  const refetchSets = (set: SetType) => {
+    _sets.refetch();
+  };
+
+  const wordsMastered = countWordsMastered();
+  const recentSets = getRecentlyCreatedSets(3);
 
   return (
     <div className={classes.root}>
@@ -218,6 +241,7 @@ const Home = () => {
           modalOpen={modalOpen}
           handleModalClose={handleModalClose}
           translations={translations}
+          refetchSets={refetchSets}
         />
       </div>
     </div>

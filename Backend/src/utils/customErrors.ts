@@ -8,9 +8,15 @@ export class CustomError extends Error {
   }
 }
 
-export class CurrentUserNotFoundError extends CustomError {
+export class UserNotFoundError extends CustomError {
   constructor(id: number) {
-    super(`Could not find current user of id ${id} `, "CURRENT_USER_NOT_FOUND", 404);
+    super(`Could not find user of id ${id} `, "USER_NOT_FOUND", 404);
+  }
+}
+
+export class UserEmailNotFoundError extends CustomError {
+  constructor(email: string) {
+    super(`Could not find user with email: ${email} `, "USER_EMAIL_NOT_FOUND", 404);
   }
 }
 

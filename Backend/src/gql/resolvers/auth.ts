@@ -10,6 +10,7 @@ import { Service } from 'typedi';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import User from '../../models/User';
 import { GQLContext } from '../../types/gqlContext';
+import { UserEmailNotFoundError, UserNotFoundError } from '../../utils/customErrors';
 
 @Service()
 @Resolver()
@@ -23,14 +24,17 @@ export class AuthResolver {
   ): Promise<User> {
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      throw new Error('User not found');
+      throw new UserEmailNotFoundError(email);
     }
+
     //const valid = await bcrypt.compare(password, user.password);
     const valid = password === user.password;
     if (!valid) {
       throw new Error('Invalid password');
     }
+
     ctx.req.session.userId = user.id;
+
     return user;
   }
 

@@ -265,8 +265,14 @@ const LearnMode: React.FC = () => {
         </div>
       </div>
       <div className={classes.buttons}>
-        <Button onClick={showHint}>Hint</Button>
-        {allMoved && <Button onClick={checkAnswer}>Check answer</Button>}
+        <Button variant="contained" color="secondary" onClick={showHint}>
+          Hint
+        </Button>
+        {allMoved && (
+          <Button variant="contained" color="secondary" onClick={checkAnswer}>
+            Check answer
+          </Button>
+        )}
       </div>
       {feedbackVisible && (
         <AnswerFeedback
