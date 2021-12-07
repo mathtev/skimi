@@ -8,6 +8,31 @@ export const GET_ALL_SETS = gql`
       name
       createdAt
       progress
+      translationSetList {
+        id
+        skill
+        translation {
+          id
+          levelId
+          enWordId
+          deWordId
+          wordTo {
+            id
+            name
+            languageId
+          }
+          wordFrom {
+            id
+            name
+            languageId
+          }
+          sentences {
+            id
+            textFrom
+            textTo
+          }
+        }
+      }
       translations {
         id
         levelId
