@@ -12,6 +12,7 @@ import YourSets from '../../pages/YourSets';
 import LearnMode from '../../pages/LearnMode';
 import SetDetails from '../../pages/YourSets/SetDetails';
 import BeatLoader from "react-spinners/BeatLoader";
+import Register from '../../pages/Register';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -79,6 +80,7 @@ const Layout = () => {
         <div>
           <Route path="/" render={() => <Redirect to="/login" />} />
           <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
         </div>
       )}
       {activeView.loader && (

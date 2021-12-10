@@ -5,8 +5,6 @@ import CustomField from '../../components/CustomField';
 import { useAuth } from '../../hooks/useAuth';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
-import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,12 +34,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface FormValues {
   email: string;
+  login: string;
   password: string;
 }
 
-const Login = () => {
+const Register = () => {
   const classes = useStyles();
-  const { login } = useAuth();
+  const { register } = useAuth();
 
   return (
     <div className={classes.root}>
@@ -51,16 +50,20 @@ const Login = () => {
           enableReinitialize={true}
           initialValues={{
             email: '',
+            login: '',
             password: '',
           }}
           onSubmit={async (formData: FormValues, { setSubmitting }) => {
             setSubmitting(true);
+
             try {
-              await login!(formData.email, formData.password);
+              const { email, login, password } = formData;
+              await register!(email, login, password);
               window.location.href = 'http://localhost:3000';
             } catch (error) {
               console.error(error);
             }
+
             setSubmitting(false);
           }}
         >
@@ -71,9 +74,10 @@ const Login = () => {
                 gutterBottom
                 variant="h5"
               >
-                Login
+                Register
               </Typography>
               <Field label="email" name="email" type="email" as={CustomField} />
+              <Field label="login" name="login" type="text" as={CustomField} />
               <Field
                 label="password"
                 name="password"
@@ -85,17 +89,16 @@ const Login = () => {
                 variant="contained"
                 color="secondary"
                 type="submit"
-                style={{marginTop: 30}}
+                style={{ marginTop: 30 }}
               >
-                Login
+                Register
               </Button>
             </Form>
           )}
         </Formik>
-        <Link to="/register">Register</Link>
       </Card>
     </div>
   );
 };
 
-export default Login;
+export default Register;

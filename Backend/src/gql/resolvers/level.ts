@@ -11,6 +11,28 @@ import { GQLContext } from '../../types/gqlContext';
 import TranslationSet from '../../models/TranslationSet';
 import { EntityNotFoundError } from '../../utils/customErrors';
 
+const getEval = (entities: TranslationSet[]) => {
+  if (entities.length === 0) {
+    return 1;
+  }
+
+  let userEval = entities.reduce(
+    (sum, entity) =>
+      sum + (entity.skill / 100) * entity.translation.level.difficulty + 0.5,
+    0
+  );
+
+  userEval = Math.round(userEval / entities.length);
+
+  if (userEval < 1) {
+    return 1;
+  }
+
+  if (userEval > 6) {
+    return 6;
+  }
+};
+
 @Service()
 @Resolver()
 class LevelResolver {
@@ -36,22 +58,12 @@ class LevelResolver {
       .where('user.id = :userId', { userId })
       .getMany();
 
-    let userEval = entities.reduce(
-      (sum, entity) =>
-        sum + (entity.skill / 100) * entity.translation.level.difficulty + 0.49,
-      0
-    );
+    const userEval = getEval(entities);
 
-    userEval = Math.round(userEval / entities.length);
-    
-    if (userEval < 1) {
-      userEval = 1;
-    }
+    const result = await Level.findOne({ where: { difficulty: userEval } });
 
-    const result = await Level.findOne({where: {difficulty: userEval}});
-
-    if(!result) {
-      throw EntityNotFoundError;
+    if (!result) {
+      throw new EntityNotFoundError(Level.name);
     }
 
     return result;

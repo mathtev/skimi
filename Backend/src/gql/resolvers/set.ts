@@ -25,6 +25,7 @@ import Translation from '../../models/Translation';
 import { GQLContext } from '../../types/gqlContext';
 import { UserNotFoundError } from '../../utils/customErrors';
 import TranslationSet from '../../models/TranslationSet';
+import Profile from '../../models/Profile';
 
 @Service()
 @Resolver((of) => Set)
@@ -34,10 +35,10 @@ class SetResolver {
   async sets(@Ctx() ctx: GQLContext): Promise<Set[]> {
     const userId = ctx.req.session.userId;
 
-    const result = Set.createQueryBuilder('set')
+    const result = await Set.createQueryBuilder('set')
       .select()
-      .innerJoin('set.profile', 'profile')
-      .innerJoin('profile.user', 'user')
+      .leftJoin('set.profile', 'profile')
+      .leftJoin('profile.user', 'user')
       .where('user.id = :userId', { userId })
       .getMany();
 
@@ -64,11 +65,17 @@ class SetResolver {
     if (!userId) {
       throw new UserNotFoundError(userId);
     }
+
+    const profile = await Profile.findOne({ where: { userId } });
+    if(!profile) {
+      throw new Error("profile not found for user of id: " + userId)
+    }
+
     const translations = await Translation.findByIds(setInput.translationIds);
     const result = await createEntity(Set, {
       name: setInput.name,
       createdAt: setInput.createdAt,
-      profileId: userId,
+      profileId: profile.id,
       translations,
     });
     return result;

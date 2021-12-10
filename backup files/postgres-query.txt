@@ -1,0 +1,4 @@
+select * from 
+"set"
+join "profile"
+on "profileId" = profile.id

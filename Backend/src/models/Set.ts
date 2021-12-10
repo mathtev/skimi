@@ -41,6 +41,7 @@ class Set extends BaseEntity {
 
   @Field(() => Profile, { defaultValue: [] })
   @ManyToOne(() => Profile)
+  @JoinColumn({ name: "profileId", referencedColumnName: "id"})
   profile: Profile;
 
   @Field(() => [TranslationSet], { defaultValue: [] })
