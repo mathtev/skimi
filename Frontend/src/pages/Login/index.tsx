@@ -85,14 +85,14 @@ const Login = () => {
                 variant="contained"
                 color="secondary"
                 type="submit"
-                style={{marginTop: 30}}
+                style={{ marginTop: 30 }}
               >
                 Login
               </Button>
+              <Link to="/register"><b>Register</b></Link>
             </Form>
           )}
         </Formik>
-        <Link to="/register">Register</Link>
       </Card>
     </div>
   );

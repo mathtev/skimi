@@ -21,9 +21,11 @@ const Flashcard: React.FC<FlashcardProps> = ({
   const [width, height] = useWindowSize();
   const requirementFulfilled = React.useRef(true);
   const swipeThreshold = (width * height) / 3000;
-  
+
   const flipCard = () => {
-    showTranslation === false ? setShowTranslation(true) : setShowTranslation(false);
+    showTranslation === false
+      ? setShowTranslation(true)
+      : setShowTranslation(false);
   };
 
   const handleFulfilled = (dir: Direction) => {
@@ -54,9 +56,15 @@ const Flashcard: React.FC<FlashcardProps> = ({
       <div className="card" onClick={flipCard}>
         <div className="details">
           {showTranslation ? (
-            <h2>{translation.wordTo.name}</h2>
+            <div>
+              <h2>{translation.wordTo.name}</h2>
+              <h5>{translation.sentences[0].textTo}</h5>
+            </div>
           ) : (
-            <h2>{translation.wordFrom.name}</h2>
+            <div>
+              <h2>{translation.wordFrom.name}</h2>
+              <h5>{translation.sentences[0].textFrom}</h5>
+            </div>
           )}
         </div>
       </div>

@@ -59,7 +59,7 @@ const Register = () => {
             try {
               const { email, login, password } = formData;
               await register!(email, login, password);
-              window.location.href = 'http://localhost:3000';
+              window.location.href = 'http://localhost:3000/login';
             } catch (error) {
               console.error(error);
             }

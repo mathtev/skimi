@@ -1,9 +1,5 @@
 import { Resolver, Query, Arg, Int, UseMiddleware, Ctx } from 'type-graphql';
-import {
-  findAllEntities,
-  findEntityById,
-  updateEntity,
-} from '../../utils/typeorm';
+import { findAllEntities } from '../../utils/typeorm';
 import { ErrorHandler } from '../../middlewares/errorHandler';
 import Level from '../../models/Level';
 import { Service } from 'typedi';
@@ -16,13 +12,16 @@ const getEval = (entities: TranslationSet[]) => {
     return 1;
   }
 
-  let userEval = entities.reduce(
+  let studied = entities.filter((entity) => entity.skill >= 50);
+  let userEval = studied.reduce(
     (sum, entity) =>
       sum + (entity.skill / 100) * entity.translation.level.difficulty + 0.5,
     0
   );
 
-  userEval = Math.round(userEval / entities.length);
+  console.log(userEval);
+
+  userEval = Math.round(userEval / studied.length);
 
   if (userEval < 1) {
     return 1;
@@ -31,6 +30,8 @@ const getEval = (entities: TranslationSet[]) => {
   if (userEval > 6) {
     return 6;
   }
+
+  return userEval;
 };
 
 @Service()
