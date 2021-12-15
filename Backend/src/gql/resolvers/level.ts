@@ -19,8 +19,6 @@ const getEval = (entities: TranslationSet[]) => {
     0
   );
 
-  console.log(userEval);
-
   userEval = Math.round(userEval / studied.length);
 
   if (userEval < 1) {

@@ -64,12 +64,11 @@ const useStyles = makeStyles((theme: Theme) =>
 const YourSets = () => {
   const classes = useStyles();
   let { path } = useRouteMatch();
+
   const { data, loading, refetch } = useQuery<Sets>(GET_ALL_SETS);
 
-  console.log(data)
-
   const [deleteSetMutation] = useMutation(DELETE_SET);
-
+  
   const deleteSet = (id: number) => {
     deleteSetMutation({ variables: { id } }).then(() => refetch());
   };
