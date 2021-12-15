@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import CheckboxTable from '../../../components/CheckboxTable';
 import { CREATE_SET } from '../../../graphql/set/mutations';
+import { Set } from '../../../graphql/set/types';
 import { Translation } from '../../../graphql/translation/types';
 import { useLevels } from '../../../hooks/useLevels';
 import { useSettings } from '../../../hooks/useSettings';
@@ -30,13 +31,15 @@ interface WordSelectionProps {
   minWords: number;
   translations: Translation[];
   handleModalClose: () => void;
+  refetchSets: (set: Set) => void;
 }
 
 const WordSelection: React.FC<WordSelectionProps> = ({
   displayRows,
   minWords,
-  handleModalClose,
   translations,
+  handleModalClose,
+  refetchSets
 }) => {
   const classes = useStyles();
   const { nativeLanguage, foreignLanguage } = useSettings();
@@ -91,13 +94,16 @@ const WordSelection: React.FC<WordSelectionProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let newSet;
+
     if (errorMessage.trim() !== '') return;
     try {
-      await createSet();
+      newSet = await createSet();
     } catch (error) {
       console.error(error);
     }
     handleModalClose();
+    refetchSets(newSet);
   };
 
   const mapTranslations = (translations?: Translation[]): TableData[] => {
@@ -182,9 +188,13 @@ const WordSelection: React.FC<WordSelectionProps> = ({
         handleCheckboxChange={handleCheckboxChange}
       />
       <div className={classes.buttons}>
-        {tableData.length > 0 && <Button onClick={handleNext}>Next</Button>}
+        {tableData.length > 0 && (
+          <Button onClick={handleNext} variant="contained" color="secondary">
+            Next
+          </Button>
+        )}
         {selectedWords.length >= minWords && (
-          <Button variant="contained" type="submit">
+          <Button variant="contained" color="secondary" type="submit">
             create set
           </Button>
         )}

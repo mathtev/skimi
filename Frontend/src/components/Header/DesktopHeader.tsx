@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'flex',
+      boxShadow: 'none',
       justifyContent: 'center',
       background: theme.palette.primary.main,
       height: cssVariables.headerHeight,
@@ -67,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   linkActive: {
-    backgroundColor: alpha(theme.palette.common.white, 0.07),
+    backgroundColor: theme.palette.primary.light,
     opacity: 1,
   },
   dropdownLink: {

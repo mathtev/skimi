@@ -10,11 +10,6 @@ export const GET_CURRENT_USER = gql`
         email
         login
       }
-      level {
-        id
-        difficulty
-        code
-      }
       sets {
         id
         name

@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     text: {
       fontSize: '0.6rem',
+      fontWeight: 'bolder',
     },
   })
 );

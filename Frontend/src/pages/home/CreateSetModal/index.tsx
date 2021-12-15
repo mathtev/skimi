@@ -6,6 +6,7 @@ import Fade from '@material-ui/core/Fade';
 import { Button } from '@material-ui/core';
 import WordSelection from './WordSelection';
 import { Translation } from '../../../graphql/translation/types';
+import { Set } from '../../../graphql/set/types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       [theme.breakpoints.up('sm')]: {
-        width: '60%',
+        width: '600px',
         height: '80%',
         border: '2px solid #000',
       },
@@ -40,12 +41,14 @@ interface CreateSetModalProps {
   modalOpen: boolean;
   translations: Translation[];
   handleModalClose: () => void;
+  refetchSets: (set: Set) => void;
 }
 
 const CreateSetModal: React.FC<CreateSetModalProps> = ({
   modalOpen,
   handleModalClose,
   translations,
+  refetchSets
 }) => {
   const classes = useStyles();
 
@@ -69,8 +72,9 @@ const CreateSetModal: React.FC<CreateSetModalProps> = ({
             <WordSelection
               minWords={10}
               displayRows={6}
-              handleModalClose={handleModalClose}
               translations={translations}
+              handleModalClose={handleModalClose}
+              refetchSets={refetchSets}
             />
           </div>
         </Fade>

@@ -10,6 +10,16 @@ export const LOGIN = gql`
   }
 `;
 
+export const REGISTER = gql`
+  mutation register($input: UserInput!) {
+    register(userInput: $input) {
+      id
+      email
+      login
+    }
+  }
+`;
+
 export const LOGOUT = gql`
   mutation logout {
     logout

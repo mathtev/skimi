@@ -19,23 +19,24 @@ export const createTheme = (): Theme =>
             '-webkit-box-shadow': 'inset 0 0 6px #bdbdbda6',
           },
           '*::-webkit-scrollbar-thumb': {
-            backgroundColor: '#72c5ff',
+            backgroundColor: '#2183c8',
             outline: '0px solid slategrey',
             borderRadius: '50px',
             '&:hover': {
-              backgroundColor: '#2183c8'
-            }
-          }
-        }
+              backgroundColor: '#72c5ff',
+            },
+          },
+        },
       },
     },
     palette: {
       primary: {
         main: '#222222',
+        light: '#343434',
       },
       secondary: {
         main: '#2183c8',
-        light: '#72c5ff'
+        light: '#72c5ff',
       },
       // text: {
       //   primary: '#000',
@@ -43,8 +44,8 @@ export const createTheme = (): Theme =>
       // },
     },
   });
-  
-  export const cssVariables = {
-    sidebarWidth: 250,
-    headerHeight: 64,
-  };
+
+export const cssVariables = {
+  sidebarWidth: 250,
+  headerHeight: 64,
+};

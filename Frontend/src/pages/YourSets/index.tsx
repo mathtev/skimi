@@ -48,13 +48,13 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       right: 0,
       bottom: 0,
-      height: '5px !important',
+      height: '6px !important',
       position: 'absolute',
       margin: 0,
       background: '#d4fffd',
 
       '& .MuiLinearProgress-bar': {
-        backgroundColor: theme.palette.success.main,
+        backgroundColor: theme.palette.secondary.main,
       },
     },
     bottomText: {},
@@ -64,10 +64,11 @@ const useStyles = makeStyles((theme: Theme) =>
 const YourSets = () => {
   const classes = useStyles();
   let { path } = useRouteMatch();
+
   const { data, loading, refetch } = useQuery<Sets>(GET_ALL_SETS);
 
   const [deleteSetMutation] = useMutation(DELETE_SET);
-
+  
   const deleteSet = (id: number) => {
     deleteSetMutation({ variables: { id } }).then(() => refetch());
   };
@@ -87,7 +88,7 @@ const YourSets = () => {
                 <SetCardMenu id={set.id} deleteSet={deleteSet} />
               </Box>
               <span className={classes.bottomText}>
-                {set.translations?.length} words
+                {set.translationSetList?.length} words
               </span>
               <LinearProgress
                 className={classes.setProgress}

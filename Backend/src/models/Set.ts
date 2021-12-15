@@ -41,12 +41,16 @@ class Set extends BaseEntity {
 
   @Field(() => Profile, { defaultValue: [] })
   @ManyToOne(() => Profile)
+  @JoinColumn({ name: "profileId", referencedColumnName: "id"})
   profile: Profile;
 
   @Field(() => [TranslationSet], { defaultValue: [] })
-  @OneToMany(type => TranslationSet, translationSet => translationSet.set)
+  @OneToMany((type) => TranslationSet, (translationSet) => translationSet.set)
+  @TypeormLoader((translationSet: TranslationSet) => translationSet.setId, {
+    selfKey: true,
+  })
   translationSetList: TranslationSet[];
-  
+
   @Field(() => [Translation], { defaultValue: [] })
   @ManyToMany(() => Translation)
   @JoinTable({

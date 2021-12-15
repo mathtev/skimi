@@ -26,6 +26,7 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   margin: '0 3px',
   border: '1px solid #a09d9d',
   padding: 7,
+  fontWeight: 'bold',
   borderRadius: 8,
   //color: isDragging ? 'lightgreen' : 'grey',
   ...draggableStyle,

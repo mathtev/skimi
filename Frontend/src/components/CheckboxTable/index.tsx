@@ -105,7 +105,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           id="tableTitle"
           component="div"
         >
-          Choose words
+          <b>Choose words</b>
         </Typography>
       )}
     </Toolbar>

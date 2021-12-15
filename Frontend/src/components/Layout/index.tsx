@@ -8,14 +8,19 @@ import Home from '../../pages/Home';
 import Admin from '../../pages/Admin';
 import { useAuth } from '../../hooks/useAuth';
 import Login from '../../pages/Login';
-import { PrivateRoute } from '../PrivateRoute';
-import Loader from 'react-loader-spinner';
 import YourSets from '../../pages/YourSets';
 import LearnMode from '../../pages/LearnMode';
 import SetDetails from '../../pages/YourSets/SetDetails';
+import BeatLoader from "react-spinners/BeatLoader";
+import Register from '../../pages/Register';
 
 
 const useStyles = makeStyles((theme) => ({
+  '@global': {
+    body: {
+      //background: '#f4faff'
+    },
+  },
   root: {
     position: 'absolute',
     inset: 0,
@@ -47,10 +52,15 @@ const Layout = () => {
   };
 
   const pageLoaded = !authLoading;
+  const activeView = {
+    website: pageLoaded && authenticated,
+    login: pageLoaded && !authenticated,
+    loader: !pageLoaded,
+  };
 
   return (
     <div className={classes.root}>
-      {pageLoaded && authenticated ? (
+      {activeView.website && (
         <div className={classes.layout}>
           <Header toggleSidebar={toggleSidebar} />
           <Sidebar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
@@ -65,14 +75,17 @@ const Layout = () => {
             </Switch>
           </main>
         </div>
-      ) : !authenticated && pageLoaded ? (
-        <>
+      )}
+      {activeView.login && (
+        <div>
           <Route path="/" render={() => <Redirect to="/login" />} />
           <Route path="/login" component={Login} />
-        </>
-      ) : (
+          <Route path="/register" component={Register} />
+        </div>
+      )}
+      {activeView.loader && (
         <div className={classes.loader}>
-          <Loader type="BallTriangle" height={100} width={100} />
+          <BeatLoader color="blue" />
         </div>
       )}
     </div>

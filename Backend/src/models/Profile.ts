@@ -20,15 +20,6 @@ class Profile extends BaseEntity {
   @Column("integer")
   userId: number;
 
-  @Field(() => Int)
-  @Column("integer")
-  levelId: number;
-
-  @Field(() => Level)
-  @OneToOne(() => Level)
-  @JoinColumn({ name: "levelId", referencedColumnName: "id"})
-  level: Level;  
-
   @Field(() => User)
   @OneToOne(() => User)
   @JoinColumn({ name: "userId", referencedColumnName: "id"})

@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     wordName: {
       flexBasis: '50%',
+      fontWeight: 'bolder',
     },
     studyModeButton: {
       width: '35%',
@@ -65,8 +66,6 @@ const SetDetails = () => {
   const { skillUp, skillDown } = useSkill();
 
   const [flashcardsActive, setFlashcardsActive] = React.useState(false);
-
-  const [translationSetUpdateMutation] = useMutation(UPDATE_TRANSLATION_SET);
 
   const { data, loading, refetch } = useSetQuery(id);
   const set = data?.set;
@@ -106,7 +105,7 @@ const SetDetails = () => {
       <Box display="flex" justifyContent="space-between">
         <Button
           className={classes.studyModeButton}
-          variant="outlined"
+          variant="contained"
           color="secondary"
           onClick={() => setFlashcardsActive(true)}
         >
@@ -114,7 +113,7 @@ const SetDetails = () => {
         </Button>
         <Button
           className={classes.studyModeButton}
-          variant="outlined"
+          variant="contained"
           color="secondary"
         >
           <Link to={'/learn/' + id} className={classes.learnLink}>
@@ -125,10 +124,10 @@ const SetDetails = () => {
       {sortBySkill(translations).map((translationSet) => (
         <Card className={classes.word} key={translationSet.id}>
           <span className={classes.wordName}>
-            {translationSet?.translation?.wordFrom.name}{' '}
+            {translationSet?.translation?.wordFrom.name}
           </span>
           <span className={classes.wordName}>
-            {translationSet?.translation?.wordTo.name}{' '}
+            {translationSet?.translation?.wordTo.name}
           </span>
           <CircularProgressWithLabel value={translationSet?.skill} />
         </Card>
